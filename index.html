@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Bésko's Training Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4f1eb;--surf:#ede9e0;--surf2:#e6e0d5;--brd:#d5d0c5;--brd2:#c4bfb5;
+  --ink:#1a1a18;--muted:#6b6860;--faint:#a8a39c;
+  --swim:#1a4a2e;--swl:#e8f0e4;--swm:#3a8a5a;
+  --dA:#8b3a1a;--dAl:#f5ede8;
+  --dB:#1a3060;--dBl:#e8edf5;
+  --dC:#5a1a6e;--dCl:#f0e8f5;
+  --mob:#5a1a6e;--mobl:#f0e8f5;
+  --bth:#1a3060;--bthl:#e8edf5;
+  --bdi:#1a4560;--bdil:#e8f0f5;
+  --ok:#2d7a3a;--okl:rgba(45,122,58,.08);--okb:rgba(45,122,58,.22);
+  --z1:#3a8a5a;
+  --sans:'Syne',sans-serif;--mono:'DM Mono',monospace;
+  --r:10px;--r2:14px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);min-height:100vh;line-height:1.5;padding-bottom:5rem}
+button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
+input,textarea{font:inherit}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:780px;margin:0 auto;padding:0 1rem}
+
+/* HEADER */
+header{padding:1.4rem 1rem 1rem;max-width:780px;margin:0 auto;border-bottom:2px solid var(--ink)}
+.kicker{font-family:var(--mono);font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:.3rem}
+h1{font-size:clamp(1.55rem,5vw,2.3rem);font-weight:800;letter-spacing:-.02em;line-height:1.1}
+.h1m{color:var(--muted);font-weight:600}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:40;background:rgba(244,241,235,.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1.5px solid var(--brd)}
+.tabs{display:flex;gap:.2rem;max-width:780px;margin:0 auto;padding:.5rem .75rem;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;font-family:var(--mono);font-size:.68rem;letter-spacing:.05em;color:var(--muted);border:1.5px solid transparent;border-radius:999px;padding:.42rem .85rem;white-space:nowrap;transition:all .14s}
+.tab:active{transform:scale(.95)}
+.tab.on{color:var(--bg);font-weight:700}
+.tab[data-tab=dash].on{background:var(--ink)}
+.tab[data-tab=badi].on{background:var(--bdi)}
+.tab[data-tab=swim].on{background:var(--swim)}
+.tab[data-tab=dry].on{background:var(--dA)}
+.tab[data-tab=log].on{background:var(--ink)}
+
+/* VIEWS */
+main{padding-top:1.2rem}
+.view{display:none;animation:vu .2s ease}
+.view.on{display:block}
+@keyframes vu{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+/* SUB-TABS */
+.subtabs{display:flex;gap:.22rem;overflow-x:auto;scrollbar-width:none;margin-bottom:1rem}
+.subtabs::-webkit-scrollbar{display:none}
+.stab{flex:0 0 auto;font-family:var(--mono);font-size:.67rem;letter-spacing:.05em;color:var(--muted);border:1.5px solid var(--brd);border-radius:999px;padding:.38rem .82rem;white-space:nowrap;transition:all .14s}
+.stab:active{transform:scale(.95)}
+.stab.on{border-color:transparent;color:var(--bg);font-weight:700}
+.stab.sa.on{background:var(--dA)} .stab.sb.on{background:var(--dB)} .stab.sc.on{background:var(--dC)}
+.stab.sm.on{background:var(--mob)} .stab.sbw.on{background:var(--bth)}
+.subview{display:none} .subview.on{display:block}
+
+/* TYPE */
+.sec-label{font-family:var(--mono);font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin:1.5rem 0 .6rem;padding-top:.1rem}
+.sec-label:first-child{margin-top:0}
+.lead{font-size:.84rem;color:var(--muted);font-family:var(--mono);margin-bottom:.85rem;line-height:1.55}
+
+/* BADGE */
+.badge{font-family:var(--mono);font-size:.6rem;letter-spacing:.07em;padding:.22rem .55rem;border-radius:999px;border:1.5px solid;flex-shrink:0;white-space:nowrap;display:inline-flex;align-items:center}
+.bsw{color:var(--swim);border-color:rgba(26,74,46,.3);background:var(--swl)}
+.bz1{color:var(--z1);border-color:rgba(58,138,90,.3);background:var(--swl)}
+.bdA{color:var(--dA);border-color:rgba(139,58,26,.3);background:var(--dAl)}
+.bdB{color:var(--dB);border-color:rgba(26,48,96,.3);background:var(--dBl)}
+.bdC{color:var(--dC);border-color:rgba(90,26,110,.3);background:var(--dCl)}
+.bmo{color:var(--mob);border-color:rgba(90,26,110,.3);background:var(--mobl)}
+.bbw{color:var(--bth);border-color:rgba(26,48,96,.3);background:var(--bthl)}
+
+/* CARD */
+.card{background:var(--surf);border:1.5px solid var(--brd);border-radius:var(--r2);margin-bottom:.6rem;overflow:hidden}
+.card.logged{background:var(--okl);border-color:var(--okb)}
+.card-swim{border-left:3px solid var(--swim)} .card-z1{border-left:3px solid var(--z1)}
+.card-dA{border-left:3px solid var(--dA)} .card-dB{border-left:3px solid var(--dB)} .card-dC{border-left:3px solid var(--dC)}
+.card-mob{border-left:3px solid var(--mob)} .card-bth{border-left:3px solid var(--bth)}
+.card-head{display:flex;align-items:center;gap:.7rem;padding:.88rem 1rem;cursor:pointer;user-select:none}
+.card-head:active{background:var(--surf2)}
+.card-title{flex:1;min-width:0}
+.card-title .t{font-weight:700;font-size:.94rem;display:block}
+.card-title .s{font-family:var(--mono);font-size:.71rem;color:var(--muted);margin-top:.16rem;display:block}
+.done-dot{width:9px;height:9px;border-radius:50%;background:var(--faint);flex-shrink:0;transition:all .2s}
+.card.logged .done-dot{background:var(--ok);box-shadow:0 0 5px rgba(45,122,58,.4)}
+.chev{font-size:.72rem;color:var(--faint);transition:transform .2s;flex-shrink:0}
+.card.open>.card-head .chev{transform:rotate(90deg)}
+.card-body{max-height:0;overflow:hidden;transition:max-height .3s ease}
+.card.open>.card-body{max-height:none}
+.card-inner{padding:.2rem 1rem 1rem}
+
+/* FOCUS CUE */
+.focus-cue{background:var(--surf2);border-radius:var(--r);padding:.7rem .85rem;margin-bottom:.8rem;font-size:.82rem}
+.cue-lbl{font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.22rem;display:block}
+.card-swim .cue-lbl,.card-z1 .cue-lbl{color:var(--swim)}
+.card-dA .cue-lbl{color:var(--dA)} .card-dB .cue-lbl{color:var(--dB)} .card-dC .cue-lbl{color:var(--dC)}
+.card-mob .cue-lbl{color:var(--mob)} .card-bth .cue-lbl{color:var(--bth)}
+
+/* DRILLS */
+.drills{display:flex;gap:.38rem;flex-wrap:wrap;margin-bottom:.7rem}
+.drl{font-family:var(--mono);font-size:.67rem;color:var(--bth);border-bottom:1px dotted currentColor}
+.drt{font-family:var(--mono);font-size:.67rem;color:var(--muted);border:1px solid var(--brd);padding:.13rem .42rem;border-radius:4px}
+
+/* PHASE + ITEMS */
+.phase{margin:.8rem 0 .15rem}
+.ph-name{font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between;align-items:center;margin-bottom:.42rem;padding-bottom:.36rem;border-bottom:1px solid var(--brd)}
+.ph-meta{color:var(--faint);font-size:.58rem}
+.item{display:flex;gap:.6rem;padding:.46rem 0;border-bottom:1px solid var(--brd)}
+.item:last-child{border-bottom:none}
+.chk{flex-shrink:0;width:22px;height:22px;border:1.5px solid var(--faint);border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .12s;margin-top:.06rem}
+.chk:active{transform:scale(.88)} .chk.on{background:var(--ok);border-color:var(--ok)}
+.chk.on::after{content:'✓';color:#fff;font-size:.77rem;font-weight:800}
+.it-body{flex:1;min-width:0}
+.it-t{font-size:.87rem} .it-t.struck{text-decoration:line-through;color:var(--faint)}
+.it-n{font-size:.75rem;color:var(--muted);margin-top:.13rem;font-family:var(--mono);line-height:1.44}
+
+/* EXERCISE (DRYLAND) */
+.ex-item{padding:.68rem 0;border-bottom:1px solid var(--brd)}
+.ex-item:last-child{border-bottom:none}
+.ex-top{display:flex;align-items:flex-start;gap:.6rem;margin-bottom:.32rem}
+.ex-name{font-size:.9rem;font-weight:700;flex:1}
+.ex-tgt{font-family:var(--mono);font-size:.65rem;padding:.18rem .48rem;border-radius:4px;flex-shrink:0}
+.card-dA .ex-tgt{color:var(--dA);background:var(--dAl)} .card-dB .ex-tgt{color:var(--dB);background:var(--dBl)} .card-dC .ex-tgt{color:var(--dC);background:var(--dCl)}
+.ex-mus{font-family:var(--mono);font-size:.63rem;color:var(--faint);margin-bottom:.26rem}
+.ex-cue{font-size:.78rem;color:var(--muted);font-family:var(--mono);margin-bottom:.42rem;line-height:1.44;padding-left:.8rem;border-left:2px solid var(--brd)}
+.ex-in{display:flex;gap:.42rem;flex-wrap:wrap;margin-top:.32rem}
+.ff{display:flex;flex-direction:column;gap:.17rem}
+.ff label{font-family:var(--mono);font-size:.57rem;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
+.ff input{background:var(--bg);border:1.5px solid var(--brd);border-radius:7px;color:var(--ink);padding:.36rem .5rem;font-family:var(--mono);font-size:.79rem;transition:border-color .12s;min-width:0}
+.ff input:focus{outline:none}
+.card-dA .ff input:focus{border-color:var(--dA)} .card-dB .ff input:focus{border-color:var(--dB)} .card-dC .ff input:focus{border-color:var(--dC)}
+.ff-r{width:84px} .ff-b{flex:1;min-width:128px}
+
+/* SESSION FOOTER */
+.sess-foot{margin-top:.9rem;padding-top:.9rem;border-top:1px solid var(--brd)}
+.sess-meta{display:flex;gap:.42rem;flex-wrap:wrap;margin-bottom:.58rem}
+.sess-meta .ff-rpe{width:70px} .sess-meta .ff-note{flex:1;min-width:150px}
+.sess-meta textarea{background:var(--bg);border:1.5px solid var(--brd);border-radius:7px;color:var(--ink);padding:.36rem .5rem;font-family:var(--sans);font-size:.8rem;width:100%;resize:vertical;min-height:34px}
+.sess-meta textarea:focus{outline:none;border-color:var(--swim)}
+.sess-btns{display:flex;gap:.42rem}
+.btn{flex:1;border-radius:var(--r);padding:.63rem;font-family:var(--mono);font-size:.72rem;letter-spacing:.04em;font-weight:700;transition:transform .12s}
+.btn:active{transform:scale(.97)}
+.btn-sw{background:var(--swim);color:#fff} .btn-dA{background:var(--dA);color:#fff} .btn-dB{background:var(--dB);color:#fff} .btn-dC{background:var(--dC);color:#fff} .btn-mo{background:var(--mob);color:#fff} .btn-bw{background:var(--bth);color:#fff}
+.btn-rst{background:var(--surf2);color:var(--muted);border:1.5px solid var(--brd);flex:0 0 auto;padding:.63rem 1rem}
+.sav{font-family:var(--mono);font-size:.67rem;color:var(--ok);margin-top:.36rem;display:none}
+.sav.show{display:block}
+
+/* CALENDAR (IMPROVED) */
+.cal-wrap{background:var(--surf);border:1.5px solid var(--brd);border-radius:var(--r2);padding:1rem 1rem .75rem;margin-top:.2rem;margin-bottom:1rem}
+.cal-hdr{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.7rem}
+.cal-ml{font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.cal-tl{font-size:.82rem;font-weight:700;color:var(--swim)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cal-dow{font-family:var(--mono);font-size:.57rem;letter-spacing:.05em;text-transform:uppercase;color:var(--faint);text-align:center;padding-bottom:.3rem}
+.cal-day{min-height:52px;display:flex;flex-direction:column;padding:3px;border-radius:7px;position:relative;cursor:default}
+.cal-day.has-s{cursor:pointer}
+.cal-day.has-s:active{background:var(--surf2)}
+.cal-dn{font-family:var(--mono);font-size:.67rem;color:var(--muted);margin-bottom:2px;padding-left:2px}
+.cal-day.has-s .cal-dn{color:var(--ink);font-weight:600}
+.cal-day.today .cal-dn{color:var(--swim);font-weight:800}
+.cal-day.today::before{content:'';position:absolute;top:1px;left:1px;right:1px;bottom:1px;border:2px solid var(--swim);border-radius:6px;pointer-events:none}
+.cal-ev{font-family:var(--mono);font-size:.55rem;padding:2px 4px;border-radius:3px;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-bottom:2px}
+.cal-ev.esw{background:var(--swl);color:var(--swim)} .cal-ev.ez1{background:var(--swl);color:var(--z1)} .cal-ev.edy{background:var(--dAl);color:var(--dA)}
+
+/* PACING */
+.pacing-box{background:var(--swl);border:1.5px solid rgba(26,74,46,.18);border-radius:var(--r2);padding:.9rem;margin-bottom:1rem}
+.pacing-box h3{font-size:.88rem;font-weight:700;color:var(--swim);margin-bottom:.18rem}
+.pacing-note{font-family:var(--mono);font-size:.68rem;color:var(--muted);margin-bottom:.62rem}
+.pace-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.3rem}
+.pcell{background:#fff;border:1.5px solid rgba(26,74,46,.14);border-radius:7px;padding:.4rem .28rem;text-align:center}
+.pcell.hot{border-color:var(--swim)}
+.pz{font-family:var(--mono);font-size:.56rem;color:var(--muted);text-transform:uppercase}
+.pv{font-family:var(--mono);font-size:.88rem;font-weight:600;margin-top:.1rem}
+.pcell.hot .pv{color:var(--swim)}
+
+/* BADI */
+.badi-stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:.45rem;margin-bottom:.85rem}
+@media(min-width:520px){.badi-stat-grid{grid-template-columns:repeat(4,1fr)}}
+.badi-cell{background:var(--surf);border:1.5px solid var(--brd);border-radius:var(--r2);padding:.65rem .8rem}
+.badi-cell-name{font-size:.77rem;font-weight:700;margin-bottom:.28rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.badi-bar-bg{height:5px;background:var(--brd);border-radius:3px;overflow:hidden;margin-bottom:.22rem}
+.badi-bar{height:100%;border-radius:3px;transition:width .5s}
+.badi-pct{font-family:var(--mono);font-size:.64rem;color:var(--muted);margin-bottom:.18rem}
+.badi-status{font-family:var(--mono);font-size:.61rem;font-weight:700}
+.bst-g{color:var(--ok)} .bst-y{color:#b07a00} .bst-r{color:var(--dA)}
+.badi-ts{font-family:var(--mono);font-size:.59rem;color:var(--faint);text-align:center;margin:0 0 1rem;padding:.45rem 0;border-top:1px solid var(--brd)}
+
+/* HEATMAP */
+.hm-wrap{background:var(--surf);border:1.5px solid var(--brd);border-radius:var(--r2);padding:.9rem;margin-bottom:.9rem;overflow-x:auto}
+.hm-title{font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.65rem}
+.hm-select{display:flex;gap:.28rem;flex-wrap:wrap;margin-bottom:.7rem}
+.hm-pill{font-family:var(--mono);font-size:.62rem;padding:.22rem .62rem;border-radius:999px;border:1.5px solid var(--brd);color:var(--muted);cursor:pointer}
+.hm-pill.on{background:var(--bdi);color:#fff;border-color:var(--bdi)}
+.hm-grid{display:grid;gap:2px;min-width:340px}
+.hm-cell{height:18px;border-radius:2px}
+.hm-lbl{font-family:var(--mono);font-size:.56rem;color:var(--muted);display:flex;align-items:center;justify-content:center}
+.hm-legend{display:flex;align-items:center;gap:.5rem;margin-top:.55rem}
+.hm-leg-bar{display:flex;gap:2px;flex:1}
+.hm-leg-cell{flex:1;height:8px;border-radius:2px}
+.hm-leg-lbl{font-family:var(--mono);font-size:.57rem;color:var(--muted)}
+
+/* ORACLE */
+.oracle-wrap{background:var(--surf);border:1.5px solid var(--brd);border-radius:var(--r2);padding:.9rem;margin-bottom:.9rem}
+.oracle-title{font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.6rem}
+.oracle-name{font-size:.85rem;font-weight:700;margin-bottom:.5rem;color:var(--bdi)}
+.oracle-grid{display:flex;gap:.4rem;flex-wrap:wrap}
+.oracle-slot{background:var(--bg);border:1.5px solid var(--brd);border-radius:var(--r);padding:.5rem .65rem;min-width:60px;text-align:center}
+.oracle-slot.best{border-color:var(--ok);background:var(--okl)}
+.oracle-h{font-family:var(--mono);font-size:.65rem;color:var(--muted);margin-bottom:.2rem}
+.oracle-p{font-family:var(--mono);font-size:.95rem;font-weight:700}
+.oracle-tip{font-family:var(--mono);font-size:.58rem;color:var(--ok);margin-top:.2rem}
+.oracle-best{font-family:var(--mono);font-size:.72rem;color:var(--ok);margin-top:.55rem}
+
+/* BADI FULL HEADER */
+.badi-hero{background:var(--surf);border:1.5px solid var(--brd);border-radius:var(--r2);padding:1rem;margin-bottom:.75rem;display:flex;justify-content:space-between;align-items:center;gap:.75rem}
+.badi-hero-txt h2{font-size:.98rem;font-weight:800;color:var(--bdi);margin-bottom:.2rem}
+.badi-hero-txt p{font-family:var(--mono);font-size:.68rem;color:var(--muted)}
+.badi-ref-btn{display:inline-block;background:var(--bdi);color:#fff;font-family:var(--mono);font-size:.65rem;padding:.52rem 1rem;border-radius:999px;font-weight:700;flex-shrink:0}
+
+/* WEEK DASHBOARD */
+.wk-day{margin-bottom:.3rem}
+.wk-date{font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:.85rem 0 .4rem}
+.wk-date:first-child{margin-top:0}
+.wk-date.wk-today{color:var(--swim);font-weight:700}
+
+/* MOBILITY CARDS */
+.mob-card{background:var(--surf);border:1.5px solid var(--brd);border-left:3px solid var(--mob);border-radius:var(--r2);padding:.88rem 1rem;margin-bottom:.55rem;transition:background .15s,border-color .15s}
+.mob-card.mc-done{background:var(--okl);border-color:var(--okb)}
+.mob-head{display:flex;align-items:center;gap:.7rem;margin-bottom:.42rem}
+.mob-name{font-size:.9rem;font-weight:700;flex:1}
+.mob-reps{font-family:var(--mono);font-size:.66rem;color:var(--mob);background:var(--mobl);padding:.17rem .48rem;border-radius:4px;flex-shrink:0}
+.mob-mus{font-family:var(--mono);font-size:.62rem;color:var(--faint);margin-bottom:.28rem}
+.mob-note{font-size:.8rem;color:var(--muted);line-height:1.5}
+.mob-chk{width:24px;height:24px;border:1.5px solid var(--faint);border-radius:7px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all .12s}
+.mob-chk:active{transform:scale(.9)} .mob-chk.on{background:var(--ok);border-color:var(--ok)}
+.mob-chk.on::after{content:'✓';color:#fff;font-size:.82rem;font-weight:800}
+
+/* BREATHWORK */
+.bw-btns{display:flex;gap:.42rem;margin-top:.75rem}
+.bw-visual{display:flex;flex-direction:column;align-items:center;padding:.7rem 0}
+.bw-circle{width:120px;height:120px;border-radius:50%;border:2px solid var(--bth);background:radial-gradient(circle at 50% 40%,rgba(26,48,96,.1),transparent);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:transform 1s ease;transform:scale(.62)}
+.bw-phase{font-family:var(--mono);font-size:.8rem;color:var(--bth);text-align:center}
+.bw-count{font-family:var(--mono);font-size:1.75rem;font-weight:700;margin-top:.65rem;min-width:3rem;text-align:center}
+.bw-rnd{font-family:var(--mono);font-size:.68rem;color:var(--muted);margin-top:.18rem}
+
+/* LOG */
+.hist-e{background:var(--surf);border:1.5px solid var(--brd);border-radius:var(--r2);padding:.8rem 1rem;margin-bottom:.5rem}
+.he-hd{display:flex;justify-content:space-between;align-items:baseline;gap:.5rem;margin-bottom:.28rem}
+.he-t{font-weight:700;font-size:.87rem} .he-d{font-family:var(--mono);font-size:.66rem;color:var(--muted);flex-shrink:0}
+.he-s{font-family:var(--mono);font-size:.72rem;color:var(--muted);line-height:1.55;white-space:pre-wrap}
+.pb-e{background:var(--surf);border:1.5px solid var(--brd);border-radius:var(--r2);padding:.78rem 1rem;margin-bottom:.5rem}
+.pb-n{font-weight:700;font-size:.87rem;margin-bottom:.18rem}
+.pb-d{font-family:var(--mono);font-size:.72rem;color:var(--muted)}
+.spark{margin-top:.36rem}
+.empty{color:var(--faint);font-family:var(--mono);font-size:.8rem;text-align:center;padding:2rem 0}
+.warn-box{background:rgba(139,58,26,.06);border:1.5px solid rgba(139,58,26,.2);border-radius:var(--r);padding:.62rem .8rem;font-family:var(--mono);font-size:.72rem;color:var(--dA);margin:.68rem 0;line-height:1.45}
+
+/* LOADING */
+.loading{font-family:var(--mono);font-size:.75rem;color:var(--muted);text-align:center;padding:1.5rem 0;animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.5}50%{opacity:1}}
+
+footer{text-align:center;font-family:var(--mono);font-size:.6rem;color:var(--faint);padding:2rem 1rem 0;border-top:1px solid var(--brd);margin-top:2rem}
+</style>
+</head>
+<body>
+<header class="wrap">
+  <div class="kicker">Training Hub · Juni 2026</div>
+  <h1>Bésko's <span class="h1m">Training Hub</span></h1>
+</header>
+<nav>
+  <div class="tabs">
+    <button class="tab on" data-tab="dash">Dashboard</button>
+    <button class="tab" data-tab="badi">Badi</button>
+    <button class="tab" data-tab="swim">Schwimmen</button>
+    <button class="tab" data-tab="dry">Dryland</button>
+    <button class="tab" data-tab="log">Verlauf</button>
+  </div>
+</nav>
+<main class="wrap">
+  <section class="view on" data-view="dash" id="v-dash"></section>
+  <section class="view" data-view="badi" id="v-badi"></section>
+  <section class="view" data-view="swim" id="v-swim"></section>
+  <section class="view" data-view="dry"  id="v-dry"></section>
+  <section class="view" data-view="log"  id="v-log"></section>
+</main>
+<footer>Bésko's Training Hub · Juni 2026 · Daten lokal gespeichert</footer>
+
+<script>
+(function(){
+'use strict';
+/* ===== PLAN DATA (shared) ===== */
+const PACING={note:'CSS / 85% = 1:35 /100m',cells:[{z:'65% Easy',v:'2:04'},{z:'70%',v:'1:55'},{z:'75% Steady',v:'1:48'},{z:'80%',v:'1:41'},{z:'85% CSS',v:'1:35',hot:true},{z:'90%',v:'1:30'},{z:'95%',v:'1:25'},{z:'100%',v:'1:21'}]};
+const KF=['Kick Size: Keep the kick narrow and compact, with your upper thighs lightly brushing past each other and your big toes staying close together.','Kick From the Hip: Keep your legs long, initiate the kick from the hips, bring your heel towards the surface on the upkick, and flick through your big toe on the downkick.','Soft Feet: Think \'ballerina feet\' – relaxed ankles, soft feet, and lightly pointed toes that move with the water.'];
+
+const SWIM=[
+{id:'MAY-ADD',badge:'MAI · ADD',title:'Mai Additional — Sprint & Hypoxic',sub:'2.4 km · Recovery & Entry',acc:'swim',bc:'bsw',cue:'Elbow leads, hand follows',focus:'High-Intensity, short rest. Finish strong into the wall – push the last 5m through.',drills:[{n:'2 Over 2 Under'},{n:'Fingertip Drag',u:'https://svpford.wistia.com/medias/t3nfgm30p8'}],phases:[{name:'Warm Up',items:[{t:'200m Stroke of Choice with fins'},{t:'6 × 50m (0:20): 50m 2 Over/2 Under + 50m Free',n:'Feel the water and pressure on your hand and forearm during the reach, rotation and catch.'}]},{name:'Main Set',items:[{t:'15 × 50m Free (0:10)',n:'5 × 50m Easy – same stroke count\n5 × 50m – increase pace and stroke count by 2–4 per 50m\n5 × 50m – increase pace and stroke count by 2–4 per 50m'},{t:'500m Easy Free with fins',n:'Focus on 1 area: Recovery or Entry'}]},{name:'Hypoxic & Sprint',items:[{t:'Hypoxic: 4 × 75m Free Pull (buoy + paddles) @ 80% (0:10)',n:'Increase breathing pattern by 2 strokes per 25m. Gently exhale, avoid holding breath.'},{t:'Sprint Build: 3 × 50m Free Build (1 min)',n:'Start streamlined, build up to a sprint.'}]},{name:'Cool Down',items:[{t:'200m Stroke of Choice'}]}]},
+{id:'W1S2',badge:'W1 · S2',title:'Descend Pyramide',sub:'2.8 km · The Kick',acc:'swim',bc:'bsw',cue:'Kick Size · From Hip · Soft Feet',focus:KF.join(' · '),drills:[{n:'Side Kick',u:'https://svpford.wistia.com/medias/sx6fidvfof'},{n:'Kickboard Pull',u:'https://svpford.wistia.com/medias/ol89sx5p6m'},{n:'Front Kick',u:'https://svpford.wistia.com/medias/o0ezp2u3an'},{n:'Fingertip Drag',u:'https://svpford.wistia.com/medias/t3nfgm30p8'}],phases:[{name:'Warm Up',items:[{t:'200m with fins: 50m Stroke of choice / 50m Side Kick + repeat',n:'Side kick: tall body position, lead arm extended, fingers below wrist, wrist below elbow.'},{t:'12 × 25m: 2 × 25m Kickboard Pull / 2 × 25m Easy Free',n:'Kickboard Pull: board between upper thighs as high as possible. Engage glutes and inner thighs, really small kicks.'}]},{name:'Main Set',items:[{t:'2 sets of 5 × 100m Free Descend 1–5 @ 70%, 75%, 80%, 85%, 90% (0:15)',n:'Paddles optional for 2nd set. Stick to a breathing pattern you can maintain.'},{t:'2 sets of 500m Free Descend by set @ 75%, 85% (1 min)'}]},{name:'Post Set',items:[{t:'4 × 25m Front Kick (0:20)',n:'Arms extended out front, in line with shoulders. Soft kick, heels to surface, flick through big toe.'}]},{name:'Cool Down',items:[{t:'200m Fingertip Drag with fins'}]}]},
+{id:'W1S3',badge:'W1 · S3',title:'Negative Split / Build',sub:'3 km · The Kick',acc:'swim',bc:'bsw',cue:'Kick Size · From Hip · Soft Feet',focus:KF.join(' · '),drills:[{n:'Vertical→Horizontal Kick',u:'https://svpford.wistia.com/medias/u5rx71ofdj'},{n:'Front Kick',u:'https://svpford.wistia.com/medias/o0ezp2u3an'},{n:'12-3-12',u:'https://svpford.wistia.com/medias/canlx2yrlu'}],phases:[{name:'Warm Up',items:[{t:'200m Stroke of Choice'},{t:'4 × 25m (0:20) Vertical To Horizontal Kick',n:'Flick through your big toe on the down kick. Kick feels like a whip/ripple.'},{t:'8 × 50m (0:20): [25m Front Kick / 25m Easy Free] + [50m Kickboard Pull] + repeat'}]},{name:'Main Set',items:[{t:'500m Negative Split: 250m @ 75% / 250m @ 85% (0:20)'},{t:'400m Free Build: 100m @ 75% / 100m @ 80% / 100m @ 85% / 100m @ 90% (0:20)'},{t:'300m Free Hold @ 80% (0:15)'},{t:'200m Free Build: 100m @ 80% / 50m @ 85% / 50m @ 90% (0:10)'},{t:'100m Easy Recovery'},{t:'200m 12-3-12 with fins',n:'12-3-12: Rotate through your stroke. Roll lead arm in line with shoulder, soft hands during the 12 kicks.'},{t:'400m Free Pull (buoy, paddles, snorkel) @ 75%'}]},{name:'Cool Down',items:[{t:'200m Stroke of Choice'}]}]},
+{id:'W2S1',badge:'W2 · S1',title:'Endurance – Bucket Range',sub:'3 km · Ausdauer',acc:'swim',bc:'bsw',cue:'Kick within the bucket range',focus:'Start each length in a tight streamlined glide – push off the wall and glide for 3 seconds. Use that momentum to power through your first 2 strokes.',drills:[{n:'Side Kick',u:'https://svpford.wistia.com/medias/sx6fidvfof'},{n:'6-1-6',u:'https://svpford.wistia.com/medias/5sv2y74vub'},{n:'Fingertip Drag',u:'https://svpford.wistia.com/medias/t3nfgm30p8'}],phases:[{name:'Warm Up',items:[{t:'100m Stroke of choice'},{t:'2 × 150m with fins (0:30): 50m Side Kick / 50m Free / 50m Kick with kickboard (breathe after 8–12 kicks)'},{t:'Contrast set 4 × 50m (0:20)',n:'25m bicycle kick (wide, from knees)\n25m free kick – long legs, from hips, flick through big toe'}]},{name:'Main Set',items:[{t:'2 × 400m Free @ 75% (0:30)'},{t:'4 × 25m 6-1-6 with fins (0:20)'},{t:'4 × 200m Free Descend @ 75%, 80%, 80%, 85% (0:20)'},{t:'4 × 25m 6-1-6 with fins (0:20)'},{t:'4 × 100m Free Descend @ 80%, 85%, 85%, 90% (0:15)'}]},{name:'Cool Down',items:[{t:'200m Fingertip Drag'}]}]},
+{id:'W2S2',badge:'W2 · S2',title:'Big Toe – Mixed Intensity',sub:'2.6 km · Ausdauer',acc:'swim',bc:'bsw',cue:'Kick through your big toe',focus:'Drive the kick from the hips and let the movement ripple smoothly down through the legs and out through the toes.',drills:[{n:'6-1-6',u:'https://svpford.wistia.com/medias/5sv2y74vub'},{n:'12-3-12',u:'https://svpford.wistia.com/medias/canlx2yrlu'},{n:'Side Kick',u:'https://svpford.wistia.com/medias/sx6fidvfof'}],phases:[{name:'Warm Up',items:[{t:'200m: 25m Free / Breast / Back / Fly + 100m Easy Free'},{t:'16 × 25m (0:20): Free Kick (board) / Kickboard Pull / 6-1-6 / Slow Doggy Scoop + repeat'}]},{name:'Main Set',items:[{t:'300m Free @ 75% (0:30)'},{t:'3 × 100m Free Descend @ 70%, 75%, 80% (0:15)'},{t:'8 × 25m 12-3-12 with fins (0:15)'},{t:'1 min rest'},{t:'200m Free @ 80% (0:20)'},{t:'2 × 100m Free Descend @ 80%, 85% (0:15)'},{t:'8 × 25m Side Kick with fins (0:15)'},{t:'1 min rest'},{t:'100m Free @ 85% (0:15)'},{t:'100m Free @ 90% (0:20)'},{t:'8 × 25m 12-3-12 with fins (0:15)'}]},{name:'Cool Down',items:[{t:'200m Stroke of Choice'}]}]},
+{id:'W2S3',badge:'W2 · S3',title:'Ford Threshold',sub:'3 km · Ausdauer',acc:'swim',bc:'bsw',cue:'Soft ankles, flowing feet',focus:'Keep your feet soft, ankles loose and flowing, and let them move with the water rather than fighting against it. Think ballerina feet.',drills:[{n:'Kickboard Pull',u:'https://svpford.wistia.com/medias/ol89sx5p6m'},{n:'Front Kick',u:'https://svpford.wistia.com/medias/o0ezp2u3an'},{n:'6-1-6',u:'https://svpford.wistia.com/medias/5sv2y74vub'}],phases:[{name:'Warm Up',items:[{t:'150m: Free Kick (board) / Kickboard Pull no kick / Kickboard Pull with kick + repeat'},{t:'2 × 100m (0:30): 25m Front Kick / 25m Easy Free / 25m 6-1-6 / 25m Easy Free',n:'Fins for 2nd 100m. Long legs, heel to surface, kick through big toe.'}]},{name:'Main Set – Ford Threshold',items:[{t:'9 × 200m Free (0:20)',n:'3 × 200m: 1–2 @ 75% · 3 @ 90% · repeat.\nSame time for all 200s @ 75%, same time for all @ 90%.'}]},{name:'Post Set',items:[{t:'4 × 50m: 25m Vertical→Horizontal Kick / 25m Easy Free'},{t:'9 × 50m Free Hypoxic @ 85% (0:15)',n:'Odd: breathing 3 · Even: breathing 6 or 8'}]},{name:'Cool Down',items:[{t:'200m Stroke of choice'}]}]},
+{id:'W3S1',badge:'W3 · S1',title:'Kowalski Special (mod.)',sub:'2.9 km · Mitteldistanz',acc:'swim',bc:'bsw',cue:'Kick within the bucket range',focus:'Middle-distance week. Start each length in a streamlined glide. Keep head down for the first and last 2 strokes of each length.',drills:[{n:'6-1-6',u:'https://svpford.wistia.com/medias/5sv2y74vub'},{n:'Side Kick',u:'https://svpford.wistia.com/medias/sx6fidvfof'},{n:'12-3-12',u:'https://svpford.wistia.com/medias/canlx2yrlu'}],phases:[{name:'Warm Up',items:[{t:'200m with fins: 100m Easy Free / 100m [25m 6-1-6 / 25m Slow Doggy Scoop] + repeat'},{t:'12 × 25m with fins (0:20): Side Kick (left) / Side Kick (right) / Easy Free + repeat'}]},{name:'Main Set',items:[{t:'Kowalski Special (Modified): 12 × 150m Free',n:'Block: 150m @ 80% (0:20) · 150m @ 85% (0:20) · 150m @ 90% (0:20) · 50m 12-3-12 fins (1 min) · × 4\nFocus on improving time per 150m. Control breathing, keep stroke long.'},{t:'4 × 50m with fins (0:20): 25m 6-1-6 / 25m Free',n:'Focus on keeping feet soft and floppy.'}]},{name:'Cool Down',items:[{t:'200m Stroke of choice with fins'}]}]},
+{id:'W3S2',badge:'W3 · S2',title:'85% Reducing Ladder',sub:'2.8 km · Mitteldistanz',acc:'swim',bc:'bsw',cue:'Kick through your big toe',focus:'Drive the kick from the hips and let the movement ripple smoothly down through the legs and out through the toes.',drills:[{n:'6-1-6',u:'https://svpford.wistia.com/medias/5sv2y74vub'},{n:'Fingertip Drag',u:'https://svpford.wistia.com/medias/t3nfgm30p8'}],phases:[{name:'Warm Up',items:[{t:'200m Reverse IM: 50m Free / Breast / Back / Fly'},{t:'8 × 25m with fins (0:20): 2 × 6-1-6 / 2 × Free + repeat'}]},{name:'Main Set',items:[{t:'4 × 100m @ 85% (0:15) → 100m Easy + 50m Free with fly kick (1 min) – fins'},{t:'3 × 100m @ 85% (0:15) → 100m Easy + 50m Free with fly kick (1 min)'},{t:'2 × 100m @ 85% (0:15) → 100m Easy + 50m Free with fly kick (1 min)'},{t:'1 × 100m @ 85% (0:15) → 100m Easy + 50m Free with fly kick (1 min)',n:'Free with fly kick: tension and release. Use rotation and core drive to connect the stroke.'}]},{name:'Post Set',items:[{t:'300m @ 85% / CSS pace'},{t:'6 × 50m Easy Free with fins (0:15)',n:'Minimal stroke count – enter and glide forward, ride the stroke out 2 seconds'}]},{name:'Cool Down',items:[{t:'100m Stroke of choice (fins optional)'}]}]},
+{id:'W3S3',badge:'W3 · S3',title:'Von Torros Ladder',sub:'2.8 km · Mitteldistanz',acc:'swim',bc:'bsw',cue:'Soft ankles, flowing feet',focus:'Keep your feet soft, ankles loose and flowing, and let them move with the water rather than fighting against it.',drills:[{n:'Front Kick',u:'https://svpford.wistia.com/medias/o0ezp2u3an'},{n:'12-3-12',u:'https://svpford.wistia.com/medias/canlx2yrlu'}],phases:[{name:'Warm Up',items:[{t:'200m Stroke of choice with fins'},{t:'4 × 50m: 25m Front Kick / 25m Easy Free (0:20)'},{t:'Contrast 4 × 25m (0:20)',n:'25m hard kick (full effort and tension)\n25m light kick (relaxed, light hum)'}]},{name:'Main Set – Von Torros Ladder',items:[{t:'2 × 300m Free (0:30) Descend @ 70%, 85%',n:'1 min rest'},{t:'3 × 200m Free (0:20) Descend @ 75%, 80%, 85%',n:'1 min rest'},{t:'6 × 100m Free (0:10) Descend @ 70%, 80%, 90% + repeat',n:'Increase catch pressure and acceleration as pace rises. Keep strokes long and controlled.'}]},{name:'Post Set',items:[{t:'12 × 25m with fins & snorkel (0:20): 2 × 12-3-12 / 2 × Free + repeat'}]},{name:'Cool Down',items:[{t:'200m Stroke of choice (fins optional)'}]}]},
+{id:'W4S1',badge:'W4 · S1',title:'25m Sprints + Breathing Sets',sub:'2.7 km · High Intensity',acc:'swim',bc:'bsw',cue:'Kick within the bucket range',focus:'High-intensity week, short recovery. Finish strong into the wall. Push the last 5m from the flags and swim \'through the wall\' as you touch.',drills:[{n:'6-1-6',u:'https://svpford.wistia.com/medias/5sv2y74vub'},{n:'Kickboard Pull',u:'https://svpford.wistia.com/medias/ol89sx5p6m'},{n:'Fingertip Drag',u:'https://svpford.wistia.com/medias/t3nfgm30p8'}],phases:[{name:'Warm Up',items:[{t:'200m Stroke of choice (fins optional)'},{t:'3 × 100m (0:30): Free kick (board) / Kickboard Pull (small kick) / 6-1-6 / Easy Free'}]},{name:'Main Set',items:[{t:'8 × 25m Free @ 90% (0:15)'},{t:'300m @ 75%: 50m breathing 2 / 4 / 6 + repeat (1 min)'},{t:'8 × 25m Free @ 90% (0:15)'},{t:'200m @ 75%: 50m breathing 3 / 5 + repeat (1 min)'},{t:'8 × 25m Free @ 90% (0:15)'},{t:'100m @ 75%: 50m breathing 5, 50m breathing 6'}]},{name:'Post Set',items:[{t:'16 × 50m (0:20) – 1 min rest after each block of 4',n:'[4 × 50m IM: Free/Breast/Back/Fly]\n[4 × 50m: 25m Front Kick / 25m Easy]\n[4 × 50m: 25m build → 90% / 25m Easy]\n[4 × 50m: 25m breathing 2 / 25m minimal]'}]},{name:'Cool Down',items:[{t:'200m Fingertip Drag with fins'}]}]},
+{id:'W4S2',badge:'W4 · S2',title:'Pull-Sets + CSS',sub:'2.8 km · High Intensity',acc:'swim',bc:'bsw',cue:'Kick through your big toe',focus:'Drive the kick from the hips and let the movement ripple smoothly down through the legs and out through the toes.',drills:[{n:'Vertical→Horizontal Kick',u:'https://svpford.wistia.com/medias/u5rx71ofdj'},{n:'Slow Doggy Scoop'}],phases:[{name:'Warm Up',items:[{t:'200m Stroke of choice (fins optional)'},{t:'8 × 25m: Vertical→Horizontal Kick / Easy Free (0:20)'},{t:'Contrast 4 × 25m (0:20)',n:'25m Deep & Wide Kick (feel resistance)\n25m bucket range kick (upper thighs and big toes lightly brushing)'}]},{name:'Main Set',items:[{t:'3 sets of 4 × 100m Stroke of choice (0:15)',n:'25m Kick (hold buoy) + 75m Pull with buoy\nSet 1 @ 75% · Set 2 @ 80% · Set 3 @ 85% · 1 min rest between sets'},{t:'Drill: 100m Slow Doggy Scoop',n:'Elbow high and forward, feel pressure on hands and forearms.'},{t:'CSS: 300m Free @ 85% / CSS pace'}]},{name:'Post Set',items:[{t:'Hypoxic: 12 × 50m (0:15): breathing 4 / 5 / 6 + repeat'}]},{name:'Cool Down',items:[{t:'100m Stroke of choice'}]}]},
+{id:'W4S3',badge:'W4 · S3',title:'Best Average – 21×100m',sub:'2.8 km · High Intensity',acc:'swim',bc:'bsw',cue:'Soft ankles, flowing feet',focus:'Keep your feet soft, ankles loose and flowing. Best Average = the fastest pace you can maintain across the whole set.',drills:[{n:'Slow Doggy Scoop'},{n:'6-1-6',u:'https://svpford.wistia.com/medias/5sv2y74vub'},{n:'12-3-12',u:'https://svpford.wistia.com/medias/canlx2yrlu'}],phases:[{name:'Warm Up',items:[{t:'200m: 50m Easy Free / 50m Kickboard Pull (small kick) + repeat'},{t:'16 × 25m: Slow Doggy Scoop / Easy Free / 6-1-6 / Easy Free'},{t:'4 × 50m: 25m Free Build → 95% / 25m Easy (0:20)'}]},{name:'Main Set',items:[{t:'21 × 100m (0:30)',n:'Block: [3 × BA · 100m Easy · 2 × BA · 100m Easy] · Repeat\nSwim 1 × 100m at goal pace first. Easy 100s = 15s+ slower than BA.'}]},{name:'Post Set',items:[{t:'Drill: 8 × 25m 12-3-12 with fins (0:20)'}]},{name:'Cool Down',items:[{t:'100m Stroke of choice with fins'}]}]},
+{id:'W5S1',badge:'W5 · S1',title:'Kick / Pull / Swim Sets',sub:'2.5 km · High Intensity',acc:'swim',bc:'bsw',cue:'Kick within the bucket range',focus:'High-intensity week. Finish strong into the wall. Push the last 5m from the flags and swim \'through the wall\' as you touch.',drills:[{n:'Side Kick',u:'https://svpford.wistia.com/medias/sx6fidvfof'},{n:'Fingertip Drag',u:'https://svpford.wistia.com/medias/t3nfgm30p8'}],phases:[{name:'Warm Up',items:[{t:'200m with fins: 50m Stroke of choice + 50m Side Kick + repeat'},{t:'12 × 25m (0:20): 25m Polo Freestyle (fast – elbows high, chest open, head up) / 25m Fingertip Drag',n:'Polo Free: open your chest, head stable and above water. Fins for last 6 × 25m.'}]},{name:'Main Set',items:[{t:'Stroke of choice: 3 sets of',n:'2 × 50m Kick with board (0:20) – fins for set 3, except Breast\n2 × 50m Pull with buoy (0:20) – paddles for set 3\n200m Swim (1 min)\nSet 1 @ 75% · Set 2 @ 80% · Set 3 @ 85% · 1 stroke for all sets.'}]},{name:'Post Set',items:[{t:'Aerobic: 600m Free @ 75% with snorkel',n:'Focus on feel. Heel to surface, flick through big toe.'}]},{name:'Cool Down',items:[{t:'200m Stroke of Choice'}]}]},
+{id:'W5S2',badge:'W5 · S2',title:'Stroke-Count + Hypoxic / Sprint',sub:'2.4 km · High Intensity (01.07)',acc:'swim',bc:'bsw',cue:'Kick through your big toe',focus:'Drive the kick from the hips and let the movement ripple smoothly down through the legs and out through the toes.',drills:[{n:'2 Over 2 Under'},{n:'6-1-6',u:'https://svpford.wistia.com/medias/5sv2y74vub'}],phases:[{name:'Warm Up',items:[{t:'200m Stroke of choice with fins'},{t:'6 × 50m (0:20): 50m 2 Over / 2 Under + 50m 6-1-6'}]},{name:'Main Set',items:[{t:'15 × 50m Free (0:10)',n:'5 × Easy – same stroke count\n5 × faster +2–4 strokes\n5 × faster again +2–4 strokes'},{t:'500m Easy Free with fins',n:'Focus on 1 area of your kick'}]},{name:'Hypoxic & Sprint',items:[{t:'Hypoxic: 4 × 75m Pull (buoy + paddles) @ 80% (0:10)',n:'Breathing +2 strokes per 25m. Short rest – gently exhale, avoid holding breath.'},{t:'Sprint Build: 3 × 50m Free Build (1 min)',n:'Start streamlined, build to sprint.'}]},{name:'Cool Down',items:[{t:'200m Stroke of Choice'}]}]},
+{id:'Z1-1',badge:'Z1 · Kick Size',title:'Zone 1 Aerob – Kick Size',sub:'3 km · 65–70% · Samstags',acc:'z1',bc:'bz1',z1:true,cue:'Schmal & kompakt – große Zehen nah, Oberschenkel streifen',focus:'Strikt aerob (65–70%). Du solltest dich unterhalten können. Bilateral alle 3 Züge, Zugzahl über alle 200er halten.',drills:[{n:'Front Kick',u:'https://svpford.wistia.com/medias/o0ezp2u3an'}],phases:[{name:'Warm Up',items:[{t:'400m Easy Free mit Flossen'}]},{name:'Drill',items:[{t:'200m Front Kick mit Kickboard',n:'Schmaler Kick, große Zehen nah, Ferse zur Oberfläche'}]},{name:'Main Set',items:[{t:'6 × 200m @ 65–70% (0:20)',n:'Bilateral alle 3, gleiche Zugzahl pro 200m'}]},{name:'Pull',items:[{t:'200m Easy Free mit Flossen'},{t:'600m Pull (Buoy) @ 70%, Atmung alle 5',n:'Kick komplett abschalten, Oberkörper isolieren'}]},{name:'Cool Down',items:[{t:'400m Easy Free mit Flossen'}]}]},
+{id:'Z1-2',badge:'Z1 · From Hip',title:'Zone 1 Aerob – Kick from Hip',sub:'3 km · 65–70% · Samstags',acc:'z1',bc:'bz1',z1:true,cue:'Aus der Hüfte – Ferse zur Oberfläche, durch großen Zeh',focus:'Strikt aerob (65–70%). Unterhalten können. Bilateral alle 3, Zugzahl halten.',drills:[{n:'6-1-6',u:'https://svpford.wistia.com/medias/5sv2y74vub'}],phases:[{name:'Warm Up',items:[{t:'400m Easy Free mit Flossen'}]},{name:'Drill',items:[{t:'8 × 50m (0:20): 25m 6-1-6 / 25m Easy Free'}]},{name:'Main Set',items:[{t:'6 × 200m @ 65–70% (0:20)',n:'Kick aus der Hüfte, Welle durch die Beine'}]},{name:'Pull',items:[{t:'200m Easy Free'},{t:'600m Pull (Buoy) @ 70%, Atmung alle 5'}]},{name:'Cool Down',items:[{t:'200m Easy Free mit Flossen'}]}]},
+{id:'Z1-3',badge:'Z1 · Soft Feet',title:'Zone 1 Aerob – Soft Feet',sub:'3 km · 65–70% · Samstags',acc:'z1',bc:'bz1',z1:true,cue:'Lockere Knöchel, fließende Füße – Ballerina',focus:'Strikt aerob (65–70%). Unterhalten können. Bilateral alle 3, Zugzahl halten.',drills:[{n:'Kickboard Pull',u:'https://svpford.wistia.com/medias/ol89sx5p6m'}],phases:[{name:'Warm Up',items:[{t:'400m Easy Free mit Flossen'}]},{name:'Drill',items:[{t:'4 × 50m (0:20): 25m Kickboard Pull kleiner Kick / 25m Easy Free'},{t:'Contrast 4 × 50m (0:20)',n:'25m steife Knöchel (Drag spüren) / 25m weiche Knöchel (passiv fließen)'}]},{name:'Main Set',items:[{t:'6 × 200m @ 65–70% (0:20)',n:'Lockere Knöchel, weiche Füße'}]},{name:'Pull',items:[{t:'600m Pull (Buoy) @ 70%, Atmung alle 5',n:'Weiche Füße durchgehend'}]},{name:'Cool Down',items:[{t:'Restdistanz: Easy Free auf 3 km auffüllen'}]}]}
+];
+
+const DRYLAND=[
+{id:'A',badge:'DRYLAND A',title:'Pull & Posterior Chain',sub:'35 Min · 3 Runden',acc:'dA',bc:'bdA',btn:'btn-dA',cue:'Zug aus dem breiten Rücken – nie zum Versagen',focus:'3 Runden Hauptteil. Pull-Ups immer 2–3 Reps unter Maximum. Schwimmen hat Priorität.',phases:[{name:'Warm-Up',meta:'5 Min',items:[{t:'Band Pull-Aparts 2×15',n:'Band auf Schulterhöhe, Schulterblätter zusammen'},{t:'Scapular Pull-Ups 2×8',n:'Hängend, nur Schulterblätter, Arme gestreckt'},{t:'Hip Circles 10/Seite'},{t:'90/90 Hüfte passiv 30s/Seite'}]},{name:'Hauptteil',meta:'3 Runden · ~25 Min',items:[{ex:true,id:'A-pullup',name:'Pull-Ups',tgt:'5×3–4',rest:'90s',cue:'2–3 Reps unter Max · 1s hoch / 2s runter, kein Schwingen',mus:'Lat · Teres · Bizeps · Rhomboiden'},{ex:true,id:'A-row',name:'Single-Arm Band Row',tgt:'3×10/Seite',rest:'60s',cue:'Voller ROM, langsame Negative, Schulterblatt am Ende zusammenziehen',mus:'Lat · Rhomboiden · Trapez'},{ex:true,id:'A-rdl',name:'Single-Leg RDL (Band/KB)',tgt:'3×8/Seite',rest:'60s',cue:'Hüftscharnier, Hamstrings spüren, Standbein leicht gebeugt',mus:'Hamstrings · Glutes · Rückenstrecker'},{ex:true,id:'A-hollow',name:'Hollow Hold',tgt:'3×30–45s',rest:'45s',cue:'LWS aktiv auf den Boden drücken – wichtigste Core-Übung für Schwimmer',mus:'Rektus/Transversus · Hüftbeuger'},{ex:true,id:'A-pallof',name:'Pallof Press (Band)',tgt:'3×10/Seite',rest:'45s',cue:'Anti-Rotation, Hüfte ruhig halten',mus:'Obliques · Transversus · Glute med'}]},{name:'Cool-Down',meta:'5 Min',items:[{t:'Lat-Stretch (Türrahmen) 60s/Seite'},{t:'Brust-Türrahmen-Stretch 60s'},{t:'Box Breathing 4-4-4-4 · 2 Min'}]}]},
+{id:'B',badge:'DRYLAND B',title:'Core, Hüfte & Shoulder Health',sub:'30 Min · 3 Runden',acc:'dB',bc:'bdB',btn:'btn-dB',cue:'Schulterbalance statt Brustmasse',focus:'Pausenzeiten sind Empfehlungen – markiert als empf.',phases:[{name:'Warm-Up',meta:'5 Min',items:[{t:'Cat-Cow 10 Wdh.'},{t:'World\'s Greatest Stretch 4/Seite'},{t:'Band Shoulder Dislocates 2×10',n:'Griffbreite anpassen, langsam'},{t:'Couch Stretch 45s/Seite'},{t:'90/90 aktive IR/ER 2×6/Seite'}]},{name:'Hauptteil',meta:'3 Runden · ~20 Min',items:[{ex:true,id:'B-push',name:'Push-Ups (Tempo 3-0-1)',tgt:'3×8–12',rest:'60s (empf.)',cue:'3s runter, direkt hoch · klein dosiert',mus:'Brust · Trizeps · Serratus'},{ex:true,id:'B-sideplank',name:'Side Plank mit Hüfthebung',tgt:'10/Seite',rest:'45s (empf.)',cue:'Glute-med-Aktivierung, Verbindung zur Wasserlage',mus:'Glute med · Obliques'},{ex:true,id:'B-copen',name:'Copenhagen Plank (Knie auf Bank)',tgt:'20–30s/Seite',rest:'45s (empf.)',cue:'Progression Knie → Knöchel → gestreckt',mus:'Adduktoren · Core'},{ex:true,id:'B-bridge',name:'Single-Leg Glute Bridge',tgt:'12/Seite',rest:'45s (empf.)',cue:'1s oben halten',mus:'Glutes · Hamstrings'},{ex:true,id:'B-birddog',name:'Bird Dog mit Pause',tgt:'8/Seite',rest:'30s (empf.)',cue:'2s Endposition, Rücken ruhig',mus:'Core · Rückenstrecker'},{ex:true,id:'B-extrot',name:'Band External Rotation',tgt:'15/Seite',rest:'30s (empf.)',cue:'Leichtes Band, Ellbogen am Rumpf – Rotatorenmanschette',mus:'Infraspinatus · Teres minor'}]},{name:'Cool-Down',meta:'5 Min',items:[{t:'Pigeon Stretch 60s/Seite'},{t:'Couch Stretch 45s/Seite'},{t:'Atemübung 4-7-8 · 5 Runden'}]}]},
+{id:'C',badge:'DRYLAND C',title:'Power & Pulling Endurance',sub:'35 Min · 4 Runden',acc:'dC',bc:'bdC',btn:'btn-dC',cue:'Power kommt zum Schluss, wenn die Basis steht',focus:'Pausenzeiten sind Empfehlungen. Wegen Sesambeinchen kein Springen auf Beton.',phases:[{name:'Warm-Up',meta:'5 Min',items:[{t:'Springseil locker 3 Min',n:'Weicher Untergrund, Frequenz nicht Höhe – kein Beton'}]},{name:'Hauptteil',meta:'4 Runden · ~25 Min',items:[{ex:true,id:'C-pulldown',name:'Explosive Band Pulldowns',tgt:'10 schnell & sauber',rest:'60s (empf.)',cue:'Band hoch fixiert, schneller Zug nach unten – simuliert Catch-Phase',mus:'Lat · Serratus'},{ex:true,id:'C-invrow',name:'Inverted Rows / Australian Pull-Ups',tgt:'10–12',rest:'60s (empf.)',cue:'Körper gerade, Calisthenics-Park oder stabiler Tisch',mus:'Lat · Rhomboiden · Trapez'},{ex:true,id:'C-swing',name:'KB Swings / Band Hip Hinge explosiv',tgt:'12',rest:'75s (empf.)',cue:'Kraft aus der Hüfte, kein Rückenziehen',mus:'Glutes · Hamstrings · Core'},{ex:true,id:'C-deadbug',name:'Dead Bug langsam',tgt:'8/Seite',rest:'45s (empf.)',cue:'Kontrolliert, Bauch aktiv, kein Hohlkreuz',mus:'Transversus · Hüftbeuger'},{ex:true,id:'C-knee',name:'Hanging Knee Raises',tgt:'8–12',rest:'60s (empf.)',cue:'Kontrolliert, kein Schwung',mus:'Hüftbeuger · Unterer Bauch'}]},{name:'Cool-Down',meta:'5 Min',items:[{t:'Schulter-Mobility (Arm Circles, Pendel) 2 Min'},{t:'Box Breathing 4-4-4-4 · 3 Min'}]}]}
+];
+
+const MOBILITY={phases:[
+{name:'Hüfte',meta:'~5 Min',items:[
+{name:'90/90 aktiv: IR & ER',reps:'60s/Seite',mus:'Hüftaußenrotation · Tiefe Hüftmuskulatur',note:'Zwischen Innen- und Außenrotation wechseln, Kraft aufbauen – nicht fallen lassen.'},
+{name:'Couch Stretch',reps:'45s/Seite',mus:'Hüftbeuger · Quadrizeps',note:'Hüfte nach vorn, Oberkörper aufrichten, kein Hohlkreuz.'},
+{name:'Deep Squat Hold + Pendeln',reps:'60s',mus:'Hüfte · Knöchel · Rücken',note:'Fersen am Boden, Ellbogen innen gegen Knie, seitlich pendeln.'},
+{name:'World\'s Greatest Stretch',reps:'3/Seite langsam',mus:'Hüftbeuger · Thorax · Hamstrings',note:'Jede Position mehrere Atemzüge, Rotation maximieren.'}
+]},
+{name:'Schulter & Thorax',meta:'~5 Min',items:[
+{name:'Thread the Needle',reps:'60s/Seite',mus:'Thorax-Rotation · Schulter',note:'Bewegung aus der Brustwirbelsäule, nicht LWS.'},
+{name:'Open Books',reps:'8/Seite',mus:'Thorax-Rotation · Brust',note:'Hüften gestapelt, Rotation aus dem Thorax, beim Öffnen einatmen.'},
+{name:'Wall Slides',reps:'2×10',mus:'Schulterblatt · Rotatorenmanschette',note:'Schultern unten halten, Kontakt zur Wand nicht verlieren.'},
+{name:'Sleeper Stretch',reps:'45s/Seite',mus:'Posteriore Kapsel · Schulter',note:'Posteriore Kapsel – bei Schwimmern oft eng. Sanft, ohne Schmerz.'}
+]}
+]};
+
+const BREATH=[
+{id:'box',name:'Box Breathing',sub:'4-4-4-4 · Downregulation · 8 Runden',desc:'Nasenatmung. Nach dem Training oder zur Beruhigung. Verbessert Atemruhe und CO₂-Toleranz im Wasser.',rounds:8,pattern:[{label:'Einatmen',sec:4},{label:'Halten',sec:4},{label:'Ausatmen',sec:4},{label:'Halten',sec:4}]},
+{id:'b478',name:'4-7-8 Atmung',sub:'Einschlafen / Parasympathikus · 5 Runden',desc:'4s ein durch die Nase, 7s halten, 8s langsam aus durch den Mund. Beruhigt das Nervensystem vor dem Schlafen.',rounds:5,pattern:[{label:'Einatmen',sec:4},{label:'Halten',sec:7},{label:'Ausatmen',sec:8}]}
+];
+
+const SCHED={
+'2026-06-03':[{type:'swim',id:'MAY-ADD',label:'Mai Additional · 2.4 km'}],
+'2026-06-04':[{type:'dry',id:'B',label:'Dryland B · Core & Schulter'}],
+'2026-06-05':[{type:'swim',id:'W1S2',label:'W1S2 · 2.8 km'}],
+'2026-06-06':[{type:'swim',id:'W1S3',label:'W1S3 · 3 km'},{type:'dry',id:'C',label:'Dryland C · Power'}],
+'2026-06-08':[{type:'swim',id:'W2S1',label:'W2S1 · 3 km'}],
+'2026-06-09':[{type:'dry',id:'A',label:'Dryland A · Pull'}],
+'2026-06-10':[{type:'swim',id:'W2S2',label:'W2S2 · 2.6 km'}],
+'2026-06-11':[{type:'dry',id:'B',label:'Dryland B · Core'}],
+'2026-06-12':[{type:'swim',id:'W2S3',label:'W2S3 · 3 km'}],
+'2026-06-13':[{type:'swim',id:'Z1-1',label:'Z1 Kick Size · 3 km'},{type:'dry',id:'C',label:'Dryland C · Power'}],
+'2026-06-15':[{type:'swim',id:'W3S1',label:'W3S1 · 2.9 km'}],
+'2026-06-16':[{type:'dry',id:'A',label:'Dryland A · Pull'}],
+'2026-06-17':[{type:'swim',id:'W3S2',label:'W3S2 · 2.8 km'}],
+'2026-06-18':[{type:'dry',id:'B',label:'Dryland B · Core'}],
+'2026-06-19':[{type:'swim',id:'W3S3',label:'W3S3 · 2.8 km'}],
+'2026-06-20':[{type:'swim',id:'Z1-2',label:'Z1 From Hip · 3 km'},{type:'dry',id:'C',label:'Dryland C · Power'}],
+'2026-06-22':[{type:'swim',id:'W4S1',label:'W4S1 · 2.7 km'}],
+'2026-06-23':[{type:'dry',id:'A',label:'Dryland A · Pull'}],
+'2026-06-24':[{type:'swim',id:'W4S2',label:'W4S2 · 2.8 km'}],
+'2026-06-25':[{type:'dry',id:'B',label:'Dryland B · Core'}],
+'2026-06-26':[{type:'swim',id:'W4S3',label:'W4S3 · 2.8 km'}],
+'2026-06-27':[{type:'swim',id:'Z1-3',label:'Z1 Soft Feet · 3 km'},{type:'dry',id:'C',label:'Dryland C · Power'}],
+'2026-06-29':[{type:'swim',id:'W5S1',label:'W5S1 · 2.5 km'}],
+'2026-06-30':[{type:'dry',id:'A',label:'Dryland A · Pull'}],
+'2026-07-01':[{type:'swim',id:'W5S2',label:'W5S2 · 2.4 km'}]
+};
+
+/* ===== STATE ===== */
+const KEY='besko_hub_v2';
+let STATE;
+(function(){try{const r=localStorage.getItem(KEY);STATE=r?JSON.parse(r):{history:[],progress:{},done:{},checks:{},inputs:{}};}catch(e){STATE={history:[],progress:{},done:{},checks:{},inputs:{}};}
+STATE.history=STATE.history||[];STATE.progress=STATE.progress||{};STATE.done=STATE.done||{};STATE.checks=STATE.checks||{};STATE.inputs=STATE.inputs||{};})();
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(STATE));}catch(e){}}
+
+/* ===== UTILS ===== */
+const e=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+const today=()=>{const d=new Date();return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;};
+const todayFmt=()=>new Date().toLocaleDateString('de-CH',{day:'2-digit',month:'2-digit',year:'numeric'});
+const qs=(s,r=document)=>r.querySelector(s);
+const qsa=(s,r=document)=>[...r.querySelectorAll(s)];
+const CE=s=>s.replace(/[^a-zA-Z0-9_-]/g,c=>'\\'+c);
+
+/* ===== RENDER UTILS ===== */
+function renderPacing(){return`<div class="pacing-box"><h3>Pacing · /100m</h3><div class="pacing-note">${e(PACING.note)}</div><div class="pace-grid">${PACING.cells.map(x=>`<div class="pcell${x.hot?' hot':''}"><div class="pz">${e(x.z)}</div><div class="pv">${e(x.v)}</div></div>`).join('')}</div></div>`;}
+
+function renderPhases(key,phases,isDry){
+  return phases.map((p,pi)=>{
+    const items=p.items.map((it,ii)=>{
+      if(it.ex){
+        const rk=it.id; const ck=STATE.checks[rk]; const rv=STATE.inputs[rk+'_r']||''; const bv=STATE.inputs[rk+'_b']||'';
+        return`<div class="ex-item"><div class="ex-top"><div class="chk${ck?' on':''}" data-exchk="${e(rk)}"></div><div class="ex-name${ck?' struck':''}">${e(it.name)}</div><div class="ex-tgt">${e(it.tgt)}</div></div><div class="ex-mus">${e(it.mus)} · Pause ${e(it.rest)}</div>${it.cue?`<div class="ex-cue">${e(it.cue)}</div>`:''}<div class="ex-in"><div class="ff ff-r"><label>Reps actual</label><input data-ei="r" data-rk="${e(rk)}" value="${e(rv)}" placeholder="${e(it.tgt)}"></div><div class="ff ff-b"><label>Band / Gewicht</label><input data-ei="b" data-rk="${e(rk)}" value="${e(bv)}" placeholder="z.B. Grünes Band / KB 16"></div></div></div>`;
+      }
+      return`<div class="item"><div class="it-body"><div class="it-t">${e(it.t)}</div>${it.n?`<div class="it-n">${e(it.n).replace(/\n/g,'<br>')}</div>`:''}</div></div>`;
+    }).join('');
+    return`<div class="phase"><div class="ph-name"><span>${e(p.name)}</span>${p.meta?`<span class="ph-meta">${e(p.meta)}</span>`:''}</div>${items}</div>`;
+  }).join('');
+}
+
+function renderFoot(key,btnCls,title){
+  const rv=e(STATE.inputs[key+'_rpe']||''); const nv=e(STATE.inputs[key+'_note']||'');
+  return`<div class="sess-foot"><div class="sess-meta"><div class="ff ff-rpe"><label>RPE 1–10</label><input inputmode="numeric" data-si="rpe" data-key="${e(key)}" value="${rv}" placeholder="–"></div><div class="ff ff-note"><label>Notiz</label><textarea data-si="note" data-key="${e(key)}" placeholder="Pace, Gefühl, Anpassungen…">${nv}</textarea></div></div><div class="sess-btns"><button class="btn ${btnCls}" data-log="${e(key)}" data-title="${e(title)}">Session loggen</button><button class="btn btn-rst" data-reset="${e(key)}">Reset</button></div><div class="sav" data-sav="${e(key)}">✓ Gespeichert im Verlauf</div></div>`;
+}
+
+function renderSwimCard(s){
+  const key='swim:'+s.id; const logged=!!STATE.done[key];
+  const drills=s.drills?.map(d=>d.u?`<a class="drl" href="${e(d.u)}" target="_blank" rel="noopener">▶ ${e(d.n)}</a>`:`<span class="drt">${e(d.n)}</span>`).join('')||'';
+  return`<div class="card card-${s.acc}${logged?' logged':''}" data-card="${e(key)}"><div class="card-head" data-toggle="${e(key)}"><span class="done-dot"></span><span class="badge ${s.bc}">${e(s.badge)}</span><span class="card-title"><span class="t">${e(s.title)}</span><span class="s">${e(s.sub)}</span></span><span class="chev">▶</span></div><div class="card-body"><div class="card-inner">${s.focus?`<div class="focus-cue"><span class="cue-lbl">${e(s.cue)}</span>${e(s.focus)}</div>`:''}<div class="drills">${drills}</div>${renderPhases(key,s.phases,false)}${renderFoot(key,'btn-sw',s.badge+' – '+s.title)}</div></div></div>`;
+}
+
+function renderDryCard(s){
+  const key='dry:'+s.id; const logged=!!STATE.done[key];
+  return`<div class="card card-${s.acc}${logged?' logged':''}" data-card="${e(key)}"><div class="card-head" data-toggle="${e(key)}"><span class="done-dot"></span><span class="badge ${s.bc}">${e(s.badge)}</span><span class="card-title"><span class="t">${e(s.title)}</span><span class="s">${e(s.sub)}</span></span><span class="chev">▶</span></div><div class="card-body"><div class="card-inner">${s.focus?`<div class="focus-cue"><span class="cue-lbl">${e(s.cue)}</span>${e(s.focus)}</div>`:''} ${renderPhases(key,s.phases,true)}${renderFoot(key,s.btn,s.badge+' – '+s.title)}</div></div></div>`;
+}
+
+/* ===== CALENDAR ===== */
+function renderCalendar(){
+  const td=today();
+  const dow=['Mo','Di','Mi','Do','Fr','Sa','So'];
+  let h=`<div class="cal-wrap"><div class="cal-hdr"><span class="cal-ml">Juni 2026</span><span class="cal-tl">The Kick</span></div><div class="cal-grid">`;
+  dow.forEach(d=>{h+=`<div class="cal-dow">${d}</div>`;});
+  for(let day=1;day<=30;day++){
+    const ds=`2026-06-${String(day).padStart(2,'0')}`;
+    const sess=SCHED[ds]||[];
+    const hasSess=sess.length>0;
+    const isToday=ds===td;
+    const cls=['cal-day',hasSess?'has-s':'',isToday?'today':''].filter(Boolean).join(' ');
+    const ev=sess.map(s=>`<div class="cal-ev e${s.type}" data-cday="${ds}" data-csid="${e(s.id)}" data-ctype="${e(s.type)}">${e(s.label.split(' · ')[0])}</div>`).join('');
+    h+=`<div class="${cls}"${hasSess?` data-cday="${ds}"`:''}><div class="cal-dn">${day}</div>${ev}</div>`;
+  }
+  h+='</div></div>';
+  return h;
+}
+
+/* ===== BADI STATE ===== */
+let badiRows=[];let badiLoaded=false;let badiLoading=false;let selectedBadi='Hallenbad City';
+const BADIS=['Hallenbad City','Freibad Letzigraben','Seebad Utoquai','Flussbad Oberer Letten'];
+const BADI_SHORT={'Hallenbad City':'HB City','Freibad Letzigraben':'Letzigraben','Seebad Utoquai':'Utoquai','Flussbad Oberer Letten':'Ob. Letten'};
+
+function pctColor(p){if(p===null)return'var(--surf2)';if(p<15)return'#1e3a5f';if(p<30)return'#1f5f9a';if(p<45)return'#2d8a5e';if(p<60)return'#c9a900';if(p<75)return'#c05a00';if(p<90)return'#9b1a1a';return'#6b0f0f';}
+function statusLabel(p){if(p===null)return['–',''];if(p<30)return['Sehr frei ✓','bst-g'];if(p<50)return['Gut frei','bst-g'];if(p<65)return['Mittel','bst-y'];if(p<80)return['Belebt','bst-y'];return['Voll','bst-r'];}
+
+async function loadBadi(){
+  if(badiLoaded||badiLoading)return;
+  badiLoading=true;
+  try{
+    const res=await fetch('https://raw.githubusercontent.com/derbsq/Badi-Tracker/main/data/occupancy.csv');
+    if(!res.ok)throw new Error('fetch failed');
+    const txt=await res.text();
+    const lines=txt.trim().split('\n');
+    if(lines.length<2){badiLoading=false;return;}
+    const hdr=lines[0].split(',').map(h=>h.trim().toLowerCase());
+    const tC=hdr.findIndex(h=>h.includes('time')||h.includes('ts'));
+    const nC=hdr.findIndex(h=>h.includes('badi')||h.includes('name')||h.includes('facility'));
+    const pC=hdr.findIndex(h=>h.includes('pct')||h.includes('percent')||h.includes('load'));
+    const cC=hdr.findIndex(h=>h.includes('current')||h.includes('count')||h.includes('abs'));
+    const mC=hdr.findIndex(h=>h.includes('max')||h.includes('capacity'));
+    badiRows=[];
+    for(let i=1;i<lines.length;i++){
+      const cols=lines[i].split(',').map(c=>c.trim());
+      if(cols.length<2)continue;
+      const tsStr=tC>=0?cols[tC]:'';const name=nC>=0?cols[nC]:'';
+      let pct=pC>=0?parseFloat(cols[pC]):NaN;
+      if(isNaN(pct)&&cC>=0&&mC>=0){const c2=parseFloat(cols[cC]),m2=parseFloat(cols[mC]);if(!isNaN(c2)&&!isNaN(m2)&&m2>0)pct=Math.round(c2/m2*100);}
+      if(!tsStr||!name||isNaN(pct))continue;
+      const ts=new Date(tsStr);if(isNaN(ts.getTime()))continue;
+      const ageDays=(Date.now()-ts.getTime())/(86400000);
+      badiRows.push({ts,name,pct:Math.round(pct),dow:(ts.getDay()+6)%7,hour:ts.getHours(),ageDays});
+    }
+    badiLoaded=true;
+  }catch(err){}
+  badiLoading=false;
+  renderBadiViews();
+}
+
+function getCurrentStatus(){
+  const latest={};const cutoff=Date.now()-30*60000;
+  badiRows.forEach(r=>{if(r.ts.getTime()<cutoff)return;if(!latest[r.name]||r.ts>latest[r.name].ts)latest[r.name]=r;});
+  return latest;
+}
+
+function buildHeatmap(facility){
+  // 7 days × 16 hours (5:00-20:00)
+  const grid=Array.from({length:7},()=>Array.from({length:16},()=>({sum:0,cnt:0})));
+  badiRows.forEach(r=>{
+    const nl=r.name.toLowerCase(),fl=facility.toLowerCase();
+    if(!nl.includes(fl.split(' ')[0].toLowerCase())&&!fl.includes(nl.split(' ')[0].toLowerCase()))return;
+    const h=r.hour-5;if(h<0||h>=16)return;
+    grid[r.dow][h].sum+=r.pct;grid[r.dow][h].cnt++;
+  });
+  return grid.map(row=>row.map(c=>c.cnt>0?Math.round(c.sum/c.cnt):null));
+}
+
+function getOracle(facility){
+  const now=new Date();const dow=(now.getDay()+6)%7;const hr=now.getHours();
+  const preds=[];
+  for(let dh=0;dh<8;dh++){
+    const th=(hr+dh)%24;const td2=dh>=(24-hr)?((dow+1)%7):dow;
+    const similar=badiRows.filter(r=>{
+      const nl=r.name.toLowerCase(),fl=facility.toLowerCase();
+      if(!nl.includes(fl.split(' ')[0].toLowerCase())&&!fl.includes(nl.split(' ')[0].toLowerCase()))return false;
+      return r.dow===td2&&Math.abs(r.hour-th)<=1;
+    });
+    if(!similar.length){preds.push({h:th,pct:null});continue;}
+    let sw=0,sp=0;
+    similar.forEach(r=>{const w=Math.exp(-0.023*r.ageDays);sw+=w;sp+=w*r.pct;});
+    preds.push({h:th,pct:Math.round(sp/sw)});
+  }
+  return preds;
+}
+
+function renderStatusGrid(){
+  const ls=getCurrentStatus();
+  const cells=BADIS.map(b=>{
+    const d=Object.values(ls).find(r=>{
+      const nl=r.name.toLowerCase(),bl=b.toLowerCase();
+      return nl.includes(bl.split(' ')[0].toLowerCase())||bl.includes(nl.split(' ')[0].toLowerCase());
+    });
+    const pct=d?d.pct:null;
+    const [stxt,scls]=statusLabel(pct);
+    const bc=pctColor(pct);
+    return`<div class="badi-cell"><div class="badi-cell-name">${e(BADI_SHORT[b]||b)}</div><div class="badi-bar-bg"><div class="badi-bar" style="width:${pct??0}%;background:${bc}"></div></div><div class="badi-pct">${pct!==null?pct+'%':'–'}</div><div class="badi-status ${scls}">${stxt}</div></div>`;
+  }).join('');
+  const tss=Object.values(ls);
+  const latestTs=tss.length?tss.sort((a,b)=>b.ts-a.ts)[0].ts:null;
+  const tsLbl=latestTs?`Letztes Update: ${latestTs.toLocaleTimeString('de-CH',{hour:'2-digit',minute:'2-digit'})} Uhr`:'Lade Daten…';
+  return`<div class="badi-stat-grid">${cells}</div><div class="badi-ts">${tsLbl}</div>`;
+}
+
+function renderHeatmapHtml(facility){
+  if(!badiLoaded)return`<div class="loading">Daten werden geladen…</div>`;
+  const grid=buildHeatmap(facility);
+  const days=['Mo','Di','Mi','Do','Fr','Sa','So'];
+  const hours=Array.from({length:16},(_,i)=>i+5);
+  const now=new Date();const todayDow=(now.getDay()+6)%7;const curH=now.getHours();
+  const cols=`30px repeat(16,1fr)`;
+  let h=`<div class="hm-grid" style="display:grid;grid-template-columns:${cols};gap:2px;">`;
+  // header row
+  h+=`<div class="hm-lbl"></div>`;
+  hours.forEach(hr=>{const isCur=(hr===curH);h+=`<div class="hm-lbl" style="${isCur?'color:var(--swim);font-weight:700':''}">${hr}</div>`;});
+  // day rows
+  days.forEach((d,di)=>{
+    const isToday=di===todayDow;
+    h+=`<div class="hm-lbl" style="${isToday?'color:var(--swim);font-weight:700':''}">${d}</div>`;
+    hours.forEach((_,hi)=>{
+      const val=grid[di][hi];const c=pctColor(val);const op=val!==null?1:0.25;const isCur=isToday&&hours[hi]===curH;
+      h+=`<div class="hm-cell" style="background:${c};opacity:${op};${isCur?'box-shadow:0 0 0 2px var(--swim)':''}" title="${val!==null?val+'%':'–'}"></div>`;
+    });
+  });
+  h+='</div>';
+  // legend
+  h+=`<div class="hm-legend"><span class="hm-leg-lbl">Leer</span><div class="hm-leg-bar">${[0,20,35,52,68,80,93].map(p=>`<div class="hm-leg-cell" style="background:${pctColor(p)}"></div>`).join('')}</div><span class="hm-leg-lbl">Voll</span></div>`;
+  return h;
+}
+
+function renderOracleHtml(facility){
+  if(!badiLoaded)return`<div class="loading">Daten werden geladen…</div>`;
+  const preds=getOracle(facility);
+  const best=preds.reduce((a,b)=>(b.pct!==null&&(a===null||b.pct<a.pct))?b:a,null);
+  const slots=preds.map(p=>{
+    const isBest=best&&p.h===best.h&&p.pct!==null;
+    const [,scls]=statusLabel(p.pct);
+    return`<div class="oracle-slot${isBest?' best':''}"><div class="oracle-h">${String(p.h).padStart(2,'0')}:00</div><div class="oracle-p" style="color:${pctColor(p.pct)}">${p.pct!==null?p.pct+'%':'–'}</div>${isBest?'<div class="oracle-tip">beste Zeit</div>':''}</div>`;
+  }).join('');
+  const bestTxt=best&&best.pct!==null?`→ Beste Zeit heute ca. ${String(best.h).padStart(2,'0')}:00 Uhr (~${best.pct}% erwartet)`:'';
+  return`<div class="oracle-name">${e(BADI_SHORT[facility]||facility)}</div><div class="oracle-grid">${slots}</div>${bestTxt?`<div class="oracle-best">${e(bestTxt)}</div>`:''}`;
+}
+
+function renderBadiViews(){
+  const db=qs('#dash-badi');if(db)db.innerHTML=renderStatusGrid();
+  const bv=qs('#v-badi');if(bv&&bv.classList.contains('on'))rebuildBadiTab();
+}
+
+function rebuildBadiTab(){
+  const bv=qs('#v-badi');if(!bv)return;
+  const sg=qs('#badi-stat',bv);if(sg)sg.innerHTML=badiLoaded?renderStatusGrid():`<div class="loading">Lade Daten…</div>`;
+  const hg=qs('#hm-grid-wrap',bv);if(hg)hg.innerHTML=renderHeatmapHtml(selectedBadi);
+  const og=qs('#oracle-wrap',bv);if(og)og.innerHTML=renderOracleHtml(selectedBadi);
+}
+
+function renderBadiTab(){
+  const bv=qs('#v-badi');if(!bv)return;
+  const pills=BADIS.map(b=>`<button class="hm-pill${b===selectedBadi?' on':''}" data-bdsel="${e(b)}">${e(BADI_SHORT[b]||b)}</button>`).join('');
+  bv.innerHTML=`
+    <div class="badi-hero">
+      <div class="badi-hero-txt"><h2>Bésko's Kleiner Baditracker</h2><p>Live-Belegung · Heatmap · Bésmeralda-Vorhersage</p></div>
+      <a class="badi-ref-btn" href="https://derbsq.github.io/Badi-Tracker/" target="_blank" rel="noopener">Vollansicht →</a>
+    </div>
+    <div class="sec-label">Aktuelle Belegung</div>
+    <div id="badi-stat">${badiLoaded?renderStatusGrid():'<div class="loading">Lade Daten…</div>'}</div>
+    <div class="sec-label">Heatmap · Typische Belegung</div>
+    <div class="hm-wrap">
+      <div class="hm-select">${pills}</div>
+      <div id="hm-grid-wrap">${renderHeatmapHtml(selectedBadi)}</div>
+    </div>
+    <div class="sec-label">Bésmeralda · Vorhersage nächste 8h</div>
+    <div class="oracle-wrap"><div id="oracle-wrap">${renderOracleHtml(selectedBadi)}</div></div>
+    <div class="sec-label">Hallenbad City · Info</div>
+    <div class="card card-dB" style="padding:0">
+      <div class="card-head" data-toggle="hb-info"><span class="badge bdB">HC · Becken</span><span class="card-title"><span class="t">Bahnbelegung & Öffnungszeiten</span><span class="s">Hallenbad City · Zürich</span></span><span class="chev">▶</span></div>
+      <div class="card-body" id="hb-info-body">
+        <div class="card-inner">
+          <div class="phase"><div class="ph-name"><span>Schwimmerbecken (50m)</span></div>
+            <div class="item"><div class="it-body"><div class="it-t">Mo–Fr: 07:00–21:00 · Sa: 08:00–18:00 · So: 08:00–18:00</div><div class="it-n">Mittagspause 11:30–13:30 Vereinsbetrieb. Bahnen reduziert.</div></div></div>
+          </div>
+          <div class="phase"><div class="ph-name"><span>Variobecken (25m)</span></div>
+            <div class="item"><div class="it-body"><div class="it-t">Mo–Fr: 07:00–21:00 · Sa/So: 08:00–18:00</div><div class="it-n">Wechselnde Belegung – Schwimmbahnen, Aquafit, Vereinszeiten.</div></div></div>
+          </div>
+          <div class="warn-box">Öffnungszeiten können variieren. Für aktuelle Infos: <a href="https://www.stadt-zuerich.ch/hallenbad-city" target="_blank" style="color:var(--dA);border-bottom:1px dotted currentColor">stadt-zuerich.ch/hallenbad-city</a></div>
+        </div>
+      </div>
+    </div>`;
+}
+
+/* ===== VIEW: DASHBOARD ===== */
+function viewDash(){
+  const td=today();
+  const now=new Date();const dowNow=(now.getDay()+6)%7;
+  const weekDates=Array.from({length:7},(_,i)=>{const d=new Date(now);d.setDate(now.getDate()-dowNow+i);return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;});
+  const dayNames=['Mo','Di','Mi','Do','Fr','Sa','So'];
+  
+  let h='';
+  let hasAny=false;
+  weekDates.forEach((ds,di)=>{
+    const sessions=SCHED[ds]||[];
+    if(!sessions.length)return;
+    hasAny=true;
+    const isToday=ds===td;
+    const d=new Date(ds);
+    const lbl=`${dayNames[di]} ${d.getDate()}.${d.getMonth()+1}.`;
+    h+=`<div class="wk-date${isToday?' wk-today':''}">${lbl}${isToday?' · Heute':''}</div>`;
+    sessions.forEach(sess=>{
+      const sType=sess.type;
+      const sData=sType==='swim'?SWIM.find(x=>x.id===sess.id):DRYLAND.find(x=>x.id===sess.id);
+      if(!sData)return;
+      const key=sType+':'+sess.id;
+      const logged=!!STATE.done[key];
+      const acc=sType==='swim'?(sData.z1?'z1':'swim'):`d${sess.id}`;
+      const bc=sType==='swim'?sData.bc:sData.bc;
+      const drills=sType==='swim'&&sData.drills?.map(d=>d.u?`<a class="drl" href="${e(d.u)}" target="_blank" rel="noopener">▶ ${e(d.n)}</a>`:`<span class="drt">${e(d.n)}</span>`).join('')||'';
+      const btnC=sType==='swim'?'btn-sw':sData.btn;
+      const foot=renderFoot(key,btnC,sData.badge+' – '+sData.title);
+      const phases=renderPhases(key,sData.phases,sType==='dry');
+      const focus=sData.focus||sData.cue?`<div class="focus-cue"><span class="cue-lbl">${e(sData.cue)}</span>${e(sData.focus||'')}</div>`:'';
+      h+=`<div class="card card-${sType==='swim'?(sData.z1?'z1':'swim'):`${sData.acc}`}${logged?' logged':''}" data-card="${e(key)}">
+        <div class="card-head" data-toggle="${e(key)}"><span class="done-dot"></span><span class="badge ${bc}">${e(sData.badge)}</span><span class="card-title"><span class="t">${e(sData.title)}</span><span class="s">${e(sData.sub)}</span></span><span class="chev">▶</span></div>
+        <div class="card-body"><div class="card-inner">${focus}${drills?`<div class="drills">${drills}</div>`:''}${phases}${foot}</div></div>
+      </div>`;
+    });
+  });
+  if(!hasAny)h=`<div class="empty">Keine Sessions diese Woche geplant.</div>`;
+  h+=`<div class="sec-label" style="margin-top:1.25rem">Badi-Status</div><div id="dash-badi">${badiLoaded?renderStatusGrid():'<div class="loading">Lade Daten…</div>'}</div>`;
+  qs('#v-dash').innerHTML=h;
+}
+
+/* ===== VIEW: SWIM ===== */
+function viewSwim(){
+  let h=renderCalendar();
+  h+=`<div style="margin-top:1rem"></div>`;
+  h+=renderPacing();
+  h+=`<div class="sec-label">Übergang · Mai</div>`;
+  const may=SWIM.find(s=>s.id==='MAY-ADD');if(may)h+=renderSwimCard(may);
+  h+=`<div class="sec-label">Juni · The Kick — Pool-Sessions</div>`;
+  SWIM.filter(s=>!s.z1&&s.id!=='MAY-ADD').forEach(s=>{h+=renderSwimCard(s);});
+  h+=`<div class="sec-label">Z1 · Aerob-Recovery · Samstags</div>`;
+  SWIM.filter(s=>s.z1).forEach(s=>{h+=renderSwimCard(s);});
+  qs('#v-swim').innerHTML=h;
+}
+
+/* ===== VIEW: DRYLAND (with sub-tabs) ===== */
+function viewDry(){
+  const el=qs('#v-dry');
+  el.innerHTML=`
+    <div class="subtabs">
+      <button class="stab sa on" data-sub="dA">Dryland A</button>
+      <button class="stab sb" data-sub="dB">Dryland B</button>
+      <button class="stab sc" data-sub="dC">Dryland C</button>
+      <button class="stab sm" data-sub="mob">Mobility</button>
+      <button class="stab sbw" data-sub="bw">Breathwork</button>
+    </div>
+    <div class="subview on" id="sv-dA">${renderDryCard(DRYLAND[0])}</div>
+    <div class="subview" id="sv-dB">${renderDryCard(DRYLAND[1])}</div>
+    <div class="subview" id="sv-dC">${renderDryCard(DRYLAND[2])}</div>
+    <div class="subview" id="sv-mob">${renderMobility()}</div>
+    <div class="subview" id="sv-bw">${renderBreathwork()}</div>`;
+}
+
+function renderMobility(){
+  let h=`<div class="lead">Täglich · morgens oder post-swim · ~10–15 Min</div>`;
+  MOBILITY.phases.forEach(ph=>{
+    h+=`<div class="sec-label">${e(ph.name)} <span style="font-weight:400;font-size:.58rem;color:var(--faint)">${e(ph.meta||'')}</span></div>`;
+    ph.items.forEach((it,i)=>{
+      const mk=`mob_${ph.name.replace(/\s/g,'_')}_${i}`;const done=!!STATE.checks[mk];
+      h+=`<div class="mob-card${done?' mc-done':''}"><div class="mob-head"><div class="mob-chk${done?' on':''}" data-mobchk="${e(mk)}"></div><div class="mob-name">${e(it.name)}</div><div class="mob-reps">${e(it.reps)}</div></div><div class="mob-mus">${e(it.mus)}</div><div class="mob-note">${e(it.note)}</div></div>`;
+    });
+  });
+  // Session log for mobility
+  const key='mob:daily';const rv=e(STATE.inputs[key+'_rpe']||'');const nv=e(STATE.inputs[key+'_note']||'');
+  h+=`<div class="sess-foot" style="margin-top:1rem"><div class="sess-meta"><div class="ff ff-rpe"><label>RPE</label><input inputmode="numeric" data-si="rpe" data-key="${e(key)}" value="${rv}" placeholder="–"></div><div class="ff ff-note"><label>Notiz</label><textarea data-si="note" data-key="${e(key)}" placeholder="Gefühl, Besonderheiten…">${nv}</textarea></div></div><div class="sess-btns"><button class="btn btn-mo" data-log="${e(key)}" data-title="Mobility · Daily">Session loggen</button></div><div class="sav" data-sav="${e(key)}">✓ Gespeichert</div></div>`;
+  h+=`<div class="warn-box" style="margin-top:.5rem">⚠ Physiotherapie-Übungen (Nacken + Becken) folgen in der nächsten Version.</div>`;
+  return h;
+}
+
+function renderBreathwork(){
+  let h=`<div class="lead">Atemarbeit für Downregulation und CO₂-Toleranz.</div>`;
+  BREATH.forEach(b=>{
+    const key='breath:'+b.id;const logged=!!STATE.done[key];
+    h+=`<div class="card card-bth${logged?' logged':''}" data-card="${e(key)}">
+      <div class="card-head" data-toggle="${e(key)}"><span class="done-dot"></span><span class="badge bbw">${b.pattern.map(p=>p.sec).join('-')}</span><span class="card-title"><span class="t">${e(b.name)}</span><span class="s">${e(b.sub)}</span></span><span class="chev">▶</span></div>
+      <div class="card-body"><div class="card-inner">
+        <div class="focus-cue"><span class="cue-lbl">${e(b.name)}</span>${e(b.desc)}</div>
+        <div class="bw-visual" id="bwv-${e(b.id)}">
+          <div class="bw-circle" id="bwc-${e(b.id)}"><div class="bw-phase" id="bwph-${e(b.id)}">Bereit</div></div>
+          <div class="bw-count" id="bwct-${e(b.id)}">–</div>
+          <div class="bw-rnd" id="bwrn-${e(b.id)}">Runde 0 / ${b.rounds}</div>
+        </div>
+        <div class="bw-btns"><button class="btn btn-bw" data-bwstart="${e(b.id)}">Start</button><button class="btn btn-rst" data-bwstop>Stop</button></div>
+        ${renderFoot(key,'btn-bw','Breathwork · '+b.name)}
+      </div></div></div>`;
+  });
+  return h;
+}
+
+/* ===== VIEW: LOG ===== */
+function viewLog(){
+  const el=qs('#v-log');
+  let h=`<div class="sec-label">Session-Verlauf</div>`;
+  if(!STATE.history.length){h+=`<div class="empty">Noch keine Sessions geloggt.</div>`;}
+  else{[...STATE.history].reverse().forEach(e2=>{h+=`<div class="hist-e"><div class="he-hd"><span class="he-t">${e(e2.title)}</span><span class="he-d">${e(e2.date)}</span></div><div class="he-s">${e(e2.summary)}</div></div>`;});}
+  h+=`<div class="sec-label">Dryland-Progression</div>`;
+  const pkeys=Object.keys(STATE.progress);
+  if(!pkeys.length){h+=`<div class="empty">Noch keine Dryland-Reps geloggt.</div>`;}
+  else{pkeys.forEach(id=>{const arr=STATE.progress[id];if(!arr?.length)return;const last=arr[arr.length-1];const nm=findExName(id)||id;const nums=arr.map(x=>parseInt(x.reps)||0).filter(n=>n>0);h+=`<div class="pb-e"><div class="pb-n">${e(nm)}</div><div class="pb-d">Zuletzt: ${e(last.reps||'–')}${last.band?' · '+e(last.band):''} · ${e(last.date)} · ${arr.length} Einträge</div>${sparkline(nums)}</div>`;});}
+  el.innerHTML=h;
+}
+
+function findExName(id){for(const s of DRYLAND)for(const p of s.phases)for(const it of p.items)if(it.ex&&it.id===id)return it.name;return null;}
+function sparkline(nums){if(nums.length<2)return'';const w=120,hh=28,mn=Math.min(...nums),mx=Math.max(...nums),rng=(mx-mn)||1;const pts=nums.map((n,k)=>{const x=(k/(nums.length-1))*(w-4)+2;const y=hh-2-((n-mn)/rng)*(hh-4);return`${x.toFixed(1)},${y.toFixed(1)}`;}).join(' ');return`<svg class="spark" width="${w}" height="${hh}" viewBox="0 0 ${w} ${hh}"><polyline points="${pts}" fill="none" stroke="var(--swim)" stroke-width="1.5" stroke-linejoin="round"/></svg>`;}
+
+/* ===== LOGGING ===== */
+function flashSav(key){const el=qs(`[data-sav="${CE(key)}"]`);if(!el)return;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2400);}
+function logSession(key,title){
+  const[type,id]=key.split(':');
+  let summary='';
+  if(type==='dry'){
+    const s=DRYLAND.find(d=>d.id===id);
+    if(s){const lines=[];s.phases.forEach(p=>p.items.forEach(it=>{if(it.ex){const reps=STATE.inputs[it.id+'_r']||'';const band=STATE.inputs[it.id+'_b']||'';if(reps||band){lines.push(`• ${it.name}: ${reps||'–'}${band?' · '+band:''}`);STATE.progress[it.id]=STATE.progress[it.id]||[];STATE.progress[it.id].push({date:todayFmt(),reps,band});}}}));summary=lines.join('\n');}
+  }
+  const rpe=STATE.inputs[key+'_rpe'];const note=STATE.inputs[key+'_note'];
+  if(rpe)summary+=(summary?'\n':'')+'RPE '+rpe;
+  if(note)summary+=(summary?'\n':'')+'„'+note+'"';
+  STATE.history.push({key,date:todayFmt(),ts:Date.now(),title,summary:summary||'–'});
+  STATE.done[key]=true;persist();
+  const card=qs(`[data-card="${CE(key)}"]`);if(card){card.classList.add('logged');const dot=card.querySelector('.done-dot');if(dot)dot.style.background='var(--ok)';}
+  flashSav(key);
+  rendered.log=false;rendered.dash=false;
+}
+
+/* ===== BREATHWORK TIMER ===== */
+let bwT=null;
+function stopBW(){if(bwT){clearTimeout(bwT);bwT=null;}}
+function startBW(id){
+  stopBW();const b=BREATH.find(x=>x.id===id);if(!b)return;
+  let round=1,pi=0;
+  function run(){
+    const p=b.pattern[pi];
+    const phEl=qs(`#bwph-${id}`),ctEl=qs(`#bwct-${id}`),rnEl=qs(`#bwrn-${id}`),ciEl=qs(`#bwc-${id}`);
+    if(!phEl)return;
+    phEl.textContent=p.label;
+    if(ciEl){const sc=/ein/i.test(p.label)?'scale(1)':/aus/i.test(p.label)?'scale(.58)':null;if(sc){ciEl.style.transitionDuration=p.sec+'s';ciEl.style.transform=sc;}}
+    if(rnEl)rnEl.textContent=`Runde ${round} / ${b.rounds}`;
+    let left=p.sec;if(ctEl)ctEl.textContent=left;
+    function tick(){left--;if(ctEl)ctEl.textContent=Math.max(left,0);
+      if(left<=0){pi++;if(pi>=b.pattern.length){pi=0;round++;if(round>b.rounds){if(phEl)phEl.textContent='Fertig ✓';if(ctEl)ctEl.textContent='';stopBW();return;}}run();return;}
+      bwT=setTimeout(tick,1000);}
+    bwT=setTimeout(tick,1000);
+  }
+  run();
+}
+
+/* ===== SHOW / TABS ===== */
+const rendered={};
+function show(tabName,scrollId){
+  stopBW();
+  qsa('.tab').forEach(t=>t.classList.toggle('on',t.dataset.tab===tabName));
+  qsa('.view').forEach(v=>v.classList.toggle('on',v.dataset.view===tabName));
+  const needRefresh=['dash','log'];
+  if(needRefresh.includes(tabName)||!rendered[tabName]){
+    if(tabName==='dash')viewDash();
+    else if(tabName==='swim')viewSwim();
+    else if(tabName==='dry')viewDry();
+    else if(tabName==='badi'){renderBadiTab();if(!badiLoaded&&!badiLoading)loadBadi();}
+    else if(tabName==='log')viewLog();
+    rendered[tabName]=true;
+  }
+  window.scrollTo({top:0,behavior:'auto'});
+  if(scrollId){
+    setTimeout(()=>{
+      const card=qs(`[data-card="${CE(tabName+':'+scrollId)}"]`);
+      if(!card)return;
+      card.classList.add('open');
+      const nav=qs('nav');const navH=nav?nav.offsetHeight:55;
+      const top=card.getBoundingClientRect().top+window.scrollY-navH-10;
+      window.scrollTo({top:Math.max(0,top),behavior:'smooth'});
+    },90);
+  }
+}
+
+function showSub(subId){
+  qsa('.stab').forEach(t=>t.classList.toggle('on',t.dataset.sub===subId));
+  qsa('.subview').forEach(v=>v.classList.toggle('on',v.id===`sv-${subId}`));
+}
+
+/* ===== EVENTS ===== */
+document.addEventListener('click',ev=>{
+  // Main tabs
+  const tab=ev.target.closest('.tab');if(tab){show(tab.dataset.tab);return;}
+  // Sub-tabs
+  const stab=ev.target.closest('.stab');if(stab){showSub(stab.dataset.sub);return;}
+  // Card toggle
+  const tog=ev.target.closest('[data-toggle]');
+  if(tog){
+    const k=tog.dataset.toggle;
+    // Handle special (non-data-card) toggles
+    if(k==='hb-info'){const bd=qs('#hb-info-body');if(bd)bd.style.maxHeight=bd.style.maxHeight?'':'none';const c=tog.querySelector('.chev');if(c)c.style.transform=c.style.transform?'':'rotate(90deg)';return;}
+    const card=qs(`[data-card="${CE(k)}"]`);if(card)card.classList.toggle('open');return;
+  }
+  // Calendar day click
+  const cday=ev.target.closest('[data-cday]');
+  if(cday){
+    const ds=cday.dataset.cday;const csid=ev.target.dataset.csid;const ctype=ev.target.dataset.ctype;
+    if(csid&&ctype){show(ctype==='dry'?'dry':'swim',csid);}
+    else{const sess=SCHED[ds]||[];if(sess.length){const s=sess[0];show(s.type==='dry'?'dry':'swim',s.id);}}
+    return;
+  }
+  // Dashboard week row
+  const wrow=ev.target.closest('[data-goto-tab]');if(wrow){show(wrow.dataset.gotoTab,wrow.dataset.gotoId);return;}
+  // Log session
+  const lb=ev.target.closest('[data-log]');if(lb){logSession(lb.dataset.log,lb.dataset.title||lb.dataset.log);return;}
+  // Reset session
+  const rb=ev.target.closest('[data-reset]');
+  if(rb){
+    const key=rb.dataset.reset;const id=key.split(':')[1];
+    // Reset dryland exercise checks
+    if(key.startsWith('dry:')){DRYLAND.find(d=>d.id===id)?.phases.forEach(p=>p.items.forEach(it=>{if(it.ex){delete STATE.checks[it.id];const el=qs(`[data-exchk="${CE(it.id)}"]`);if(el){el.classList.remove('on');const nm=el.parentNode.querySelector('.ex-name');if(nm)nm.classList.remove('struck');}}}));}
+    persist();return;
+  }
+  // Exercise checkbox
+  const xc=ev.target.closest('[data-exchk]');
+  if(xc){const rk=xc.dataset.exchk;STATE.checks[rk]=!STATE.checks[rk];persist();xc.classList.toggle('on',STATE.checks[rk]);const nm=xc.parentNode.querySelector('.ex-name');if(nm)nm.classList.toggle('struck',STATE.checks[rk]);return;}
+  // Mobility checkbox
+  const mc=ev.target.closest('[data-mobchk]');
+  if(mc){const mk=mc.dataset.mobchk;STATE.checks[mk]=!STATE.checks[mk];persist();mc.classList.toggle('on',STATE.checks[mk]);const cd=mc.closest('.mob-card');if(cd)cd.classList.toggle('mc-done',STATE.checks[mk]);return;}
+  // Breathwork
+  const bwS=ev.target.closest('[data-bwstart]');if(bwS){startBW(bwS.dataset.bwstart);return;}
+  const bwSt=ev.target.closest('[data-bwstop]');if(bwSt){stopBW();return;}
+  // Badi facility selector
+  const bds=ev.target.closest('[data-bdsel]');if(bds){selectedBadi=bds.dataset.bdsel;qsa('.hm-pill').forEach(p=>p.classList.toggle('on',p.dataset.bdsel===selectedBadi));const hg=qs('#hm-grid-wrap');if(hg)hg.innerHTML=renderHeatmapHtml(selectedBadi);const og=qs('#oracle-wrap');if(og)og.innerHTML=renderOracleHtml(selectedBadi);return;}
+});
+
+document.addEventListener('input',ev=>{
+  const si=ev.target.closest('[data-si]');
+  if(si){const k=si.dataset.key;STATE.inputs[k+'_'+si.dataset.si]=ev.target.value;persist();return;}
+  const ei=ev.target.closest('[data-ei]');
+  if(ei){const rk=ei.dataset.rk;STATE.inputs[rk+'_'+ei.dataset.ei]=ev.target.value;persist();}
+});
+
+/* ===== INIT ===== */
+show('dash');
+loadBadi();
+setInterval(()=>{if(!badiLoaded)loadBadi();else{badiRows=[];badiLoaded=false;badiLoading=false;loadBadi();}},10*60*1000);
+
+})();
+</script>
+</body>
+</html>
