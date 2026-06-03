@@ -4,19 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>Bésko's Training Hub</title>
+<title>Bésko's Little Training Hub</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#f4f1eb;--surf:#ede9e0;--surf2:#e6e0d5;--brd:#d5d0c5;--brd2:#c4bfb5;
-  --ink:#1a1a18;--muted:#6b6860;--faint:#a8a39c;
+  --bg:#f4f1eb;--surf:#ede9e0;--surf2:#e5dfd4;--brd:#d5d0c5;--brd2:#c2bdb2;
+  --ink:#1a1a18;--muted:#6b6860;--faint:#aaa49d;
   --swim:#1a4a2e;--swl:#e8f0e4;--swm:#3a8a5a;
-  --dA:#8b3a1a;--dAl:#f5ede8;
-  --dB:#1a3060;--dBl:#e8edf5;
-  --dC:#5a1a6e;--dCl:#f0e8f5;
-  --mob:#5a1a6e;--mobl:#f0e8f5;
-  --bth:#1a3060;--bthl:#e8edf5;
+  --dA:#8b3a1a;--dAl:#f5ede8; --dB:#1a3060;--dBl:#e8edf5; --dC:#5a1a6e;--dCl:#f0e8f5;
+  --mob:#5a1a6e;--mobl:#f0e8f5; --bth:#1a3060;--bthl:#e8edf5;
   --bdi:#1a4560;--bdil:#e8f0f5;
   --ok:#2d7a3a;--okl:rgba(45,122,58,.08);--okb:rgba(45,122,58,.22);
   --z1:#3a8a5a;
@@ -27,85 +24,87 @@
 html{-webkit-text-size-adjust:100%}
 body{background:var(--bg);color:var(--ink);font-family:var(--sans);min-height:100vh;line-height:1.5;padding-bottom:5rem}
 button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
-input,textarea{font:inherit}
-a{color:inherit;text-decoration:none}
-.wrap{max-width:780px;margin:0 auto;padding:0 1rem}
+input,textarea{font:inherit} a{color:inherit}
+.wrap{max-width:780px;margin:0 auto;padding:0 1.25rem}
 
 /* HEADER */
-header{padding:1.4rem 1rem 1rem;max-width:780px;margin:0 auto;border-bottom:2px solid var(--ink)}
-.kicker{font-family:var(--mono);font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:.3rem}
-h1{font-size:clamp(1.55rem,5vw,2.3rem);font-weight:800;letter-spacing:-.02em;line-height:1.1}
+header{padding:2rem 1.25rem 1.25rem;max-width:780px;margin:0 auto;border-bottom:2px solid var(--ink)}
+h1{font-size:clamp(1.7rem,5.5vw,2.6rem);font-weight:800;letter-spacing:-.025em;line-height:1.1}
 .h1m{color:var(--muted);font-weight:600}
 
 /* NAV */
-nav{position:sticky;top:0;z-index:40;background:rgba(244,241,235,.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1.5px solid var(--brd)}
-.tabs{display:flex;gap:.2rem;max-width:780px;margin:0 auto;padding:.5rem .75rem;overflow-x:auto;scrollbar-width:none}
+nav{position:sticky;top:0;z-index:40;background:rgba(244,241,235,.95);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1.5px solid var(--brd)}
+.tabs{display:flex;gap:.22rem;max-width:780px;margin:0 auto;padding:.55rem .75rem;overflow-x:auto;scrollbar-width:none}
 .tabs::-webkit-scrollbar{display:none}
-.tab{flex:0 0 auto;font-family:var(--mono);font-size:.68rem;letter-spacing:.05em;color:var(--muted);border:1.5px solid transparent;border-radius:999px;padding:.42rem .85rem;white-space:nowrap;transition:all .14s}
+.tab{flex:0 0 auto;font-family:var(--mono);font-size:.68rem;letter-spacing:.05em;color:var(--muted);border:1.5px solid transparent;border-radius:999px;padding:.44rem .9rem;white-space:nowrap;transition:all .14s}
 .tab:active{transform:scale(.95)}
 .tab.on{color:var(--bg);font-weight:700}
-.tab[data-tab=dash].on{background:var(--ink)}
-.tab[data-tab=badi].on{background:var(--bdi)}
-.tab[data-tab=swim].on{background:var(--swim)}
-.tab[data-tab=dry].on{background:var(--dA)}
-.tab[data-tab=log].on{background:var(--ink)}
+.tab[data-tab=dash].on{background:var(--ink)} .tab[data-tab=badi].on{background:var(--bdi)}
+.tab[data-tab=swim].on{background:var(--swim)} .tab[data-tab=dry].on{background:var(--dA)}
+.tab[data-tab=method].on{background:var(--dC)} .tab[data-tab=log].on{background:var(--ink)}
 
 /* VIEWS */
-main{padding-top:1.2rem}
-.view{display:none;animation:vu .2s ease}
-.view.on{display:block}
+main{padding-top:1.4rem}
+.view{display:none;animation:vu .2s ease} .view.on{display:block}
 @keyframes vu{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
 
-/* SUB-TABS */
-.subtabs{display:flex;gap:.22rem;overflow-x:auto;scrollbar-width:none;margin-bottom:1rem}
+/* SUB-TABS (Dryland) */
+.subtabs{display:flex;gap:.22rem;overflow-x:auto;scrollbar-width:none;margin-bottom:1.2rem;padding-bottom:.1rem}
 .subtabs::-webkit-scrollbar{display:none}
-.stab{flex:0 0 auto;font-family:var(--mono);font-size:.67rem;letter-spacing:.05em;color:var(--muted);border:1.5px solid var(--brd);border-radius:999px;padding:.38rem .82rem;white-space:nowrap;transition:all .14s}
-.stab:active{transform:scale(.95)}
-.stab.on{border-color:transparent;color:var(--bg);font-weight:700}
+.stab{flex:0 0 auto;font-family:var(--mono);font-size:.66rem;letter-spacing:.04em;color:var(--muted);border:1.5px solid var(--brd);border-radius:999px;padding:.4rem .82rem;white-space:nowrap;transition:all .14s}
+.stab:active{transform:scale(.95)} .stab.on{border-color:transparent;color:var(--bg);font-weight:700}
 .stab.sa.on{background:var(--dA)} .stab.sb.on{background:var(--dB)} .stab.sc.on{background:var(--dC)}
 .stab.sm.on{background:var(--mob)} .stab.sbw.on{background:var(--bth)}
 .subview{display:none} .subview.on{display:block}
 
 /* TYPE */
-.sec-label{font-family:var(--mono);font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin:1.5rem 0 .6rem;padding-top:.1rem}
-.sec-label:first-child{margin-top:0}
-.lead{font-size:.84rem;color:var(--muted);font-family:var(--mono);margin-bottom:.85rem;line-height:1.55}
+.sec-label{font-family:var(--mono);font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin:1.6rem 0 .65rem}
+.sec-label:first-child{margin-top:.1rem}
+.lead{font-size:.84rem;color:var(--muted);font-family:var(--mono);margin-bottom:.9rem;line-height:1.55}
 
 /* BADGE */
 .badge{font-family:var(--mono);font-size:.6rem;letter-spacing:.07em;padding:.22rem .55rem;border-radius:999px;border:1.5px solid;flex-shrink:0;white-space:nowrap;display:inline-flex;align-items:center}
-.bsw{color:var(--swim);border-color:rgba(26,74,46,.3);background:var(--swl)}
-.bz1{color:var(--z1);border-color:rgba(58,138,90,.3);background:var(--swl)}
-.bdA{color:var(--dA);border-color:rgba(139,58,26,.3);background:var(--dAl)}
-.bdB{color:var(--dB);border-color:rgba(26,48,96,.3);background:var(--dBl)}
+.bsw{color:var(--swim);border-color:rgba(26,74,46,.3);background:var(--swl)} .bz1{color:var(--z1);border-color:rgba(58,138,90,.3);background:var(--swl)}
+.bdA{color:var(--dA);border-color:rgba(139,58,26,.3);background:var(--dAl)} .bdB{color:var(--dB);border-color:rgba(26,48,96,.3);background:var(--dBl)}
 .bdC{color:var(--dC);border-color:rgba(90,26,110,.3);background:var(--dCl)}
 .bmo{color:var(--mob);border-color:rgba(90,26,110,.3);background:var(--mobl)}
 .bbw{color:var(--bth);border-color:rgba(26,48,96,.3);background:var(--bthl)}
+.bbdi{color:var(--bdi);border-color:rgba(26,69,96,.3);background:var(--bdil)}
 
-/* CARD */
+/* CARD (accordion – used for swim sessions and breathwork) */
 .card{background:var(--surf);border:1.5px solid var(--brd);border-radius:var(--r2);margin-bottom:.6rem;overflow:hidden}
 .card.logged{background:var(--okl);border-color:var(--okb)}
 .card-swim{border-left:3px solid var(--swim)} .card-z1{border-left:3px solid var(--z1)}
 .card-dA{border-left:3px solid var(--dA)} .card-dB{border-left:3px solid var(--dB)} .card-dC{border-left:3px solid var(--dC)}
 .card-mob{border-left:3px solid var(--mob)} .card-bth{border-left:3px solid var(--bth)}
-.card-head{display:flex;align-items:center;gap:.7rem;padding:.88rem 1rem;cursor:pointer;user-select:none}
+.card-head{display:flex;align-items:center;gap:.7rem;padding:.9rem 1rem;cursor:pointer;user-select:none}
 .card-head:active{background:var(--surf2)}
 .card-title{flex:1;min-width:0}
 .card-title .t{font-weight:700;font-size:.94rem;display:block}
 .card-title .s{font-family:var(--mono);font-size:.71rem;color:var(--muted);margin-top:.16rem;display:block}
 .done-dot{width:9px;height:9px;border-radius:50%;background:var(--faint);flex-shrink:0;transition:all .2s}
-.card.logged .done-dot{background:var(--ok);box-shadow:0 0 5px rgba(45,122,58,.4)}
+.card.logged .done-dot,.dry-direct.logged .done-dot{background:var(--ok);box-shadow:0 0 5px rgba(45,122,58,.4)}
 .chev{font-size:.72rem;color:var(--faint);transition:transform .2s;flex-shrink:0}
 .card.open>.card-head .chev{transform:rotate(90deg)}
-.card-body{max-height:0;overflow:hidden;transition:max-height .3s ease}
-.card.open>.card-body{max-height:none}
+.card-body{max-height:0;overflow:hidden;transition:max-height .28s ease}
+.card.open>.card-body{max-height:9999px}
 .card-inner{padding:.2rem 1rem 1rem}
 
+/* DIRECT DISPLAY (Dryland sessions – no accordion) */
+.dry-direct{background:var(--surf);border:1.5px solid var(--brd);border-radius:var(--r2);padding:1rem 1rem 1.1rem}
+.dry-direct.logged{background:var(--okl);border-color:var(--okb)}
+.dry-direct.vA{border-left:3px solid var(--dA)} .dry-direct.vB{border-left:3px solid var(--dB)} .dry-direct.vC{border-left:3px solid var(--dC)} .dry-direct.vmob{border-left:3px solid var(--mob)}
+.ddhdr{display:flex;align-items:center;gap:.7rem;margin-bottom:.85rem;flex-wrap:wrap}
+.dd-titles{flex:1;min-width:0}
+.dd-title{font-weight:700;font-size:1rem;line-height:1.2}
+.dd-sub{font-family:var(--mono);font-size:.71rem;color:var(--muted);margin-top:.16rem}
+
 /* FOCUS CUE */
-.focus-cue{background:var(--surf2);border-radius:var(--r);padding:.7rem .85rem;margin-bottom:.8rem;font-size:.82rem}
+.focus-cue{background:var(--surf2);border-radius:var(--r);padding:.72rem .88rem;margin-bottom:.85rem;font-size:.83rem}
 .cue-lbl{font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.22rem;display:block}
-.card-swim .cue-lbl,.card-z1 .cue-lbl{color:var(--swim)}
-.card-dA .cue-lbl{color:var(--dA)} .card-dB .cue-lbl{color:var(--dB)} .card-dC .cue-lbl{color:var(--dC)}
-.card-mob .cue-lbl{color:var(--mob)} .card-bth .cue-lbl{color:var(--bth)}
+.card-swim .cue-lbl,.card-z1 .cue-lbl{color:var(--swim)} .card-dA .cue-lbl,.dry-direct.vA .cue-lbl{color:var(--dA)}
+.card-dB .cue-lbl,.dry-direct.vB .cue-lbl{color:var(--dB)} .card-dC .cue-lbl,.dry-direct.vC .cue-lbl{color:var(--dC)}
+.card-mob .cue-lbl,.dry-direct.vmob .cue-lbl{color:var(--mob)} .card-bth .cue-lbl{color:var(--bth)}
 
 /* DRILLS */
 .drills{display:flex;gap:.38rem;flex-wrap:wrap;margin-bottom:.7rem}
@@ -125,21 +124,21 @@ main{padding-top:1.2rem}
 .it-t{font-size:.87rem} .it-t.struck{text-decoration:line-through;color:var(--faint)}
 .it-n{font-size:.75rem;color:var(--muted);margin-top:.13rem;font-family:var(--mono);line-height:1.44}
 
-/* EXERCISE (DRYLAND) */
+/* EXERCISE (DRYLAND tracked) */
 .ex-item{padding:.68rem 0;border-bottom:1px solid var(--brd)}
 .ex-item:last-child{border-bottom:none}
 .ex-top{display:flex;align-items:flex-start;gap:.6rem;margin-bottom:.32rem}
 .ex-name{font-size:.9rem;font-weight:700;flex:1}
 .ex-tgt{font-family:var(--mono);font-size:.65rem;padding:.18rem .48rem;border-radius:4px;flex-shrink:0}
-.card-dA .ex-tgt{color:var(--dA);background:var(--dAl)} .card-dB .ex-tgt{color:var(--dB);background:var(--dBl)} .card-dC .ex-tgt{color:var(--dC);background:var(--dCl)}
+.vA .ex-tgt,.card-dA .ex-tgt{color:var(--dA);background:var(--dAl)} .vB .ex-tgt,.card-dB .ex-tgt{color:var(--dB);background:var(--dBl)} .vC .ex-tgt,.card-dC .ex-tgt{color:var(--dC);background:var(--dCl)}
 .ex-mus{font-family:var(--mono);font-size:.63rem;color:var(--faint);margin-bottom:.26rem}
-.ex-cue{font-size:.78rem;color:var(--muted);font-family:var(--mono);margin-bottom:.42rem;line-height:1.44;padding-left:.8rem;border-left:2px solid var(--brd)}
+.ex-cue{font-size:.78rem;color:var(--muted);font-family:var(--mono);margin-bottom:.42rem;line-height:1.44;padding-left:.78rem;border-left:2px solid var(--brd)}
 .ex-in{display:flex;gap:.42rem;flex-wrap:wrap;margin-top:.32rem}
 .ff{display:flex;flex-direction:column;gap:.17rem}
 .ff label{font-family:var(--mono);font-size:.57rem;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
-.ff input{background:var(--bg);border:1.5px solid var(--brd);border-radius:7px;color:var(--ink);padding:.36rem .5rem;font-family:var(--mono);font-size:.79rem;transition:border-color .12s;min-width:0}
+.ff input{background:var(--bg);border:1.5px solid var(--brd);border-radius:7px;color:var(--ink);padding:.36rem .5rem;font-family:var(--mono);font-size:.79rem;transition:border-color .12s}
 .ff input:focus{outline:none}
-.card-dA .ff input:focus{border-color:var(--dA)} .card-dB .ff input:focus{border-color:var(--dB)} .card-dC .ff input:focus{border-color:var(--dC)}
+.vA .ff input:focus,.card-dA .ff input:focus{border-color:var(--dA)} .vB .ff input:focus,.card-dB .ff input:focus{border-color:var(--dB)} .vC .ff input:focus,.card-dC .ff input:focus{border-color:var(--dC)} .vmob .ff input:focus{border-color:var(--mob)}
 .ff-r{width:84px} .ff-b{flex:1;min-width:128px}
 
 /* SESSION FOOTER */
@@ -149,28 +148,42 @@ main{padding-top:1.2rem}
 .sess-meta textarea{background:var(--bg);border:1.5px solid var(--brd);border-radius:7px;color:var(--ink);padding:.36rem .5rem;font-family:var(--sans);font-size:.8rem;width:100%;resize:vertical;min-height:34px}
 .sess-meta textarea:focus{outline:none;border-color:var(--swim)}
 .sess-btns{display:flex;gap:.42rem}
-.btn{flex:1;border-radius:var(--r);padding:.63rem;font-family:var(--mono);font-size:.72rem;letter-spacing:.04em;font-weight:700;transition:transform .12s}
+.btn{flex:1;border-radius:var(--r);padding:.65rem;font-family:var(--mono);font-size:.72rem;letter-spacing:.04em;font-weight:700;transition:transform .12s}
 .btn:active{transform:scale(.97)}
 .btn-sw{background:var(--swim);color:#fff} .btn-dA{background:var(--dA);color:#fff} .btn-dB{background:var(--dB);color:#fff} .btn-dC{background:var(--dC);color:#fff} .btn-mo{background:var(--mob);color:#fff} .btn-bw{background:var(--bth);color:#fff}
-.btn-rst{background:var(--surf2);color:var(--muted);border:1.5px solid var(--brd);flex:0 0 auto;padding:.63rem 1rem}
+.btn-rst{background:var(--surf2);color:var(--muted);border:1.5px solid var(--brd);flex:0 0 auto;padding:.65rem 1rem}
 .sav{font-family:var(--mono);font-size:.67rem;color:var(--ok);margin-top:.36rem;display:none}
 .sav.show{display:block}
 
-/* CALENDAR (IMPROVED) */
-.cal-wrap{background:var(--surf);border:1.5px solid var(--brd);border-radius:var(--r2);padding:1rem 1rem .75rem;margin-top:.2rem;margin-bottom:1rem}
-.cal-hdr{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.7rem}
+/* HORIZONTAL WEEK GRID */
+.wk-horiz{background:var(--surf);border:1.5px solid var(--brd);border-radius:var(--r2);padding:.85rem .85rem .7rem;margin-bottom:1rem;overflow-x:auto}
+.wkh-inner{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;min-width:280px}
+.wkh-col{display:flex;flex-direction:column;gap:3px}
+.wkh-hdr{text-align:center;padding:4px 2px 6px;border-bottom:1.5px solid var(--brd)}
+.wkh-dow{font-family:var(--mono);font-size:.57rem;letter-spacing:.05em;text-transform:uppercase;color:var(--faint);display:block;margin-bottom:4px}
+.wkh-d{font-family:var(--mono);font-size:.9rem;font-weight:700;color:var(--muted);display:flex;align-items:center;justify-content:center;width:26px;height:26px;margin:0 auto;border-radius:50%}
+.wkh-col.today .wkh-dow{color:var(--swim)} .wkh-col.today .wkh-d{background:var(--swim);color:#fff}
+.wkh-col.has-sess .wkh-d{color:var(--ink)}
+.wkh-col.done-col .wkh-d{color:var(--faint)}
+.wkh-sess{font-family:var(--mono);font-size:.53rem;padding:3px 4px;border-radius:4px;cursor:pointer;text-align:center;line-height:1.3;word-break:break-word;transition:opacity .12s;margin-top:1px}
+.wkh-sess:active{opacity:.65}
+.wkh-sess.sw{background:var(--swl);color:var(--swim)} .wkh-sess.z1{background:var(--swl);color:var(--z1)}
+.wkh-sess.dy{background:var(--dAl);color:var(--dA)}
+.wkh-empty{height:26px} /* Spacer for days without sessions */
+
+/* MONTH CALENDAR */
+.cal-wrap{background:var(--surf);border:1.5px solid var(--brd);border-radius:var(--r2);padding:.9rem .9rem .7rem;margin-bottom:1rem}
+.cal-hdr{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.65rem}
 .cal-ml{font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
-.cal-tl{font-size:.82rem;font-weight:700;color:var(--swim)}
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
-.cal-dow{font-family:var(--mono);font-size:.57rem;letter-spacing:.05em;text-transform:uppercase;color:var(--faint);text-align:center;padding-bottom:.3rem}
-.cal-day{min-height:52px;display:flex;flex-direction:column;padding:3px;border-radius:7px;position:relative;cursor:default}
-.cal-day.has-s{cursor:pointer}
-.cal-day.has-s:active{background:var(--surf2)}
-.cal-dn{font-family:var(--mono);font-size:.67rem;color:var(--muted);margin-bottom:2px;padding-left:2px}
-.cal-day.has-s .cal-dn{color:var(--ink);font-weight:600}
-.cal-day.today .cal-dn{color:var(--swim);font-weight:800}
-.cal-day.today::before{content:'';position:absolute;top:1px;left:1px;right:1px;bottom:1px;border:2px solid var(--swim);border-radius:6px;pointer-events:none}
-.cal-ev{font-family:var(--mono);font-size:.55rem;padding:2px 4px;border-radius:3px;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-bottom:2px}
+.cal-tl{font-size:.8rem;font-weight:700;color:var(--swim)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.cal-dow{font-family:var(--mono);font-size:.55rem;letter-spacing:.05em;text-transform:uppercase;color:var(--faint);text-align:center;padding-bottom:.28rem}
+.cal-day{min-height:46px;display:flex;flex-direction:column;padding:3px;border-radius:6px;position:relative}
+.cal-day.has-s{cursor:pointer} .cal-day.has-s:active{background:var(--surf2)}
+.cal-dn{font-family:var(--mono);font-size:.64rem;color:var(--muted);margin-bottom:2px;padding-left:2px}
+.cal-day.has-s .cal-dn{color:var(--ink);font-weight:600} .cal-day.today .cal-dn{color:var(--swim);font-weight:800}
+.cal-day.today::before{content:'';position:absolute;top:1px;left:1px;right:1px;bottom:1px;border:2px solid var(--swim);border-radius:5px;pointer-events:none}
+.cal-ev{font-family:var(--mono);font-size:.52rem;padding:2px 3px;border-radius:3px;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-bottom:2px;position:relative;z-index:1}
 .cal-ev.esw{background:var(--swl);color:var(--swim)} .cal-ev.ez1{background:var(--swl);color:var(--z1)} .cal-ev.edy{background:var(--dAl);color:var(--dA)}
 
 /* PACING */
@@ -185,54 +198,43 @@ main{padding-top:1.2rem}
 .pcell.hot .pv{color:var(--swim)}
 
 /* BADI */
-.badi-stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:.45rem;margin-bottom:.85rem}
-@media(min-width:520px){.badi-stat-grid{grid-template-columns:repeat(4,1fr)}}
+.badi-stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:.45rem;margin-bottom:.7rem}
+@media(min-width:480px){.badi-stat-grid{grid-template-columns:repeat(3,1fr)}}
 .badi-cell{background:var(--surf);border:1.5px solid var(--brd);border-radius:var(--r2);padding:.65rem .8rem}
-.badi-cell-name{font-size:.77rem;font-weight:700;margin-bottom:.28rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.badi-bar-bg{height:5px;background:var(--brd);border-radius:3px;overflow:hidden;margin-bottom:.22rem}
+.badi-cell-name{font-size:.76rem;font-weight:700;margin-bottom:.28rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.badi-bar-bg{height:5px;background:var(--brd);border-radius:3px;overflow:hidden;margin-bottom:.2rem}
 .badi-bar{height:100%;border-radius:3px;transition:width .5s}
-.badi-pct{font-family:var(--mono);font-size:.64rem;color:var(--muted);margin-bottom:.18rem}
+.badi-pct{font-family:var(--mono);font-size:.64rem;color:var(--muted);margin-bottom:.16rem}
 .badi-status{font-family:var(--mono);font-size:.61rem;font-weight:700}
 .bst-g{color:var(--ok)} .bst-y{color:#b07a00} .bst-r{color:var(--dA)}
-.badi-ts{font-family:var(--mono);font-size:.59rem;color:var(--faint);text-align:center;margin:0 0 1rem;padding:.45rem 0;border-top:1px solid var(--brd)}
+.badi-ts{font-family:var(--mono);font-size:.58rem;color:var(--faint);text-align:center;margin:0 0 1rem;padding:.42rem 0;border-top:1px solid var(--brd)}
 
 /* HEATMAP */
-.hm-wrap{background:var(--surf);border:1.5px solid var(--brd);border-radius:var(--r2);padding:.9rem;margin-bottom:.9rem;overflow-x:auto}
-.hm-title{font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.65rem}
-.hm-select{display:flex;gap:.28rem;flex-wrap:wrap;margin-bottom:.7rem}
-.hm-pill{font-family:var(--mono);font-size:.62rem;padding:.22rem .62rem;border-radius:999px;border:1.5px solid var(--brd);color:var(--muted);cursor:pointer}
+.hm-wrap{background:var(--surf);border:1.5px solid var(--brd);border-radius:var(--r2);padding:.9rem;margin-bottom:.85rem;overflow-x:auto}
+.hm-sel{display:flex;gap:.25rem;flex-wrap:wrap;margin-bottom:.7rem}
+.hm-pill{font-family:var(--mono);font-size:.62rem;padding:.22rem .62rem;border-radius:999px;border:1.5px solid var(--brd);color:var(--muted);cursor:pointer;transition:all .12s}
 .hm-pill.on{background:var(--bdi);color:#fff;border-color:var(--bdi)}
-.hm-grid{display:grid;gap:2px;min-width:340px}
-.hm-cell{height:18px;border-radius:2px}
-.hm-lbl{font-family:var(--mono);font-size:.56rem;color:var(--muted);display:flex;align-items:center;justify-content:center}
-.hm-legend{display:flex;align-items:center;gap:.5rem;margin-top:.55rem}
+.hm-lbl{font-family:var(--mono);font-size:.56rem;color:var(--muted);display:flex;align-items:center;justify-content:center;padding:1px}
+.hm-cell{height:17px;border-radius:2px;cursor:default}
+.hm-legend{display:flex;align-items:center;gap:.45rem;margin-top:.5rem}
 .hm-leg-bar{display:flex;gap:2px;flex:1}
-.hm-leg-cell{flex:1;height:8px;border-radius:2px}
-.hm-leg-lbl{font-family:var(--mono);font-size:.57rem;color:var(--muted)}
+.hm-leg-cell{flex:1;height:7px;border-radius:2px}
+.hm-leg-lbl{font-family:var(--mono);font-size:.56rem;color:var(--muted)}
 
 /* ORACLE */
-.oracle-wrap{background:var(--surf);border:1.5px solid var(--brd);border-radius:var(--r2);padding:.9rem;margin-bottom:.9rem}
-.oracle-title{font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.6rem}
-.oracle-name{font-size:.85rem;font-weight:700;margin-bottom:.5rem;color:var(--bdi)}
-.oracle-grid{display:flex;gap:.4rem;flex-wrap:wrap}
-.oracle-slot{background:var(--bg);border:1.5px solid var(--brd);border-radius:var(--r);padding:.5rem .65rem;min-width:60px;text-align:center}
+.oracle-wrap{background:var(--surf);border:1.5px solid var(--brd);border-radius:var(--r2);padding:.9rem;margin-bottom:.85rem}
+.oracle-hdr{display:flex;align-items:flex-start;gap:1rem;margin-bottom:.65rem}
+.oracle-svg{flex-shrink:0;opacity:.9}
+.oracle-intro{flex:1}
+.oracle-name{font-size:.9rem;font-weight:700;color:var(--bdi);margin-bottom:.2rem}
+.oracle-desc{font-family:var(--mono);font-size:.68rem;color:var(--muted);line-height:1.5}
+.oracle-grid{display:flex;gap:.35rem;flex-wrap:wrap;margin-bottom:.6rem}
+.oracle-slot{background:var(--bg);border:1.5px solid var(--brd);border-radius:var(--r);padding:.48rem .6rem;min-width:56px;text-align:center}
 .oracle-slot.best{border-color:var(--ok);background:var(--okl)}
-.oracle-h{font-family:var(--mono);font-size:.65rem;color:var(--muted);margin-bottom:.2rem}
-.oracle-p{font-family:var(--mono);font-size:.95rem;font-weight:700}
-.oracle-tip{font-family:var(--mono);font-size:.58rem;color:var(--ok);margin-top:.2rem}
-.oracle-best{font-family:var(--mono);font-size:.72rem;color:var(--ok);margin-top:.55rem}
-
-/* BADI FULL HEADER */
-.badi-hero{background:var(--surf);border:1.5px solid var(--brd);border-radius:var(--r2);padding:1rem;margin-bottom:.75rem;display:flex;justify-content:space-between;align-items:center;gap:.75rem}
-.badi-hero-txt h2{font-size:.98rem;font-weight:800;color:var(--bdi);margin-bottom:.2rem}
-.badi-hero-txt p{font-family:var(--mono);font-size:.68rem;color:var(--muted)}
-.badi-ref-btn{display:inline-block;background:var(--bdi);color:#fff;font-family:var(--mono);font-size:.65rem;padding:.52rem 1rem;border-radius:999px;font-weight:700;flex-shrink:0}
-
-/* WEEK DASHBOARD */
-.wk-day{margin-bottom:.3rem}
-.wk-date{font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:.85rem 0 .4rem}
-.wk-date:first-child{margin-top:0}
-.wk-date.wk-today{color:var(--swim);font-weight:700}
+.oracle-h{font-family:var(--mono);font-size:.62rem;color:var(--muted);margin-bottom:.18rem}
+.oracle-p{font-family:var(--mono);font-size:.92rem;font-weight:700}
+.oracle-tip{font-family:var(--mono);font-size:.56rem;color:var(--ok);margin-top:.18rem}
+.oracle-best{font-family:var(--mono);font-size:.71rem;color:var(--ok);padding:.5rem .7rem;background:var(--okl);border:1px solid var(--okb);border-radius:var(--r)}
 
 /* MOBILITY CARDS */
 .mob-card{background:var(--surf);border:1.5px solid var(--brd);border-left:3px solid var(--mob);border-radius:var(--r2);padding:.88rem 1rem;margin-bottom:.55rem;transition:background .15s,border-color .15s}
@@ -249,41 +251,76 @@ main{padding-top:1.2rem}
 /* BREATHWORK */
 .bw-btns{display:flex;gap:.42rem;margin-top:.75rem}
 .bw-visual{display:flex;flex-direction:column;align-items:center;padding:.7rem 0}
-.bw-circle{width:120px;height:120px;border-radius:50%;border:2px solid var(--bth);background:radial-gradient(circle at 50% 40%,rgba(26,48,96,.1),transparent);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:transform 1s ease;transform:scale(.62)}
+.bw-circle{width:115px;height:115px;border-radius:50%;border:2px solid var(--bth);background:radial-gradient(circle at 50% 40%,rgba(26,48,96,.1),transparent);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:transform 1s ease;transform:scale(.62)}
 .bw-phase{font-family:var(--mono);font-size:.8rem;color:var(--bth);text-align:center}
-.bw-count{font-family:var(--mono);font-size:1.75rem;font-weight:700;margin-top:.65rem;min-width:3rem;text-align:center}
+.bw-count{font-family:var(--mono);font-size:1.7rem;font-weight:700;margin-top:.65rem;min-width:3rem;text-align:center}
 .bw-rnd{font-family:var(--mono);font-size:.68rem;color:var(--muted);margin-top:.18rem}
 
+/* METHOD (Wissenschaft) */
+.mth-block{background:var(--swim);color:#e8f0e4;padding:1.5rem;border-radius:var(--r2);margin-bottom:1rem}
+.mth-block h2{font-family:var(--mono);font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(232,240,228,.6);margin-bottom:1rem}
+.mth-principle{display:grid;grid-template-columns:1.6rem 1fr;gap:.65rem;padding:.75rem 0;border-bottom:1px solid rgba(255,255,255,.1)}
+.mth-principle:last-child{border-bottom:none}
+.mth-pnum{font-family:var(--mono);font-size:.62rem;color:rgba(232,240,228,.5);padding-top:.1rem}
+.mth-pbody strong{display:block;font-size:.88rem;font-weight:700;margin-bottom:.18rem;color:#e8f0e4}
+.mth-pbody p{font-size:.78rem;color:rgba(232,240,228,.72);line-height:1.5}
+.mth-anatomy{background:var(--surf);border:1.5px solid var(--brd);border-radius:var(--r2);padding:1rem;margin-bottom:.9rem}
+.mth-anatomy h3{font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.75rem}
+.mth-muscle-grid{display:grid;grid-template-columns:1fr 1fr;gap:.3rem}
+.mth-muscle{font-size:.78rem;padding:.42rem .65rem;background:var(--bg);border:1px solid var(--brd);border-radius:7px;display:flex;justify-content:space-between;align-items:center;gap:.4rem}
+.mth-role{font-family:var(--mono);font-size:.58rem;color:var(--muted);text-align:right;flex-shrink:0}
+.mth-concurrent{background:var(--surf);border:1.5px solid var(--brd);border-left:3px solid var(--dB);border-radius:var(--r2);padding:.9rem 1rem;margin-bottom:.9rem}
+.mth-concurrent h3{font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dB);margin-bottom:.55rem}
+.mth-concurrent p{font-size:.81rem;color:var(--muted);line-height:1.55;margin-bottom:.4rem}
+.mth-concurrent p:last-child{margin-bottom:0}
+.mth-ratio{background:var(--dA);color:#fdf0ea;padding:1.1rem 1.2rem;border-radius:var(--r2);margin:1rem 0;display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}
+.mth-ratio h4{font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(253,240,234,.55);margin-bottom:.35rem}
+.mth-ratio-big{font-size:2.2rem;font-weight:800;line-height:1;margin-bottom:.2rem}
+.mth-ratio p{font-size:.78rem;line-height:1.45}
+.mth-ex{padding:.9rem 0;border-bottom:1px solid var(--brd)}
+.mth-ex:last-child{border-bottom:none}
+.mth-ex-top{display:flex;align-items:baseline;gap:.6rem;margin-bottom:.4rem;flex-wrap:wrap}
+.mth-ex-name{font-weight:700;font-size:.92rem}
+.mth-ex-mus{font-family:var(--mono);font-size:.6rem;color:var(--muted);letter-spacing:.04em}
+.mth-ex-why{font-size:.82rem;color:var(--ink);margin-bottom:.35rem;line-height:1.55}
+.mth-ex-mech{font-size:.76rem;color:var(--muted);font-style:italic;padding-left:.85rem;border-left:2px solid var(--brd);line-height:1.5}
+.mth-ex-ref{font-family:var(--mono);font-size:.6rem;color:var(--faint);margin-top:.35rem}
+.mth-ex-video{display:inline-flex;align-items:center;gap:.3rem;font-family:var(--mono);font-size:.62rem;color:var(--bth);border-bottom:1px dotted currentColor;margin-top:.3rem}
+.mth-big{background:var(--surf);border:1.5px solid var(--brd);border-left:3px solid var(--swim);border-radius:var(--r2);padding:.9rem 1rem;margin-top:1rem}
+.mth-big h3{font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--swim);margin-bottom:.55rem}
+.mth-big p{font-size:.82rem;color:var(--muted);line-height:1.55;margin-bottom:.4rem}
+.mth-big p:last-child{margin-bottom:0}
+.sec-tag{font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;padding:.22rem .55rem;border:1px solid;border-radius:4px;display:inline-block;margin-bottom:.6rem}
+.tag-s1{color:var(--swim);border-color:var(--swim)} .tag-s2{color:var(--dA);border-color:var(--dA)} .tag-s3{color:var(--dB);border-color:var(--dB)}
+
 /* LOG */
-.hist-e{background:var(--surf);border:1.5px solid var(--brd);border-radius:var(--r2);padding:.8rem 1rem;margin-bottom:.5rem}
+.hist-e{background:var(--surf);border:1.5px solid var(--brd);border-radius:var(--r2);padding:.82rem 1rem;margin-bottom:.5rem}
 .he-hd{display:flex;justify-content:space-between;align-items:baseline;gap:.5rem;margin-bottom:.28rem}
 .he-t{font-weight:700;font-size:.87rem} .he-d{font-family:var(--mono);font-size:.66rem;color:var(--muted);flex-shrink:0}
 .he-s{font-family:var(--mono);font-size:.72rem;color:var(--muted);line-height:1.55;white-space:pre-wrap}
 .pb-e{background:var(--surf);border:1.5px solid var(--brd);border-radius:var(--r2);padding:.78rem 1rem;margin-bottom:.5rem}
-.pb-n{font-weight:700;font-size:.87rem;margin-bottom:.18rem}
-.pb-d{font-family:var(--mono);font-size:.72rem;color:var(--muted)}
+.pb-n{font-weight:700;font-size:.87rem;margin-bottom:.18rem} .pb-d{font-family:var(--mono);font-size:.72rem;color:var(--muted)}
 .spark{margin-top:.36rem}
 .empty{color:var(--faint);font-family:var(--mono);font-size:.8rem;text-align:center;padding:2rem 0}
 .warn-box{background:rgba(139,58,26,.06);border:1.5px solid rgba(139,58,26,.2);border-radius:var(--r);padding:.62rem .8rem;font-family:var(--mono);font-size:.72rem;color:var(--dA);margin:.68rem 0;line-height:1.45}
-
-/* LOADING */
 .loading{font-family:var(--mono);font-size:.75rem;color:var(--muted);text-align:center;padding:1.5rem 0;animation:pulse 1.4s ease-in-out infinite}
 @keyframes pulse{0%,100%{opacity:.5}50%{opacity:1}}
+.debug-box{font-family:var(--mono);font-size:.62rem;color:var(--muted);background:var(--surf2);padding:.6rem .8rem;border-radius:var(--r);margin-top:.5rem;word-break:break-all;max-height:100px;overflow:auto}
 
 footer{text-align:center;font-family:var(--mono);font-size:.6rem;color:var(--faint);padding:2rem 1rem 0;border-top:1px solid var(--brd);margin-top:2rem}
 </style>
 </head>
 <body>
 <header class="wrap">
-  <div class="kicker">Training Hub · Juni 2026</div>
-  <h1>Bésko's <span class="h1m">Training Hub</span></h1>
+  <h1><strong>Bésko's</strong> <span class="h1m">Little Training Hub</span></h1>
 </header>
 <nav>
   <div class="tabs">
     <button class="tab on" data-tab="dash">Dashboard</button>
-    <button class="tab" data-tab="badi">Badi</button>
+    <button class="tab" data-tab="badi">Badi-Tracker</button>
     <button class="tab" data-tab="swim">Schwimmen</button>
     <button class="tab" data-tab="dry">Dryland</button>
+    <button class="tab" data-tab="method">Method</button>
     <button class="tab" data-tab="log">Verlauf</button>
   </div>
 </nav>
@@ -292,41 +329,43 @@ footer{text-align:center;font-family:var(--mono);font-size:.6rem;color:var(--fai
   <section class="view" data-view="badi" id="v-badi"></section>
   <section class="view" data-view="swim" id="v-swim"></section>
   <section class="view" data-view="dry"  id="v-dry"></section>
+  <section class="view" data-view="method" id="v-method"></section>
   <section class="view" data-view="log"  id="v-log"></section>
 </main>
-<footer>Bésko's Training Hub · Juni 2026 · Daten lokal gespeichert</footer>
+<footer>Bésko's Little Training Hub · Juni 2026 · Daten lokal gespeichert</footer>
 
 <script>
 (function(){
 'use strict';
-/* ===== PLAN DATA (shared) ===== */
+
+/* ===== DATA ===== */
 const PACING={note:'CSS / 85% = 1:35 /100m',cells:[{z:'65% Easy',v:'2:04'},{z:'70%',v:'1:55'},{z:'75% Steady',v:'1:48'},{z:'80%',v:'1:41'},{z:'85% CSS',v:'1:35',hot:true},{z:'90%',v:'1:30'},{z:'95%',v:'1:25'},{z:'100%',v:'1:21'}]};
 const KF=['Kick Size: Keep the kick narrow and compact, with your upper thighs lightly brushing past each other and your big toes staying close together.','Kick From the Hip: Keep your legs long, initiate the kick from the hips, bring your heel towards the surface on the upkick, and flick through your big toe on the downkick.','Soft Feet: Think \'ballerina feet\' – relaxed ankles, soft feet, and lightly pointed toes that move with the water.'];
 
 const SWIM=[
 {id:'MAY-ADD',badge:'MAI · ADD',title:'Mai Additional — Sprint & Hypoxic',sub:'2.4 km · Recovery & Entry',acc:'swim',bc:'bsw',cue:'Elbow leads, hand follows',focus:'High-Intensity, short rest. Finish strong into the wall – push the last 5m through.',drills:[{n:'2 Over 2 Under'},{n:'Fingertip Drag',u:'https://svpford.wistia.com/medias/t3nfgm30p8'}],phases:[{name:'Warm Up',items:[{t:'200m Stroke of Choice with fins'},{t:'6 × 50m (0:20): 50m 2 Over/2 Under + 50m Free',n:'Feel the water and pressure on your hand and forearm during the reach, rotation and catch.'}]},{name:'Main Set',items:[{t:'15 × 50m Free (0:10)',n:'5 × 50m Easy – same stroke count\n5 × 50m – increase pace and stroke count by 2–4 per 50m\n5 × 50m – increase pace and stroke count by 2–4 per 50m'},{t:'500m Easy Free with fins',n:'Focus on 1 area: Recovery or Entry'}]},{name:'Hypoxic & Sprint',items:[{t:'Hypoxic: 4 × 75m Free Pull (buoy + paddles) @ 80% (0:10)',n:'Increase breathing pattern by 2 strokes per 25m. Gently exhale, avoid holding breath.'},{t:'Sprint Build: 3 × 50m Free Build (1 min)',n:'Start streamlined, build up to a sprint.'}]},{name:'Cool Down',items:[{t:'200m Stroke of Choice'}]}]},
-{id:'W1S2',badge:'W1 · S2',title:'Descend Pyramide',sub:'2.8 km · The Kick',acc:'swim',bc:'bsw',cue:'Kick Size · From Hip · Soft Feet',focus:KF.join(' · '),drills:[{n:'Side Kick',u:'https://svpford.wistia.com/medias/sx6fidvfof'},{n:'Kickboard Pull',u:'https://svpford.wistia.com/medias/ol89sx5p6m'},{n:'Front Kick',u:'https://svpford.wistia.com/medias/o0ezp2u3an'},{n:'Fingertip Drag',u:'https://svpford.wistia.com/medias/t3nfgm30p8'}],phases:[{name:'Warm Up',items:[{t:'200m with fins: 50m Stroke of choice / 50m Side Kick + repeat',n:'Side kick: tall body position, lead arm extended, fingers below wrist, wrist below elbow.'},{t:'12 × 25m: 2 × 25m Kickboard Pull / 2 × 25m Easy Free',n:'Kickboard Pull: board between upper thighs as high as possible. Engage glutes and inner thighs, really small kicks.'}]},{name:'Main Set',items:[{t:'2 sets of 5 × 100m Free Descend 1–5 @ 70%, 75%, 80%, 85%, 90% (0:15)',n:'Paddles optional for 2nd set. Stick to a breathing pattern you can maintain.'},{t:'2 sets of 500m Free Descend by set @ 75%, 85% (1 min)'}]},{name:'Post Set',items:[{t:'4 × 25m Front Kick (0:20)',n:'Arms extended out front, in line with shoulders. Soft kick, heels to surface, flick through big toe.'}]},{name:'Cool Down',items:[{t:'200m Fingertip Drag with fins'}]}]},
+{id:'W1S2',badge:'W1 · S2',title:'Descend Pyramide',sub:'2.8 km · The Kick',acc:'swim',bc:'bsw',cue:'Kick Size · From Hip · Soft Feet',focus:KF.join(' · '),drills:[{n:'Side Kick',u:'https://svpford.wistia.com/medias/sx6fidvfof'},{n:'Kickboard Pull',u:'https://svpford.wistia.com/medias/ol89sx5p6m'},{n:'Front Kick',u:'https://svpford.wistia.com/medias/o0ezp2u3an'},{n:'Fingertip Drag',u:'https://svpford.wistia.com/medias/t3nfgm30p8'}],phases:[{name:'Warm Up',items:[{t:'200m with fins: 50m Stroke of choice / 50m Side Kick + repeat',n:'Side kick: tall body position, lead arm extended, fingers below wrist, wrist below elbow.'},{t:'12 × 25m: 2 × 25m Kickboard Pull / 2 × 25m Easy Free',n:'Kickboard Pull: board between upper thighs, engage glutes and inner thighs, really small kicks.'}]},{name:'Main Set',items:[{t:'2 sets of 5 × 100m Free Descend 1–5 @ 70%, 75%, 80%, 85%, 90% (0:15)',n:'Paddles optional for 2nd set. Stick to a breathing pattern you can maintain.'},{t:'2 sets of 500m Free Descend by set @ 75%, 85% (1 min)'}]},{name:'Post Set',items:[{t:'4 × 25m Front Kick (0:20)',n:'Arms extended out front, in line with shoulders. Soft kick, heels to surface, flick through big toe.'}]},{name:'Cool Down',items:[{t:'200m Fingertip Drag with fins'}]}]},
 {id:'W1S3',badge:'W1 · S3',title:'Negative Split / Build',sub:'3 km · The Kick',acc:'swim',bc:'bsw',cue:'Kick Size · From Hip · Soft Feet',focus:KF.join(' · '),drills:[{n:'Vertical→Horizontal Kick',u:'https://svpford.wistia.com/medias/u5rx71ofdj'},{n:'Front Kick',u:'https://svpford.wistia.com/medias/o0ezp2u3an'},{n:'12-3-12',u:'https://svpford.wistia.com/medias/canlx2yrlu'}],phases:[{name:'Warm Up',items:[{t:'200m Stroke of Choice'},{t:'4 × 25m (0:20) Vertical To Horizontal Kick',n:'Flick through your big toe on the down kick. Kick feels like a whip/ripple.'},{t:'8 × 50m (0:20): [25m Front Kick / 25m Easy Free] + [50m Kickboard Pull] + repeat'}]},{name:'Main Set',items:[{t:'500m Negative Split: 250m @ 75% / 250m @ 85% (0:20)'},{t:'400m Free Build: 100m @ 75% / 100m @ 80% / 100m @ 85% / 100m @ 90% (0:20)'},{t:'300m Free Hold @ 80% (0:15)'},{t:'200m Free Build: 100m @ 80% / 50m @ 85% / 50m @ 90% (0:10)'},{t:'100m Easy Recovery'},{t:'200m 12-3-12 with fins',n:'12-3-12: Rotate through your stroke. Roll lead arm in line with shoulder, soft hands during the 12 kicks.'},{t:'400m Free Pull (buoy, paddles, snorkel) @ 75%'}]},{name:'Cool Down',items:[{t:'200m Stroke of Choice'}]}]},
-{id:'W2S1',badge:'W2 · S1',title:'Endurance – Bucket Range',sub:'3 km · Ausdauer',acc:'swim',bc:'bsw',cue:'Kick within the bucket range',focus:'Start each length in a tight streamlined glide – push off the wall and glide for 3 seconds. Use that momentum to power through your first 2 strokes.',drills:[{n:'Side Kick',u:'https://svpford.wistia.com/medias/sx6fidvfof'},{n:'6-1-6',u:'https://svpford.wistia.com/medias/5sv2y74vub'},{n:'Fingertip Drag',u:'https://svpford.wistia.com/medias/t3nfgm30p8'}],phases:[{name:'Warm Up',items:[{t:'100m Stroke of choice'},{t:'2 × 150m with fins (0:30): 50m Side Kick / 50m Free / 50m Kick with kickboard (breathe after 8–12 kicks)'},{t:'Contrast set 4 × 50m (0:20)',n:'25m bicycle kick (wide, from knees)\n25m free kick – long legs, from hips, flick through big toe'}]},{name:'Main Set',items:[{t:'2 × 400m Free @ 75% (0:30)'},{t:'4 × 25m 6-1-6 with fins (0:20)'},{t:'4 × 200m Free Descend @ 75%, 80%, 80%, 85% (0:20)'},{t:'4 × 25m 6-1-6 with fins (0:20)'},{t:'4 × 100m Free Descend @ 80%, 85%, 85%, 90% (0:15)'}]},{name:'Cool Down',items:[{t:'200m Fingertip Drag'}]}]},
+{id:'W2S1',badge:'W2 · S1',title:'Endurance – Bucket Range',sub:'3 km · Ausdauer',acc:'swim',bc:'bsw',cue:'Kick within the bucket range',focus:'Start each length in a tight streamlined glide – push off the wall and glide for 3 seconds.',drills:[{n:'Side Kick',u:'https://svpford.wistia.com/medias/sx6fidvfof'},{n:'6-1-6',u:'https://svpford.wistia.com/medias/5sv2y74vub'},{n:'Fingertip Drag',u:'https://svpford.wistia.com/medias/t3nfgm30p8'}],phases:[{name:'Warm Up',items:[{t:'100m Stroke of choice'},{t:'2 × 150m with fins (0:30): 50m Side Kick / 50m Free / 50m Kick with kickboard'},{t:'Contrast 4 × 50m (0:20)',n:'25m bicycle kick (wide, from knees)\n25m free kick – long legs, from hips, flick through big toe'}]},{name:'Main Set',items:[{t:'2 × 400m Free @ 75% (0:30)'},{t:'4 × 25m 6-1-6 with fins (0:20)'},{t:'4 × 200m Free Descend @ 75%, 80%, 80%, 85% (0:20)'},{t:'4 × 25m 6-1-6 with fins (0:20)'},{t:'4 × 100m Free Descend @ 80%, 85%, 85%, 90% (0:15)'}]},{name:'Cool Down',items:[{t:'200m Fingertip Drag'}]}]},
 {id:'W2S2',badge:'W2 · S2',title:'Big Toe – Mixed Intensity',sub:'2.6 km · Ausdauer',acc:'swim',bc:'bsw',cue:'Kick through your big toe',focus:'Drive the kick from the hips and let the movement ripple smoothly down through the legs and out through the toes.',drills:[{n:'6-1-6',u:'https://svpford.wistia.com/medias/5sv2y74vub'},{n:'12-3-12',u:'https://svpford.wistia.com/medias/canlx2yrlu'},{n:'Side Kick',u:'https://svpford.wistia.com/medias/sx6fidvfof'}],phases:[{name:'Warm Up',items:[{t:'200m: 25m Free / Breast / Back / Fly + 100m Easy Free'},{t:'16 × 25m (0:20): Free Kick (board) / Kickboard Pull / 6-1-6 / Slow Doggy Scoop + repeat'}]},{name:'Main Set',items:[{t:'300m Free @ 75% (0:30)'},{t:'3 × 100m Free Descend @ 70%, 75%, 80% (0:15)'},{t:'8 × 25m 12-3-12 with fins (0:15)'},{t:'1 min rest'},{t:'200m Free @ 80% (0:20)'},{t:'2 × 100m Free Descend @ 80%, 85% (0:15)'},{t:'8 × 25m Side Kick with fins (0:15)'},{t:'1 min rest'},{t:'100m Free @ 85% (0:15)'},{t:'100m Free @ 90% (0:20)'},{t:'8 × 25m 12-3-12 with fins (0:15)'}]},{name:'Cool Down',items:[{t:'200m Stroke of Choice'}]}]},
 {id:'W2S3',badge:'W2 · S3',title:'Ford Threshold',sub:'3 km · Ausdauer',acc:'swim',bc:'bsw',cue:'Soft ankles, flowing feet',focus:'Keep your feet soft, ankles loose and flowing, and let them move with the water rather than fighting against it. Think ballerina feet.',drills:[{n:'Kickboard Pull',u:'https://svpford.wistia.com/medias/ol89sx5p6m'},{n:'Front Kick',u:'https://svpford.wistia.com/medias/o0ezp2u3an'},{n:'6-1-6',u:'https://svpford.wistia.com/medias/5sv2y74vub'}],phases:[{name:'Warm Up',items:[{t:'150m: Free Kick (board) / Kickboard Pull no kick / Kickboard Pull with kick + repeat'},{t:'2 × 100m (0:30): 25m Front Kick / 25m Easy Free / 25m 6-1-6 / 25m Easy Free',n:'Fins for 2nd 100m. Long legs, heel to surface, kick through big toe.'}]},{name:'Main Set – Ford Threshold',items:[{t:'9 × 200m Free (0:20)',n:'3 × 200m: 1–2 @ 75% · 3 @ 90% · repeat.\nSame time for all 200s @ 75%, same time for all @ 90%.'}]},{name:'Post Set',items:[{t:'4 × 50m: 25m Vertical→Horizontal Kick / 25m Easy Free'},{t:'9 × 50m Free Hypoxic @ 85% (0:15)',n:'Odd: breathing 3 · Even: breathing 6 or 8'}]},{name:'Cool Down',items:[{t:'200m Stroke of choice'}]}]},
-{id:'W3S1',badge:'W3 · S1',title:'Kowalski Special (mod.)',sub:'2.9 km · Mitteldistanz',acc:'swim',bc:'bsw',cue:'Kick within the bucket range',focus:'Middle-distance week. Start each length in a streamlined glide. Keep head down for the first and last 2 strokes of each length.',drills:[{n:'6-1-6',u:'https://svpford.wistia.com/medias/5sv2y74vub'},{n:'Side Kick',u:'https://svpford.wistia.com/medias/sx6fidvfof'},{n:'12-3-12',u:'https://svpford.wistia.com/medias/canlx2yrlu'}],phases:[{name:'Warm Up',items:[{t:'200m with fins: 100m Easy Free / 100m [25m 6-1-6 / 25m Slow Doggy Scoop] + repeat'},{t:'12 × 25m with fins (0:20): Side Kick (left) / Side Kick (right) / Easy Free + repeat'}]},{name:'Main Set',items:[{t:'Kowalski Special (Modified): 12 × 150m Free',n:'Block: 150m @ 80% (0:20) · 150m @ 85% (0:20) · 150m @ 90% (0:20) · 50m 12-3-12 fins (1 min) · × 4\nFocus on improving time per 150m. Control breathing, keep stroke long.'},{t:'4 × 50m with fins (0:20): 25m 6-1-6 / 25m Free',n:'Focus on keeping feet soft and floppy.'}]},{name:'Cool Down',items:[{t:'200m Stroke of choice with fins'}]}]},
-{id:'W3S2',badge:'W3 · S2',title:'85% Reducing Ladder',sub:'2.8 km · Mitteldistanz',acc:'swim',bc:'bsw',cue:'Kick through your big toe',focus:'Drive the kick from the hips and let the movement ripple smoothly down through the legs and out through the toes.',drills:[{n:'6-1-6',u:'https://svpford.wistia.com/medias/5sv2y74vub'},{n:'Fingertip Drag',u:'https://svpford.wistia.com/medias/t3nfgm30p8'}],phases:[{name:'Warm Up',items:[{t:'200m Reverse IM: 50m Free / Breast / Back / Fly'},{t:'8 × 25m with fins (0:20): 2 × 6-1-6 / 2 × Free + repeat'}]},{name:'Main Set',items:[{t:'4 × 100m @ 85% (0:15) → 100m Easy + 50m Free with fly kick (1 min) – fins'},{t:'3 × 100m @ 85% (0:15) → 100m Easy + 50m Free with fly kick (1 min)'},{t:'2 × 100m @ 85% (0:15) → 100m Easy + 50m Free with fly kick (1 min)'},{t:'1 × 100m @ 85% (0:15) → 100m Easy + 50m Free with fly kick (1 min)',n:'Free with fly kick: tension and release. Use rotation and core drive to connect the stroke.'}]},{name:'Post Set',items:[{t:'300m @ 85% / CSS pace'},{t:'6 × 50m Easy Free with fins (0:15)',n:'Minimal stroke count – enter and glide forward, ride the stroke out 2 seconds'}]},{name:'Cool Down',items:[{t:'100m Stroke of choice (fins optional)'}]}]},
-{id:'W3S3',badge:'W3 · S3',title:'Von Torros Ladder',sub:'2.8 km · Mitteldistanz',acc:'swim',bc:'bsw',cue:'Soft ankles, flowing feet',focus:'Keep your feet soft, ankles loose and flowing, and let them move with the water rather than fighting against it.',drills:[{n:'Front Kick',u:'https://svpford.wistia.com/medias/o0ezp2u3an'},{n:'12-3-12',u:'https://svpford.wistia.com/medias/canlx2yrlu'}],phases:[{name:'Warm Up',items:[{t:'200m Stroke of choice with fins'},{t:'4 × 50m: 25m Front Kick / 25m Easy Free (0:20)'},{t:'Contrast 4 × 25m (0:20)',n:'25m hard kick (full effort and tension)\n25m light kick (relaxed, light hum)'}]},{name:'Main Set – Von Torros Ladder',items:[{t:'2 × 300m Free (0:30) Descend @ 70%, 85%',n:'1 min rest'},{t:'3 × 200m Free (0:20) Descend @ 75%, 80%, 85%',n:'1 min rest'},{t:'6 × 100m Free (0:10) Descend @ 70%, 80%, 90% + repeat',n:'Increase catch pressure and acceleration as pace rises. Keep strokes long and controlled.'}]},{name:'Post Set',items:[{t:'12 × 25m with fins & snorkel (0:20): 2 × 12-3-12 / 2 × Free + repeat'}]},{name:'Cool Down',items:[{t:'200m Stroke of choice (fins optional)'}]}]},
-{id:'W4S1',badge:'W4 · S1',title:'25m Sprints + Breathing Sets',sub:'2.7 km · High Intensity',acc:'swim',bc:'bsw',cue:'Kick within the bucket range',focus:'High-intensity week, short recovery. Finish strong into the wall. Push the last 5m from the flags and swim \'through the wall\' as you touch.',drills:[{n:'6-1-6',u:'https://svpford.wistia.com/medias/5sv2y74vub'},{n:'Kickboard Pull',u:'https://svpford.wistia.com/medias/ol89sx5p6m'},{n:'Fingertip Drag',u:'https://svpford.wistia.com/medias/t3nfgm30p8'}],phases:[{name:'Warm Up',items:[{t:'200m Stroke of choice (fins optional)'},{t:'3 × 100m (0:30): Free kick (board) / Kickboard Pull (small kick) / 6-1-6 / Easy Free'}]},{name:'Main Set',items:[{t:'8 × 25m Free @ 90% (0:15)'},{t:'300m @ 75%: 50m breathing 2 / 4 / 6 + repeat (1 min)'},{t:'8 × 25m Free @ 90% (0:15)'},{t:'200m @ 75%: 50m breathing 3 / 5 + repeat (1 min)'},{t:'8 × 25m Free @ 90% (0:15)'},{t:'100m @ 75%: 50m breathing 5, 50m breathing 6'}]},{name:'Post Set',items:[{t:'16 × 50m (0:20) – 1 min rest after each block of 4',n:'[4 × 50m IM: Free/Breast/Back/Fly]\n[4 × 50m: 25m Front Kick / 25m Easy]\n[4 × 50m: 25m build → 90% / 25m Easy]\n[4 × 50m: 25m breathing 2 / 25m minimal]'}]},{name:'Cool Down',items:[{t:'200m Fingertip Drag with fins'}]}]},
-{id:'W4S2',badge:'W4 · S2',title:'Pull-Sets + CSS',sub:'2.8 km · High Intensity',acc:'swim',bc:'bsw',cue:'Kick through your big toe',focus:'Drive the kick from the hips and let the movement ripple smoothly down through the legs and out through the toes.',drills:[{n:'Vertical→Horizontal Kick',u:'https://svpford.wistia.com/medias/u5rx71ofdj'},{n:'Slow Doggy Scoop'}],phases:[{name:'Warm Up',items:[{t:'200m Stroke of choice (fins optional)'},{t:'8 × 25m: Vertical→Horizontal Kick / Easy Free (0:20)'},{t:'Contrast 4 × 25m (0:20)',n:'25m Deep & Wide Kick (feel resistance)\n25m bucket range kick (upper thighs and big toes lightly brushing)'}]},{name:'Main Set',items:[{t:'3 sets of 4 × 100m Stroke of choice (0:15)',n:'25m Kick (hold buoy) + 75m Pull with buoy\nSet 1 @ 75% · Set 2 @ 80% · Set 3 @ 85% · 1 min rest between sets'},{t:'Drill: 100m Slow Doggy Scoop',n:'Elbow high and forward, feel pressure on hands and forearms.'},{t:'CSS: 300m Free @ 85% / CSS pace'}]},{name:'Post Set',items:[{t:'Hypoxic: 12 × 50m (0:15): breathing 4 / 5 / 6 + repeat'}]},{name:'Cool Down',items:[{t:'100m Stroke of choice'}]}]},
-{id:'W4S3',badge:'W4 · S3',title:'Best Average – 21×100m',sub:'2.8 km · High Intensity',acc:'swim',bc:'bsw',cue:'Soft ankles, flowing feet',focus:'Keep your feet soft, ankles loose and flowing. Best Average = the fastest pace you can maintain across the whole set.',drills:[{n:'Slow Doggy Scoop'},{n:'6-1-6',u:'https://svpford.wistia.com/medias/5sv2y74vub'},{n:'12-3-12',u:'https://svpford.wistia.com/medias/canlx2yrlu'}],phases:[{name:'Warm Up',items:[{t:'200m: 50m Easy Free / 50m Kickboard Pull (small kick) + repeat'},{t:'16 × 25m: Slow Doggy Scoop / Easy Free / 6-1-6 / Easy Free'},{t:'4 × 50m: 25m Free Build → 95% / 25m Easy (0:20)'}]},{name:'Main Set',items:[{t:'21 × 100m (0:30)',n:'Block: [3 × BA · 100m Easy · 2 × BA · 100m Easy] · Repeat\nSwim 1 × 100m at goal pace first. Easy 100s = 15s+ slower than BA.'}]},{name:'Post Set',items:[{t:'Drill: 8 × 25m 12-3-12 with fins (0:20)'}]},{name:'Cool Down',items:[{t:'100m Stroke of choice with fins'}]}]},
-{id:'W5S1',badge:'W5 · S1',title:'Kick / Pull / Swim Sets',sub:'2.5 km · High Intensity',acc:'swim',bc:'bsw',cue:'Kick within the bucket range',focus:'High-intensity week. Finish strong into the wall. Push the last 5m from the flags and swim \'through the wall\' as you touch.',drills:[{n:'Side Kick',u:'https://svpford.wistia.com/medias/sx6fidvfof'},{n:'Fingertip Drag',u:'https://svpford.wistia.com/medias/t3nfgm30p8'}],phases:[{name:'Warm Up',items:[{t:'200m with fins: 50m Stroke of choice + 50m Side Kick + repeat'},{t:'12 × 25m (0:20): 25m Polo Freestyle (fast – elbows high, chest open, head up) / 25m Fingertip Drag',n:'Polo Free: open your chest, head stable and above water. Fins for last 6 × 25m.'}]},{name:'Main Set',items:[{t:'Stroke of choice: 3 sets of',n:'2 × 50m Kick with board (0:20) – fins for set 3, except Breast\n2 × 50m Pull with buoy (0:20) – paddles for set 3\n200m Swim (1 min)\nSet 1 @ 75% · Set 2 @ 80% · Set 3 @ 85% · 1 stroke for all sets.'}]},{name:'Post Set',items:[{t:'Aerobic: 600m Free @ 75% with snorkel',n:'Focus on feel. Heel to surface, flick through big toe.'}]},{name:'Cool Down',items:[{t:'200m Stroke of Choice'}]}]},
-{id:'W5S2',badge:'W5 · S2',title:'Stroke-Count + Hypoxic / Sprint',sub:'2.4 km · High Intensity (01.07)',acc:'swim',bc:'bsw',cue:'Kick through your big toe',focus:'Drive the kick from the hips and let the movement ripple smoothly down through the legs and out through the toes.',drills:[{n:'2 Over 2 Under'},{n:'6-1-6',u:'https://svpford.wistia.com/medias/5sv2y74vub'}],phases:[{name:'Warm Up',items:[{t:'200m Stroke of choice with fins'},{t:'6 × 50m (0:20): 50m 2 Over / 2 Under + 50m 6-1-6'}]},{name:'Main Set',items:[{t:'15 × 50m Free (0:10)',n:'5 × Easy – same stroke count\n5 × faster +2–4 strokes\n5 × faster again +2–4 strokes'},{t:'500m Easy Free with fins',n:'Focus on 1 area of your kick'}]},{name:'Hypoxic & Sprint',items:[{t:'Hypoxic: 4 × 75m Pull (buoy + paddles) @ 80% (0:10)',n:'Breathing +2 strokes per 25m. Short rest – gently exhale, avoid holding breath.'},{t:'Sprint Build: 3 × 50m Free Build (1 min)',n:'Start streamlined, build to sprint.'}]},{name:'Cool Down',items:[{t:'200m Stroke of Choice'}]}]},
-{id:'Z1-1',badge:'Z1 · Kick Size',title:'Zone 1 Aerob – Kick Size',sub:'3 km · 65–70% · Samstags',acc:'z1',bc:'bz1',z1:true,cue:'Schmal & kompakt – große Zehen nah, Oberschenkel streifen',focus:'Strikt aerob (65–70%). Du solltest dich unterhalten können. Bilateral alle 3 Züge, Zugzahl über alle 200er halten.',drills:[{n:'Front Kick',u:'https://svpford.wistia.com/medias/o0ezp2u3an'}],phases:[{name:'Warm Up',items:[{t:'400m Easy Free mit Flossen'}]},{name:'Drill',items:[{t:'200m Front Kick mit Kickboard',n:'Schmaler Kick, große Zehen nah, Ferse zur Oberfläche'}]},{name:'Main Set',items:[{t:'6 × 200m @ 65–70% (0:20)',n:'Bilateral alle 3, gleiche Zugzahl pro 200m'}]},{name:'Pull',items:[{t:'200m Easy Free mit Flossen'},{t:'600m Pull (Buoy) @ 70%, Atmung alle 5',n:'Kick komplett abschalten, Oberkörper isolieren'}]},{name:'Cool Down',items:[{t:'400m Easy Free mit Flossen'}]}]},
-{id:'Z1-2',badge:'Z1 · From Hip',title:'Zone 1 Aerob – Kick from Hip',sub:'3 km · 65–70% · Samstags',acc:'z1',bc:'bz1',z1:true,cue:'Aus der Hüfte – Ferse zur Oberfläche, durch großen Zeh',focus:'Strikt aerob (65–70%). Unterhalten können. Bilateral alle 3, Zugzahl halten.',drills:[{n:'6-1-6',u:'https://svpford.wistia.com/medias/5sv2y74vub'}],phases:[{name:'Warm Up',items:[{t:'400m Easy Free mit Flossen'}]},{name:'Drill',items:[{t:'8 × 50m (0:20): 25m 6-1-6 / 25m Easy Free'}]},{name:'Main Set',items:[{t:'6 × 200m @ 65–70% (0:20)',n:'Kick aus der Hüfte, Welle durch die Beine'}]},{name:'Pull',items:[{t:'200m Easy Free'},{t:'600m Pull (Buoy) @ 70%, Atmung alle 5'}]},{name:'Cool Down',items:[{t:'200m Easy Free mit Flossen'}]}]},
-{id:'Z1-3',badge:'Z1 · Soft Feet',title:'Zone 1 Aerob – Soft Feet',sub:'3 km · 65–70% · Samstags',acc:'z1',bc:'bz1',z1:true,cue:'Lockere Knöchel, fließende Füße – Ballerina',focus:'Strikt aerob (65–70%). Unterhalten können. Bilateral alle 3, Zugzahl halten.',drills:[{n:'Kickboard Pull',u:'https://svpford.wistia.com/medias/ol89sx5p6m'}],phases:[{name:'Warm Up',items:[{t:'400m Easy Free mit Flossen'}]},{name:'Drill',items:[{t:'4 × 50m (0:20): 25m Kickboard Pull kleiner Kick / 25m Easy Free'},{t:'Contrast 4 × 50m (0:20)',n:'25m steife Knöchel (Drag spüren) / 25m weiche Knöchel (passiv fließen)'}]},{name:'Main Set',items:[{t:'6 × 200m @ 65–70% (0:20)',n:'Lockere Knöchel, weiche Füße'}]},{name:'Pull',items:[{t:'600m Pull (Buoy) @ 70%, Atmung alle 5',n:'Weiche Füße durchgehend'}]},{name:'Cool Down',items:[{t:'Restdistanz: Easy Free auf 3 km auffüllen'}]}]}
+{id:'W3S1',badge:'W3 · S1',title:'Kowalski Special (mod.)',sub:'2.9 km · Mitteldistanz',acc:'swim',bc:'bsw',cue:'Kick within the bucket range',focus:'Middle-distance week. Start each length in a streamlined glide. Keep head down for the first and last 2 strokes of each length.',drills:[{n:'6-1-6',u:'https://svpford.wistia.com/medias/5sv2y74vub'},{n:'Side Kick',u:'https://svpford.wistia.com/medias/sx6fidvfof'},{n:'12-3-12',u:'https://svpford.wistia.com/medias/canlx2yrlu'}],phases:[{name:'Warm Up',items:[{t:'200m with fins: 100m Easy Free / 100m [25m 6-1-6 / 25m Slow Doggy Scoop] + repeat'},{t:'12 × 25m with fins (0:20): Side Kick (left) / Side Kick (right) / Easy Free + repeat'}]},{name:'Main Set',items:[{t:'Kowalski Special (Modified): 12 × 150m Free',n:'Block: 150m @ 80% · 150m @ 85% · 150m @ 90% · 50m 12-3-12 fins (1 min) · × 4'},{t:'4 × 50m with fins (0:20): 25m 6-1-6 / 25m Free',n:'Focus on keeping feet soft and floppy.'}]},{name:'Cool Down',items:[{t:'200m Stroke of choice with fins'}]}]},
+{id:'W3S2',badge:'W3 · S2',title:'85% Reducing Ladder',sub:'2.8 km · Mitteldistanz',acc:'swim',bc:'bsw',cue:'Kick through your big toe',focus:'Drive the kick from the hips and let the movement ripple smoothly down through the legs and out through the toes.',drills:[{n:'6-1-6',u:'https://svpford.wistia.com/medias/5sv2y74vub'},{n:'Fingertip Drag',u:'https://svpford.wistia.com/medias/t3nfgm30p8'}],phases:[{name:'Warm Up',items:[{t:'200m Reverse IM: 50m Free / Breast / Back / Fly'},{t:'8 × 25m with fins (0:20): 2 × 6-1-6 / 2 × Free + repeat'}]},{name:'Main Set',items:[{t:'4 × 100m @ 85% (0:15) → 100m Easy + 50m Free with fly kick (1 min)'},{t:'3 × 100m @ 85% (0:15) → 100m Easy + 50m Free with fly kick (1 min)'},{t:'2 × 100m @ 85% (0:15) → 100m Easy + 50m Free with fly kick (1 min)'},{t:'1 × 100m @ 85% (0:15) → 100m Easy + 50m Free with fly kick (1 min)'}]},{name:'Post Set',items:[{t:'300m @ 85% / CSS pace'},{t:'6 × 50m Easy Free with fins (0:15)',n:'Minimal stroke count – enter and glide, ride the stroke out 2 seconds'}]},{name:'Cool Down',items:[{t:'100m Stroke of choice (fins optional)'}]}]},
+{id:'W3S3',badge:'W3 · S3',title:'Von Torros Ladder',sub:'2.8 km · Mitteldistanz',acc:'swim',bc:'bsw',cue:'Soft ankles, flowing feet',focus:'Keep your feet soft, ankles loose and flowing, and let them move with the water rather than fighting against it.',drills:[{n:'Front Kick',u:'https://svpford.wistia.com/medias/o0ezp2u3an'},{n:'12-3-12',u:'https://svpford.wistia.com/medias/canlx2yrlu'}],phases:[{name:'Warm Up',items:[{t:'200m Stroke of choice with fins'},{t:'4 × 50m: 25m Front Kick / 25m Easy Free (0:20)'},{t:'Contrast 4 × 25m (0:20)',n:'25m hard kick (full effort)\n25m light kick (relaxed, light hum)'}]},{name:'Main Set – Von Torros Ladder',items:[{t:'2 × 300m Free (0:30) Descend @ 70%, 85%',n:'1 min rest'},{t:'3 × 200m Free (0:20) Descend @ 75%, 80%, 85%',n:'1 min rest'},{t:'6 × 100m Free (0:10) Descend @ 70%, 80%, 90% + repeat'}]},{name:'Post Set',items:[{t:'12 × 25m with fins & snorkel (0:20): 2 × 12-3-12 / 2 × Free + repeat'}]},{name:'Cool Down',items:[{t:'200m Stroke of choice (fins optional)'}]}]},
+{id:'W4S1',badge:'W4 · S1',title:'25m Sprints + Breathing Sets',sub:'2.7 km · High Intensity',acc:'swim',bc:'bsw',cue:'Kick within the bucket range',focus:'High-intensity week, short recovery. Finish strong into the wall. Push the last 5m from the flags and swim through the wall.',drills:[{n:'6-1-6',u:'https://svpford.wistia.com/medias/5sv2y74vub'},{n:'Kickboard Pull',u:'https://svpford.wistia.com/medias/ol89sx5p6m'}],phases:[{name:'Warm Up',items:[{t:'200m Stroke of choice (fins optional)'},{t:'3 × 100m (0:30): Free kick (board) / Kickboard Pull / 6-1-6 / Easy Free'}]},{name:'Main Set',items:[{t:'8 × 25m Free @ 90% (0:15)'},{t:'300m @ 75%: 50m breathing 2 / 4 / 6 + repeat (1 min)'},{t:'8 × 25m Free @ 90% (0:15)'},{t:'200m @ 75%: 50m breathing 3 / 5 + repeat (1 min)'},{t:'8 × 25m Free @ 90% (0:15)'},{t:'100m @ 75%: 50m breathing 5/6'}]},{name:'Post Set',items:[{t:'16 × 50m (0:20) – 1 min rest after each block of 4',n:'[4 × 50m IM] · [4 × 50m 25m Front Kick/25m Easy] · [4 × 50m build→90%/25m Easy] · [4 × 50m breathing 2/minimal]'}]},{name:'Cool Down',items:[{t:'200m Fingertip Drag with fins'}]}]},
+{id:'W4S2',badge:'W4 · S2',title:'Pull-Sets + CSS',sub:'2.8 km · High Intensity',acc:'swim',bc:'bsw',cue:'Kick through your big toe',focus:'Drive the kick from the hips and let the movement ripple smoothly down through the legs and out through the toes.',drills:[{n:'Vertical→Horizontal Kick',u:'https://svpford.wistia.com/medias/u5rx71ofdj'}],phases:[{name:'Warm Up',items:[{t:'200m Stroke of choice (fins optional)'},{t:'8 × 25m: Vertical→Horizontal Kick / Easy Free (0:20)'},{t:'Contrast 4 × 25m (0:20)',n:'25m Deep & Wide Kick (feel resistance)\n25m bucket range kick'}]},{name:'Main Set',items:[{t:'3 sets of 4 × 100m Stroke of choice (0:15)',n:'25m Kick (hold buoy) + 75m Pull with buoy\nSet 1 @ 75% · Set 2 @ 80% · Set 3 @ 85% · 1 min rest between sets'},{t:'Drill: 100m Slow Doggy Scoop',n:'Elbow high and forward, feel pressure on hands and forearms.'},{t:'CSS: 300m Free @ 85% / CSS pace'}]},{name:'Post Set',items:[{t:'Hypoxic: 12 × 50m (0:15): breathing 4 / 5 / 6 + repeat'}]},{name:'Cool Down',items:[{t:'100m Stroke of choice'}]}]},
+{id:'W4S3',badge:'W4 · S3',title:'Best Average – 21×100m',sub:'2.8 km · High Intensity',acc:'swim',bc:'bsw',cue:'Soft ankles, flowing feet',focus:'Best Average = the fastest pace you can maintain across the whole set. Keep feet soft and flowing.',drills:[{n:'6-1-6',u:'https://svpford.wistia.com/medias/5sv2y74vub'},{n:'12-3-12',u:'https://svpford.wistia.com/medias/canlx2yrlu'}],phases:[{name:'Warm Up',items:[{t:'200m: 50m Easy Free / 50m Kickboard Pull + repeat'},{t:'16 × 25m: Slow Doggy Scoop / Easy Free / 6-1-6 / Easy Free'},{t:'4 × 50m: 25m Free Build → 95% / 25m Easy (0:20)'}]},{name:'Main Set',items:[{t:'21 × 100m (0:30)',n:'Block: [3 × BA · 100m Easy · 2 × BA · 100m Easy] · Repeat\nEasy 100s = 15s+ slower than BA.'}]},{name:'Post Set',items:[{t:'8 × 25m 12-3-12 with fins (0:20)'}]},{name:'Cool Down',items:[{t:'100m Stroke of choice with fins'}]}]},
+{id:'W5S1',badge:'W5 · S1',title:'Kick / Pull / Swim Sets',sub:'2.5 km · High Intensity',acc:'swim',bc:'bsw',cue:'Kick within the bucket range',focus:'High-intensity week. Finish strong into the wall.',drills:[{n:'Side Kick',u:'https://svpford.wistia.com/medias/sx6fidvfof'},{n:'Fingertip Drag',u:'https://svpford.wistia.com/medias/t3nfgm30p8'}],phases:[{name:'Warm Up',items:[{t:'200m with fins: 50m Stroke of choice + 50m Side Kick + repeat'},{t:'12 × 25m (0:20): 25m Polo Freestyle (fast – elbows high) / 25m Fingertip Drag',n:'Polo Free: open your chest, head stable and above water. Fins for last 6 × 25m.'}]},{name:'Main Set',items:[{t:'Stroke of choice: 3 sets of',n:'2 × 50m Kick with board (0:20) – fins for set 3, except Breast\n2 × 50m Pull with buoy (0:20) – paddles for set 3\n200m Swim (1 min)\nSet 1 @ 75% · Set 2 @ 80% · Set 3 @ 85%'}]},{name:'Post Set',items:[{t:'Aerobic: 600m Free @ 75% with snorkel',n:'Focus on feel. Heel to surface, flick through big toe.'}]},{name:'Cool Down',items:[{t:'200m Stroke of Choice'}]}]},
+{id:'W5S2',badge:'W5 · S2',title:'Stroke-Count + Hypoxic / Sprint',sub:'2.4 km · High Intensity (01.07)',acc:'swim',bc:'bsw',cue:'Kick through your big toe',focus:'Drive the kick from the hips and let the movement ripple smoothly down through the legs and out through the toes.',drills:[{n:'2 Over 2 Under'},{n:'6-1-6',u:'https://svpford.wistia.com/medias/5sv2y74vub'}],phases:[{name:'Warm Up',items:[{t:'200m Stroke of choice with fins'},{t:'6 × 50m (0:20): 50m 2 Over/2 Under + 50m 6-1-6'}]},{name:'Main Set',items:[{t:'15 × 50m Free (0:10)',n:'5 × Easy – same stroke count\n5 × faster +2–4 strokes\n5 × faster again +2–4 strokes'},{t:'500m Easy Free with fins'}]},{name:'Hypoxic & Sprint',items:[{t:'Hypoxic: 4 × 75m Pull (buoy + paddles) @ 80% (0:10)',n:'Breathing +2 strokes per 25m.'},{t:'Sprint Build: 3 × 50m Free Build (1 min)'}]},{name:'Cool Down',items:[{t:'200m Stroke of Choice'}]}]},
+{id:'Z1-1',badge:'Z1 · Kick Size',title:'Zone 1 Aerob – Kick Size',sub:'3 km · 65–70% · Samstags',acc:'z1',bc:'bz1',z1:true,cue:'Schmal & kompakt – große Zehen nah',focus:'Strikt aerob (65–70%). Unterhalten können. Bilateral alle 3 Züge.',drills:[{n:'Front Kick',u:'https://svpford.wistia.com/medias/o0ezp2u3an'}],phases:[{name:'Warm Up',items:[{t:'400m Easy Free mit Flossen'}]},{name:'Drill',items:[{t:'200m Front Kick mit Kickboard'}]},{name:'Main Set',items:[{t:'6 × 200m @ 65–70% (0:20)',n:'Bilateral alle 3, gleiche Zugzahl pro 200m'}]},{name:'Pull',items:[{t:'200m Easy Free mit Flossen'},{t:'600m Pull (Buoy) @ 70%, Atmung alle 5',n:'Kick komplett abschalten'}]},{name:'Cool Down',items:[{t:'400m Easy Free mit Flossen'}]}]},
+{id:'Z1-2',badge:'Z1 · From Hip',title:'Zone 1 Aerob – Kick from Hip',sub:'3 km · 65–70% · Samstags',acc:'z1',bc:'bz1',z1:true,cue:'Aus der Hüfte – Ferse zur Oberfläche, durch großen Zeh',focus:'Strikt aerob (65–70%). Bilateral alle 3, Zugzahl halten.',drills:[{n:'6-1-6',u:'https://svpford.wistia.com/medias/5sv2y74vub'}],phases:[{name:'Warm Up',items:[{t:'400m Easy Free mit Flossen'}]},{name:'Drill',items:[{t:'8 × 50m (0:20): 25m 6-1-6 / 25m Easy Free'}]},{name:'Main Set',items:[{t:'6 × 200m @ 65–70% (0:20)'}]},{name:'Pull',items:[{t:'200m Easy Free'},{t:'600m Pull (Buoy) @ 70%, Atmung alle 5'}]},{name:'Cool Down',items:[{t:'200m Easy Free mit Flossen'}]}]},
+{id:'Z1-3',badge:'Z1 · Soft Feet',title:'Zone 1 Aerob – Soft Feet',sub:'3 km · 65–70% · Samstags',acc:'z1',bc:'bz1',z1:true,cue:'Lockere Knöchel, fließende Füße – Ballerina',focus:'Strikt aerob (65–70%). Bilateral alle 3, Zugzahl halten.',drills:[{n:'Kickboard Pull',u:'https://svpford.wistia.com/medias/ol89sx5p6m'}],phases:[{name:'Warm Up',items:[{t:'400m Easy Free mit Flossen'}]},{name:'Drill',items:[{t:'4 × 50m: 25m Kickboard Pull / 25m Easy Free'},{t:'Contrast 4 × 50m: 25m steife Knöchel / 25m weiche Knöchel'}]},{name:'Main Set',items:[{t:'6 × 200m @ 65–70% (0:20)'}]},{name:'Pull',items:[{t:'600m Pull (Buoy) @ 70%, Atmung alle 5'}]},{name:'Cool Down',items:[{t:'Restdistanz: Easy Free auf 3 km auffüllen'}]}]}
 ];
 
 const DRYLAND=[
-{id:'A',badge:'DRYLAND A',title:'Pull & Posterior Chain',sub:'35 Min · 3 Runden',acc:'dA',bc:'bdA',btn:'btn-dA',cue:'Zug aus dem breiten Rücken – nie zum Versagen',focus:'3 Runden Hauptteil. Pull-Ups immer 2–3 Reps unter Maximum. Schwimmen hat Priorität.',phases:[{name:'Warm-Up',meta:'5 Min',items:[{t:'Band Pull-Aparts 2×15',n:'Band auf Schulterhöhe, Schulterblätter zusammen'},{t:'Scapular Pull-Ups 2×8',n:'Hängend, nur Schulterblätter, Arme gestreckt'},{t:'Hip Circles 10/Seite'},{t:'90/90 Hüfte passiv 30s/Seite'}]},{name:'Hauptteil',meta:'3 Runden · ~25 Min',items:[{ex:true,id:'A-pullup',name:'Pull-Ups',tgt:'5×3–4',rest:'90s',cue:'2–3 Reps unter Max · 1s hoch / 2s runter, kein Schwingen',mus:'Lat · Teres · Bizeps · Rhomboiden'},{ex:true,id:'A-row',name:'Single-Arm Band Row',tgt:'3×10/Seite',rest:'60s',cue:'Voller ROM, langsame Negative, Schulterblatt am Ende zusammenziehen',mus:'Lat · Rhomboiden · Trapez'},{ex:true,id:'A-rdl',name:'Single-Leg RDL (Band/KB)',tgt:'3×8/Seite',rest:'60s',cue:'Hüftscharnier, Hamstrings spüren, Standbein leicht gebeugt',mus:'Hamstrings · Glutes · Rückenstrecker'},{ex:true,id:'A-hollow',name:'Hollow Hold',tgt:'3×30–45s',rest:'45s',cue:'LWS aktiv auf den Boden drücken – wichtigste Core-Übung für Schwimmer',mus:'Rektus/Transversus · Hüftbeuger'},{ex:true,id:'A-pallof',name:'Pallof Press (Band)',tgt:'3×10/Seite',rest:'45s',cue:'Anti-Rotation, Hüfte ruhig halten',mus:'Obliques · Transversus · Glute med'}]},{name:'Cool-Down',meta:'5 Min',items:[{t:'Lat-Stretch (Türrahmen) 60s/Seite'},{t:'Brust-Türrahmen-Stretch 60s'},{t:'Box Breathing 4-4-4-4 · 2 Min'}]}]},
-{id:'B',badge:'DRYLAND B',title:'Core, Hüfte & Shoulder Health',sub:'30 Min · 3 Runden',acc:'dB',bc:'bdB',btn:'btn-dB',cue:'Schulterbalance statt Brustmasse',focus:'Pausenzeiten sind Empfehlungen – markiert als empf.',phases:[{name:'Warm-Up',meta:'5 Min',items:[{t:'Cat-Cow 10 Wdh.'},{t:'World\'s Greatest Stretch 4/Seite'},{t:'Band Shoulder Dislocates 2×10',n:'Griffbreite anpassen, langsam'},{t:'Couch Stretch 45s/Seite'},{t:'90/90 aktive IR/ER 2×6/Seite'}]},{name:'Hauptteil',meta:'3 Runden · ~20 Min',items:[{ex:true,id:'B-push',name:'Push-Ups (Tempo 3-0-1)',tgt:'3×8–12',rest:'60s (empf.)',cue:'3s runter, direkt hoch · klein dosiert',mus:'Brust · Trizeps · Serratus'},{ex:true,id:'B-sideplank',name:'Side Plank mit Hüfthebung',tgt:'10/Seite',rest:'45s (empf.)',cue:'Glute-med-Aktivierung, Verbindung zur Wasserlage',mus:'Glute med · Obliques'},{ex:true,id:'B-copen',name:'Copenhagen Plank (Knie auf Bank)',tgt:'20–30s/Seite',rest:'45s (empf.)',cue:'Progression Knie → Knöchel → gestreckt',mus:'Adduktoren · Core'},{ex:true,id:'B-bridge',name:'Single-Leg Glute Bridge',tgt:'12/Seite',rest:'45s (empf.)',cue:'1s oben halten',mus:'Glutes · Hamstrings'},{ex:true,id:'B-birddog',name:'Bird Dog mit Pause',tgt:'8/Seite',rest:'30s (empf.)',cue:'2s Endposition, Rücken ruhig',mus:'Core · Rückenstrecker'},{ex:true,id:'B-extrot',name:'Band External Rotation',tgt:'15/Seite',rest:'30s (empf.)',cue:'Leichtes Band, Ellbogen am Rumpf – Rotatorenmanschette',mus:'Infraspinatus · Teres minor'}]},{name:'Cool-Down',meta:'5 Min',items:[{t:'Pigeon Stretch 60s/Seite'},{t:'Couch Stretch 45s/Seite'},{t:'Atemübung 4-7-8 · 5 Runden'}]}]},
-{id:'C',badge:'DRYLAND C',title:'Power & Pulling Endurance',sub:'35 Min · 4 Runden',acc:'dC',bc:'bdC',btn:'btn-dC',cue:'Power kommt zum Schluss, wenn die Basis steht',focus:'Pausenzeiten sind Empfehlungen. Wegen Sesambeinchen kein Springen auf Beton.',phases:[{name:'Warm-Up',meta:'5 Min',items:[{t:'Springseil locker 3 Min',n:'Weicher Untergrund, Frequenz nicht Höhe – kein Beton'}]},{name:'Hauptteil',meta:'4 Runden · ~25 Min',items:[{ex:true,id:'C-pulldown',name:'Explosive Band Pulldowns',tgt:'10 schnell & sauber',rest:'60s (empf.)',cue:'Band hoch fixiert, schneller Zug nach unten – simuliert Catch-Phase',mus:'Lat · Serratus'},{ex:true,id:'C-invrow',name:'Inverted Rows / Australian Pull-Ups',tgt:'10–12',rest:'60s (empf.)',cue:'Körper gerade, Calisthenics-Park oder stabiler Tisch',mus:'Lat · Rhomboiden · Trapez'},{ex:true,id:'C-swing',name:'KB Swings / Band Hip Hinge explosiv',tgt:'12',rest:'75s (empf.)',cue:'Kraft aus der Hüfte, kein Rückenziehen',mus:'Glutes · Hamstrings · Core'},{ex:true,id:'C-deadbug',name:'Dead Bug langsam',tgt:'8/Seite',rest:'45s (empf.)',cue:'Kontrolliert, Bauch aktiv, kein Hohlkreuz',mus:'Transversus · Hüftbeuger'},{ex:true,id:'C-knee',name:'Hanging Knee Raises',tgt:'8–12',rest:'60s (empf.)',cue:'Kontrolliert, kein Schwung',mus:'Hüftbeuger · Unterer Bauch'}]},{name:'Cool-Down',meta:'5 Min',items:[{t:'Schulter-Mobility (Arm Circles, Pendel) 2 Min'},{t:'Box Breathing 4-4-4-4 · 3 Min'}]}]}
+{id:'A',badge:'DRYLAND A',title:'Pull & Posterior Chain',sub:'35 Min · 3 Runden',vCls:'vA',bc:'bdA',btn:'btn-dA',cue:'Zug aus dem breiten Rücken – nie zum Versagen',focus:'3 Runden Hauptteil. Pull-Ups immer 2–3 Reps unter Maximum.',phases:[{name:'Warm-Up',meta:'5 Min',items:[{t:'Band Pull-Aparts 2×15',n:'Band auf Schulterhöhe, Schulterblätter zusammen'},{t:'Scapular Pull-Ups 2×8',n:'Hängend, nur Schulterblätter, Arme gestreckt'},{t:'Hip Circles 10/Seite'},{t:'90/90 Hüfte passiv 30s/Seite'}]},{name:'Hauptteil',meta:'3 Runden · ~25 Min',items:[{ex:true,id:'A-pullup',name:'Pull-Ups',tgt:'5×3–4',rest:'90s',cue:'2–3 Reps unter Max · 1s hoch / 2s runter',mus:'Lat · Teres · Bizeps · Rhomboiden'},{ex:true,id:'A-row',name:'Single-Arm Band Row',tgt:'3×10/Seite',rest:'60s',cue:'Voller ROM, langsame Negative, Schulterblatt zusammenziehen',mus:'Lat · Rhomboiden · Trapez'},{ex:true,id:'A-rdl',name:'Single-Leg RDL (Band/KB)',tgt:'3×8/Seite',rest:'60s',cue:'Hüftscharnier, Hamstrings spüren, Standbein leicht gebeugt',mus:'Hamstrings · Glutes · Rückenstrecker'},{ex:true,id:'A-hollow',name:'Hollow Hold',tgt:'3×30–45s',rest:'45s',cue:'LWS aktiv auf den Boden drücken – wichtigste Core-Übung für Schwimmer',mus:'Rektus/Transversus · Hüftbeuger'},{ex:true,id:'A-pallof',name:'Pallof Press (Band)',tgt:'3×10/Seite',rest:'45s',cue:'Anti-Rotation, Hüfte ruhig halten',mus:'Obliques · Transversus · Glute med'}]},{name:'Cool-Down',meta:'5 Min',items:[{t:'Lat-Stretch (Türrahmen) 60s/Seite'},{t:'Brust-Türrahmen-Stretch 60s'},{t:'Box Breathing 4-4-4-4 · 2 Min'}]}]},
+{id:'B',badge:'DRYLAND B',title:'Core, Hüfte & Shoulder Health',sub:'30 Min · 3 Runden',vCls:'vB',bc:'bdB',btn:'btn-dB',cue:'Schulterbalance statt Brustmasse',focus:'Pausenzeiten sind Empfehlungen – markiert als empf.',phases:[{name:'Warm-Up',meta:'5 Min',items:[{t:'Cat-Cow 10 Wdh.'},{t:"World's Greatest Stretch 4/Seite"},{t:'Band Shoulder Dislocates 2×10',n:'Griffbreite anpassen, langsam'},{t:'Couch Stretch 45s/Seite'},{t:'90/90 aktive IR/ER 2×6/Seite'}]},{name:'Brustaufbau (schultersicher)',items:[{ex:true,id:'B-push',name:'Push-Ups (Tempo 3-0-1)',tgt:'3×8–12',rest:'60s (empf.)',cue:'3s runter, direkt hoch',mus:'Brust · Trizeps · Serratus'},{ex:true,id:'B-archer',name:'Archer Push-Up (ab Woche 4)',tgt:'2–3×6–8/Seite',rest:'60s (empf.)',cue:'Eine Seite stärker belasten',mus:'Pectoralis major · Schulter-Stabilität'},{ex:true,id:'B-fly',name:'Band Chest Fly',tgt:'3×12',rest:'45s (empf.)',cue:'Leichtes Band, weiter Bogen',mus:'Pectoralis major'}]},{name:'Hauptteil',meta:'3 Runden · ~20 Min',items:[{ex:true,id:'B-sideplank',name:'Side Plank mit Hüfthebung',tgt:'10/Seite',rest:'45s (empf.)',cue:'Glute-med-Aktivierung',mus:'Glute med · Obliques'},{ex:true,id:'B-copen',name:'Copenhagen Plank (Knie auf Bank)',tgt:'20–30s/Seite',rest:'45s (empf.)',cue:'Progression Knie → Knöchel → gestreckt',mus:'Adduktoren · Core'},{ex:true,id:'B-bridge',name:'Single-Leg Glute Bridge',tgt:'12/Seite',rest:'45s (empf.)',cue:'1s oben halten',mus:'Glutes · Hamstrings'},{ex:true,id:'B-birddog',name:'Bird Dog mit Pause',tgt:'8/Seite',rest:'30s (empf.)',cue:'2s Endposition, Rücken ruhig',mus:'Core · Rückenstrecker'},{ex:true,id:'B-extrot',name:'Band External Rotation',tgt:'15/Seite',rest:'30s (empf.)',cue:'Leichtes Band, Ellbogen am Rumpf',mus:'Infraspinatus · Teres minor'}]},{name:'Cool-Down',meta:'5 Min',items:[{t:'Pigeon Stretch 60s/Seite'},{t:'Couch Stretch 45s/Seite'},{t:'Atemübung 4-7-8 · 5 Runden'}]}]},
+{id:'C',badge:'DRYLAND C',title:'Power & Pulling Endurance',sub:'35 Min · 4 Runden',vCls:'vC',bc:'bdC',btn:'btn-dC',cue:'Power kommt zum Schluss, wenn die Basis steht',focus:'Pausenzeiten sind Empfehlungen. Wegen Sesambeinchen kein Springen auf Beton.',phases:[{name:'Warm-Up',meta:'5 Min',items:[{t:'Springseil locker 3 Min',n:'Weicher Untergrund – kein Beton'}]},{name:'Hauptteil',meta:'4 Runden · ~25 Min',items:[{ex:true,id:'C-pulldown',name:'Explosive Band Pulldowns',tgt:'10 schnell & sauber',rest:'60s (empf.)',cue:'Schneller Zug nach unten – simuliert Catch-Phase',mus:'Lat · Serratus'},{ex:true,id:'C-invrow',name:'Inverted Rows / Australian Pull-Ups',tgt:'10–12',rest:'60s (empf.)',cue:'Körper gerade, Calisthenics-Park oder stabiler Tisch',mus:'Lat · Rhomboiden · Trapez'},{ex:true,id:'C-swing',name:'KB Swings / Band Hip Hinge explosiv',tgt:'12',rest:'75s (empf.)',cue:'Kraft aus der Hüfte, kein Rückenziehen',mus:'Glutes · Hamstrings · Core'},{ex:true,id:'C-deadbug',name:'Dead Bug langsam',tgt:'8/Seite',rest:'45s (empf.)',cue:'Kontrolliert, Bauch aktiv',mus:'Transversus · Hüftbeuger'},{ex:true,id:'C-knee',name:'Hanging Knee Raises',tgt:'8–12',rest:'60s (empf.)',cue:'Kontrolliert, kein Schwung',mus:'Hüftbeuger · Unterer Bauch'}]},{name:'Cool-Down',meta:'5 Min',items:[{t:'Schulter-Mobility 2 Min'},{t:'Box Breathing 4-4-4-4 · 3 Min'}]}]}
 ];
 
 const MOBILITY={phases:[
@@ -334,15 +373,14 @@ const MOBILITY={phases:[
 {name:'90/90 aktiv: IR & ER',reps:'60s/Seite',mus:'Hüftaußenrotation · Tiefe Hüftmuskulatur',note:'Zwischen Innen- und Außenrotation wechseln, Kraft aufbauen – nicht fallen lassen.'},
 {name:'Couch Stretch',reps:'45s/Seite',mus:'Hüftbeuger · Quadrizeps',note:'Hüfte nach vorn, Oberkörper aufrichten, kein Hohlkreuz.'},
 {name:'Deep Squat Hold + Pendeln',reps:'60s',mus:'Hüfte · Knöchel · Rücken',note:'Fersen am Boden, Ellbogen innen gegen Knie, seitlich pendeln.'},
-{name:'World\'s Greatest Stretch',reps:'3/Seite langsam',mus:'Hüftbeuger · Thorax · Hamstrings',note:'Jede Position mehrere Atemzüge, Rotation maximieren.'}
+{name:"World's Greatest Stretch",reps:'3/Seite langsam',mus:'Hüftbeuger · Thorax · Hamstrings',note:'Jede Position mehrere Atemzüge, Rotation maximieren.'}
 ]},
 {name:'Schulter & Thorax',meta:'~5 Min',items:[
 {name:'Thread the Needle',reps:'60s/Seite',mus:'Thorax-Rotation · Schulter',note:'Bewegung aus der Brustwirbelsäule, nicht LWS.'},
 {name:'Open Books',reps:'8/Seite',mus:'Thorax-Rotation · Brust',note:'Hüften gestapelt, Rotation aus dem Thorax, beim Öffnen einatmen.'},
 {name:'Wall Slides',reps:'2×10',mus:'Schulterblatt · Rotatorenmanschette',note:'Schultern unten halten, Kontakt zur Wand nicht verlieren.'},
 {name:'Sleeper Stretch',reps:'45s/Seite',mus:'Posteriore Kapsel · Schulter',note:'Posteriore Kapsel – bei Schwimmern oft eng. Sanft, ohne Schmerz.'}
-]}
-]};
+]}]};
 
 const BREATH=[
 {id:'box',name:'Box Breathing',sub:'4-4-4-4 · Downregulation · 8 Runden',desc:'Nasenatmung. Nach dem Training oder zur Beruhigung. Verbessert Atemruhe und CO₂-Toleranz im Wasser.',rounds:8,pattern:[{label:'Einatmen',sec:4},{label:'Halten',sec:4},{label:'Ausatmen',sec:4},{label:'Halten',sec:4}]},
@@ -350,57 +388,67 @@ const BREATH=[
 ];
 
 const SCHED={
-'2026-06-03':[{type:'swim',id:'MAY-ADD',label:'Mai Additional · 2.4 km'}],
-'2026-06-04':[{type:'dry',id:'B',label:'Dryland B · Core & Schulter'}],
-'2026-06-05':[{type:'swim',id:'W1S2',label:'W1S2 · 2.8 km'}],
-'2026-06-06':[{type:'swim',id:'W1S3',label:'W1S3 · 3 km'},{type:'dry',id:'C',label:'Dryland C · Power'}],
-'2026-06-08':[{type:'swim',id:'W2S1',label:'W2S1 · 3 km'}],
-'2026-06-09':[{type:'dry',id:'A',label:'Dryland A · Pull'}],
-'2026-06-10':[{type:'swim',id:'W2S2',label:'W2S2 · 2.6 km'}],
-'2026-06-11':[{type:'dry',id:'B',label:'Dryland B · Core'}],
-'2026-06-12':[{type:'swim',id:'W2S3',label:'W2S3 · 3 km'}],
-'2026-06-13':[{type:'swim',id:'Z1-1',label:'Z1 Kick Size · 3 km'},{type:'dry',id:'C',label:'Dryland C · Power'}],
-'2026-06-15':[{type:'swim',id:'W3S1',label:'W3S1 · 2.9 km'}],
-'2026-06-16':[{type:'dry',id:'A',label:'Dryland A · Pull'}],
-'2026-06-17':[{type:'swim',id:'W3S2',label:'W3S2 · 2.8 km'}],
-'2026-06-18':[{type:'dry',id:'B',label:'Dryland B · Core'}],
-'2026-06-19':[{type:'swim',id:'W3S3',label:'W3S3 · 2.8 km'}],
-'2026-06-20':[{type:'swim',id:'Z1-2',label:'Z1 From Hip · 3 km'},{type:'dry',id:'C',label:'Dryland C · Power'}],
-'2026-06-22':[{type:'swim',id:'W4S1',label:'W4S1 · 2.7 km'}],
-'2026-06-23':[{type:'dry',id:'A',label:'Dryland A · Pull'}],
-'2026-06-24':[{type:'swim',id:'W4S2',label:'W4S2 · 2.8 km'}],
-'2026-06-25':[{type:'dry',id:'B',label:'Dryland B · Core'}],
-'2026-06-26':[{type:'swim',id:'W4S3',label:'W4S3 · 2.8 km'}],
-'2026-06-27':[{type:'swim',id:'Z1-3',label:'Z1 Soft Feet · 3 km'},{type:'dry',id:'C',label:'Dryland C · Power'}],
-'2026-06-29':[{type:'swim',id:'W5S1',label:'W5S1 · 2.5 km'}],
-'2026-06-30':[{type:'dry',id:'A',label:'Dryland A · Pull'}],
-'2026-07-01':[{type:'swim',id:'W5S2',label:'W5S2 · 2.4 km'}]
+'2026-06-03':[{type:'swim',id:'MAY-ADD'}],
+'2026-06-04':[{type:'dry',id:'B'}],
+'2026-06-05':[{type:'swim',id:'W1S2'}],
+'2026-06-06':[{type:'swim',id:'W1S3'},{type:'dry',id:'C'}],
+'2026-06-08':[{type:'swim',id:'W2S1'}],
+'2026-06-09':[{type:'dry',id:'A'}],
+'2026-06-10':[{type:'swim',id:'W2S2'}],
+'2026-06-11':[{type:'dry',id:'B'}],
+'2026-06-12':[{type:'swim',id:'W2S3'}],
+'2026-06-13':[{type:'swim',id:'Z1-1'},{type:'dry',id:'C'}],
+'2026-06-15':[{type:'swim',id:'W3S1'}],
+'2026-06-16':[{type:'dry',id:'A'}],
+'2026-06-17':[{type:'swim',id:'W3S2'}],
+'2026-06-18':[{type:'dry',id:'B'}],
+'2026-06-19':[{type:'swim',id:'W3S3'}],
+'2026-06-20':[{type:'swim',id:'Z1-2'},{type:'dry',id:'C'}],
+'2026-06-22':[{type:'swim',id:'W4S1'}],
+'2026-06-23':[{type:'dry',id:'A'}],
+'2026-06-24':[{type:'swim',id:'W4S2'}],
+'2026-06-25':[{type:'dry',id:'B'}],
+'2026-06-26':[{type:'swim',id:'W4S3'}],
+'2026-06-27':[{type:'swim',id:'Z1-3'},{type:'dry',id:'C'}],
+'2026-06-29':[{type:'swim',id:'W5S1'}],
+'2026-06-30':[{type:'dry',id:'A'}],
+'2026-07-01':[{type:'swim',id:'W5S2'}]
 };
 
+// Short labels for calendar cells
+const CAL_LABELS={
+'swim':{'MAY-ADD':'Mai Add.','W1S2':'Descend','W1S3':'Neg. Split','W2S1':'Endurance','W2S2':'Big Toe','W2S3':'Ford TH','W3S1':'Kowalski','W3S2':'85% Ladder','W3S3':'Von Torros','W4S1':'25m Sprints','W4S2':'Pull+CSS','W4S3':'Best Avg','W5S1':'K/P/S Sets','W5S2':'Stroke CT','Z1-1':'Z1 Kick','Z1-2':'Z1 Hip','Z1-3':'Z1 Feet'},
+'dry':{'A':'Pull & Post.','B':'Core & Hüfte','C':'Power'}
+};
+function calLabel(type,id){return(CAL_LABELS[type]&&CAL_LABELS[type][id])||id;}
+
+
 /* ===== STATE ===== */
-const KEY='besko_hub_v2';
+const KEY='besko_hub_v3';
 let STATE;
 (function(){try{const r=localStorage.getItem(KEY);STATE=r?JSON.parse(r):{history:[],progress:{},done:{},checks:{},inputs:{}};}catch(e){STATE={history:[],progress:{},done:{},checks:{},inputs:{}};}
 STATE.history=STATE.history||[];STATE.progress=STATE.progress||{};STATE.done=STATE.done||{};STATE.checks=STATE.checks||{};STATE.inputs=STATE.inputs||{};})();
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(STATE));}catch(e){}}
 
 /* ===== UTILS ===== */
-const e=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+const e=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 const today=()=>{const d=new Date();return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;};
 const todayFmt=()=>new Date().toLocaleDateString('de-CH',{day:'2-digit',month:'2-digit',year:'numeric'});
 const qs=(s,r=document)=>r.querySelector(s);
 const qsa=(s,r=document)=>[...r.querySelectorAll(s)];
-const CE=s=>s.replace(/[^a-zA-Z0-9_-]/g,c=>'\\'+c);
+// Safe card finder – no CSS escaping issues
+const findCard=k=>[...document.querySelectorAll('[data-card]')].find(el=>el.dataset.card===k);
 
-/* ===== RENDER UTILS ===== */
+/* ===== RENDER: PACING ===== */
 function renderPacing(){return`<div class="pacing-box"><h3>Pacing · /100m</h3><div class="pacing-note">${e(PACING.note)}</div><div class="pace-grid">${PACING.cells.map(x=>`<div class="pcell${x.hot?' hot':''}"><div class="pz">${e(x.z)}</div><div class="pv">${e(x.v)}</div></div>`).join('')}</div></div>`;}
 
-function renderPhases(key,phases,isDry){
-  return phases.map((p,pi)=>{
-    const items=p.items.map((it,ii)=>{
+/* ===== RENDER: PHASES (generic) ===== */
+function renderPhases(key,phases){
+  return phases.map(p=>{
+    const items=p.items.map(it=>{
       if(it.ex){
-        const rk=it.id; const ck=STATE.checks[rk]; const rv=STATE.inputs[rk+'_r']||''; const bv=STATE.inputs[rk+'_b']||'';
-        return`<div class="ex-item"><div class="ex-top"><div class="chk${ck?' on':''}" data-exchk="${e(rk)}"></div><div class="ex-name${ck?' struck':''}">${e(it.name)}</div><div class="ex-tgt">${e(it.tgt)}</div></div><div class="ex-mus">${e(it.mus)} · Pause ${e(it.rest)}</div>${it.cue?`<div class="ex-cue">${e(it.cue)}</div>`:''}<div class="ex-in"><div class="ff ff-r"><label>Reps actual</label><input data-ei="r" data-rk="${e(rk)}" value="${e(rv)}" placeholder="${e(it.tgt)}"></div><div class="ff ff-b"><label>Band / Gewicht</label><input data-ei="b" data-rk="${e(rk)}" value="${e(bv)}" placeholder="z.B. Grünes Band / KB 16"></div></div></div>`;
+        const rk=it.id;const ck=STATE.checks[rk];const rv=STATE.inputs[rk+'_r']||'';const bv=STATE.inputs[rk+'_b']||'';
+        return`<div class="ex-item"><div class="ex-top"><div class="chk${ck?' on':''}" data-exchk="${e(rk)}"></div><div class="ex-name${ck?' struck':''}">${e(it.name)}</div><div class="ex-tgt">${e(it.tgt)}</div></div><div class="ex-mus">${e(it.mus)} · ${e(it.rest)}</div>${it.cue?`<div class="ex-cue">${e(it.cue)}</div>`:''}<div class="ex-in"><div class="ff ff-r"><label>Reps actual</label><input data-ei="r" data-rk="${e(rk)}" value="${e(rv)}" placeholder="${e(it.tgt)}"></div><div class="ff ff-b"><label>Band / Gewicht</label><input data-ei="b" data-rk="${e(rk)}" value="${e(bv)}" placeholder="z.B. Grünes Band / KB 16"></div></div></div>`;
       }
       return`<div class="item"><div class="it-body"><div class="it-t">${e(it.t)}</div>${it.n?`<div class="it-n">${e(it.n).replace(/\n/g,'<br>')}</div>`:''}</div></div>`;
     }).join('');
@@ -408,20 +456,22 @@ function renderPhases(key,phases,isDry){
   }).join('');
 }
 
+/* ===== RENDER: SESSION FOOTER ===== */
 function renderFoot(key,btnCls,title){
-  const rv=e(STATE.inputs[key+'_rpe']||''); const nv=e(STATE.inputs[key+'_note']||'');
-  return`<div class="sess-foot"><div class="sess-meta"><div class="ff ff-rpe"><label>RPE 1–10</label><input inputmode="numeric" data-si="rpe" data-key="${e(key)}" value="${rv}" placeholder="–"></div><div class="ff ff-note"><label>Notiz</label><textarea data-si="note" data-key="${e(key)}" placeholder="Pace, Gefühl, Anpassungen…">${nv}</textarea></div></div><div class="sess-btns"><button class="btn ${btnCls}" data-log="${e(key)}" data-title="${e(title)}">Session loggen</button><button class="btn btn-rst" data-reset="${e(key)}">Reset</button></div><div class="sav" data-sav="${e(key)}">✓ Gespeichert im Verlauf</div></div>`;
+  return`<div class="sess-foot"><div class="sess-meta"><div class="ff ff-rpe"><label>RPE 1–10</label><input inputmode="numeric" data-si="rpe" data-key="${e(key)}" value="${e(STATE.inputs[key+'_rpe']||'')}" placeholder="–"></div><div class="ff ff-note"><label>Notiz</label><textarea data-si="note" data-key="${e(key)}" placeholder="Pace, Gefühl…">${e(STATE.inputs[key+'_note']||'')}</textarea></div></div><div class="sess-btns"><button class="btn ${btnCls}" data-log="${e(key)}" data-title="${e(title)}">Session loggen</button><button class="btn btn-rst" data-reset="${e(key)}">Reset</button></div><div class="sav" data-sav="${e(key)}">✓ Gespeichert</div></div>`;
 }
 
+/* ===== RENDER: SWIM CARD (accordion) ===== */
 function renderSwimCard(s){
-  const key='swim:'+s.id; const logged=!!STATE.done[key];
+  const key='swim:'+s.id;const logged=!!STATE.done[key];
   const drills=s.drills?.map(d=>d.u?`<a class="drl" href="${e(d.u)}" target="_blank" rel="noopener">▶ ${e(d.n)}</a>`:`<span class="drt">${e(d.n)}</span>`).join('')||'';
-  return`<div class="card card-${s.acc}${logged?' logged':''}" data-card="${e(key)}"><div class="card-head" data-toggle="${e(key)}"><span class="done-dot"></span><span class="badge ${s.bc}">${e(s.badge)}</span><span class="card-title"><span class="t">${e(s.title)}</span><span class="s">${e(s.sub)}</span></span><span class="chev">▶</span></div><div class="card-body"><div class="card-inner">${s.focus?`<div class="focus-cue"><span class="cue-lbl">${e(s.cue)}</span>${e(s.focus)}</div>`:''}<div class="drills">${drills}</div>${renderPhases(key,s.phases,false)}${renderFoot(key,'btn-sw',s.badge+' – '+s.title)}</div></div></div>`;
+  return`<div class="card card-${s.acc}${logged?' logged':''}" data-card="${e(key)}"><div class="card-head" data-toggle="${e(key)}"><span class="done-dot"></span><span class="badge ${s.bc}">${e(s.badge)}</span><span class="card-title"><span class="t">${e(s.title)}</span><span class="s">${e(s.sub)}</span></span><span class="chev">▶</span></div><div class="card-body"><div class="card-inner">${s.focus?`<div class="focus-cue"><span class="cue-lbl">${e(s.cue)}</span>${e(s.focus)}</div>`:''}<div class="drills">${drills}</div>${renderPhases(key,s.phases)}${renderFoot(key,'btn-sw',s.badge+' – '+s.title)}</div></div></div>`;
 }
 
-function renderDryCard(s){
-  const key='dry:'+s.id; const logged=!!STATE.done[key];
-  return`<div class="card card-${s.acc}${logged?' logged':''}" data-card="${e(key)}"><div class="card-head" data-toggle="${e(key)}"><span class="done-dot"></span><span class="badge ${s.bc}">${e(s.badge)}</span><span class="card-title"><span class="t">${e(s.title)}</span><span class="s">${e(s.sub)}</span></span><span class="chev">▶</span></div><div class="card-body"><div class="card-inner">${s.focus?`<div class="focus-cue"><span class="cue-lbl">${e(s.cue)}</span>${e(s.focus)}</div>`:''} ${renderPhases(key,s.phases,true)}${renderFoot(key,s.btn,s.badge+' – '+s.title)}</div></div></div>`;
+/* ===== RENDER: DRYLAND (direct – no accordion) ===== */
+function renderDryDirect(s){
+  const key='dry:'+s.id;const logged=!!STATE.done[key];
+  return`<div class="dry-direct ${s.vCls}${logged?' logged':''}"><div class="ddhdr"><span class="badge ${s.bc}">${e(s.badge)}</span><div class="dd-titles"><div class="dd-title">${e(s.title)}</div><div class="dd-sub">${e(s.sub)}</div></div><span class="done-dot"></span></div>${s.focus?`<div class="focus-cue"><span class="cue-lbl">${e(s.cue)}</span>${e(s.focus)}</div>`:''} ${renderPhases(key,s.phases)}${renderFoot(key,s.btn,s.badge+' – '+s.title)}</div>`;
 }
 
 /* ===== CALENDAR ===== */
@@ -432,22 +482,57 @@ function renderCalendar(){
   dow.forEach(d=>{h+=`<div class="cal-dow">${d}</div>`;});
   for(let day=1;day<=30;day++){
     const ds=`2026-06-${String(day).padStart(2,'0')}`;
-    const sess=SCHED[ds]||[];
-    const hasSess=sess.length>0;
-    const isToday=ds===td;
+    const sess=SCHED[ds]||[];const hasSess=sess.length>0;const isToday=ds===td;
     const cls=['cal-day',hasSess?'has-s':'',isToday?'today':''].filter(Boolean).join(' ');
-    const ev=sess.map(s=>`<div class="cal-ev e${s.type}" data-cday="${ds}" data-csid="${e(s.id)}" data-ctype="${e(s.type)}">${e(s.label.split(' · ')[0])}</div>`).join('');
-    h+=`<div class="${cls}"${hasSess?` data-cday="${ds}"`:''}><div class="cal-dn">${day}</div>${ev}</div>`;
+    const evs=sess.map(s=>{
+      const ecls=s.type==='swim'?(s.id.startsWith('Z1')?'ez1':'esw'):'edy';
+      const lbl=calLabel(s.type,s.id);
+      return`<div class="cal-ev ${ecls}" data-csid="${e(s.id)}" data-ctype="${e(s.type)}">${e(lbl)}</div>`;
+    }).join('');
+    h+=`<div class="${cls}"${hasSess?` data-cday="${ds}"`:''}><div class="cal-dn">${day}</div>${evs}</div>`;
   }
-  h+='</div></div>';
-  return h;
+  h+='</div></div>';return h;
 }
 
-/* ===== BADI STATE ===== */
-let badiRows=[];let badiLoaded=false;let badiLoading=false;let selectedBadi='Hallenbad City';
-const BADIS=['Hallenbad City','Freibad Letzigraben','Seebad Utoquai','Flussbad Oberer Letten'];
-const BADI_SHORT={'Hallenbad City':'HB City','Freibad Letzigraben':'Letzigraben','Seebad Utoquai':'Utoquai','Flussbad Oberer Letten':'Ob. Letten'};
+/* ===== HORIZONTAL WEEK GRID ===== */
+function renderWeekGrid(){
+  const td=today();const now=new Date();const dowNow=(now.getDay()+6)%7;
+  const dow=['Mo','Di','Mi','Do','Fr','Sa','So'];
+  let h=`<div class="wk-horiz"><div class="wkh-inner">`;
+  for(let i=0;i<7;i++){
+    const d=new Date(now);d.setDate(now.getDate()-dowNow+i);
+    const ds=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    const sess=SCHED[ds]||[];const isToday=ds===td;const hasSess=sess.length>0;
+    let cls='wkh-col';if(isToday)cls+=' today';if(hasSess)cls+=' has-sess';
+    h+=`<div class="${cls}"><div class="wkh-hdr"><span class="wkh-dow">${dow[i]}</span><span class="wkh-d">${d.getDate()}</span></div>`;
+    if(sess.length){
+      sess.forEach(s=>{
+        const sc=s.type==='swim'?(s.id.startsWith('Z1')?'z1':'sw'):'dy';
+        const lbl=calLabel(s.type,s.id);
+        h+=`<div class="wkh-sess ${sc}" data-goto-tab="${s.type==='dry'?'dry':'swim'}" data-goto-id="${e(s.id)}">${e(lbl)}</div>`;
+      });
+    }
+    h+='</div>';
+  }
+  h+='</div></div>';return h;
+}
 
+/* ===== BADI ===== */
+let badiRows=[];let badiLoaded=false;let badiLoading=false;let selectedBadi='Hallenbad City';
+const BADIS=[
+  {id:'hb_city',name:'Hallenbad City',keys:['hallenbad city','hallenbad_city','hb city','city']},
+  {id:'utoquai',name:'Seebad Utoquai',keys:['utoquai','uto']},
+  {id:'letzi',name:'Freibad Letzigraben',keys:['letzigraben','letzi']},
+  {id:'heuried',name:'Hallenbad Heuried',keys:['heuried']},
+  {id:'letten',name:'Ob. Letten',keys:['letten','oberer letten','flussbad']}
+];
+const BADI_SHORT={hb_city:'HB City',utoquai:'Utoquai',letzi:'Letzigraben',heuried:'Heuried',letten:'Ob. Letten'};
+
+function matchBadi(name){
+  const nl=name.toLowerCase().trim();
+  for(const b of BADIS){for(const k of b.keys){if(nl.includes(k)||k.includes(nl))return b.id;}}
+  return null;
+}
 function pctColor(p){if(p===null)return'var(--surf2)';if(p<15)return'#1e3a5f';if(p<30)return'#1f5f9a';if(p<45)return'#2d8a5e';if(p<60)return'#c9a900';if(p<75)return'#c05a00';if(p<90)return'#9b1a1a';return'#6b0f0f';}
 function statusLabel(p){if(p===null)return['–',''];if(p<30)return['Sehr frei ✓','bst-g'];if(p<50)return['Gut frei','bst-g'];if(p<65)return['Mittel','bst-y'];if(p<80)return['Belebt','bst-y'];return['Voll','bst-r'];}
 
@@ -455,259 +540,214 @@ async function loadBadi(){
   if(badiLoaded||badiLoading)return;
   badiLoading=true;
   try{
-    const res=await fetch('https://raw.githubusercontent.com/derbsq/Badi-Tracker/main/data/occupancy.csv');
-    if(!res.ok)throw new Error('fetch failed');
-    const txt=await res.text();
-    const lines=txt.trim().split('\n');
-    if(lines.length<2){badiLoading=false;return;}
-    const hdr=lines[0].split(',').map(h=>h.trim().toLowerCase());
-    const tC=hdr.findIndex(h=>h.includes('time')||h.includes('ts'));
-    const nC=hdr.findIndex(h=>h.includes('badi')||h.includes('name')||h.includes('facility'));
-    const pC=hdr.findIndex(h=>h.includes('pct')||h.includes('percent')||h.includes('load'));
+    const urls=['https://raw.githubusercontent.com/derbsq/Badi-Tracker/main/data/occupancy.csv',
+                'https://raw.githubusercontent.com/derbsq/Badi-Tracker/main/data/badi_data.csv'];
+    let text=null;
+    for(const url of urls){
+      try{const res=await fetch(url);if(res.ok){text=await res.text();break;}}catch(e){}
+    }
+    if(!text){badiLoading=false;updateBadiUI('Keine Verbindung zum GitHub-Repo.');return;}
+    const lines=text.trim().split('\n');
+    if(lines.length<2){badiLoading=false;updateBadiUI('CSV leer oder unlesbar.');return;}
+    const hdr=lines[0].split(',').map(h=>h.trim().toLowerCase().replace(/['"]/g,''));
+    // Debug: log first few rows to console
+    console.log('[Badi CSV] Header:',hdr);
+    console.log('[Badi CSV] First row:',lines[1]);
+    const tC=hdr.findIndex(h=>h.includes('time')||h.includes('ts')||h==='date');
+    const nC=hdr.findIndex(h=>h.includes('badi')||h.includes('name')||h.includes('facility')||h.includes('pool'));
+    const pC=hdr.findIndex(h=>h.includes('pct')||h.includes('percent')||h==='load'||h.includes('occupancy'));
     const cC=hdr.findIndex(h=>h.includes('current')||h.includes('count')||h.includes('abs'));
     const mC=hdr.findIndex(h=>h.includes('max')||h.includes('capacity'));
+    console.log('[Badi CSV] Columns: t='+tC+' n='+nC+' p='+pC+' c='+cC+' m='+mC);
     badiRows=[];
     for(let i=1;i<lines.length;i++){
-      const cols=lines[i].split(',').map(c=>c.trim());
+      const cols=lines[i].split(',').map(c=>c.trim().replace(/^["']|["']$/g,''));
       if(cols.length<2)continue;
       const tsStr=tC>=0?cols[tC]:'';const name=nC>=0?cols[nC]:'';
       let pct=pC>=0?parseFloat(cols[pC]):NaN;
-      if(isNaN(pct)&&cC>=0&&mC>=0){const c2=parseFloat(cols[cC]),m2=parseFloat(cols[mC]);if(!isNaN(c2)&&!isNaN(m2)&&m2>0)pct=Math.round(c2/m2*100);}
+      if(isNaN(pct)&&cC>=0&&mC>=0){const c2=parseFloat(cols[cC]),m2=parseFloat(cols[mC]);if(!isNaN(c2)&&!isNaN(m2)&&m2>0)pct=c2/m2*100;}
       if(!tsStr||!name||isNaN(pct))continue;
       const ts=new Date(tsStr);if(isNaN(ts.getTime()))continue;
-      const ageDays=(Date.now()-ts.getTime())/(86400000);
+      const ageDays=(Date.now()-ts.getTime())/86400000;
       badiRows.push({ts,name,pct:Math.round(pct),dow:(ts.getDay()+6)%7,hour:ts.getHours(),ageDays});
     }
-    badiLoaded=true;
-  }catch(err){}
+    console.log('[Badi CSV] Parsed rows:',badiRows.length,'Sample:',badiRows.slice(-3));
+    badiLoaded=badiRows.length>0;
+  }catch(err){console.error('[Badi]',err);}
   badiLoading=false;
-  renderBadiViews();
+  updateBadiUI(null);
+}
+
+function updateBadiUI(errMsg){
+  const sg=qs('#badi-stat');if(sg)sg.innerHTML=errMsg?`<div class="warn-box">Badi: ${e(errMsg)}</div>`:renderStatusGrid();
+  const db=qs('#dash-badi');if(db)db.innerHTML=errMsg?`<div class="warn-box">Badi: ${e(errMsg)}</div>`:renderStatusGridMini();
+  const hg=qs('#hm-grid-wrap');if(hg)hg.innerHTML=renderHeatmapHtml(selectedBadi);
+  const og=qs('#oracle-wrap');if(og)og.innerHTML=renderOracleHtml(selectedBadi);
 }
 
 function getCurrentStatus(){
-  const latest={};const cutoff=Date.now()-30*60000;
-  badiRows.forEach(r=>{if(r.ts.getTime()<cutoff)return;if(!latest[r.name]||r.ts>latest[r.name].ts)latest[r.name]=r;});
+  const latest={};const cutoff=Date.now()-40*60000;
+  badiRows.forEach(r=>{if(r.ts.getTime()<cutoff)return;const bid=matchBadi(r.name);if(!bid)return;if(!latest[bid]||r.ts>latest[bid].ts)latest[bid]=r;});
   return latest;
 }
 
-function buildHeatmap(facility){
-  // 7 days × 16 hours (5:00-20:00)
+function renderStatusGrid(){
+  if(!badiLoaded)return`<div class="loading">Lade Badi-Daten…</div>`;
+  const ls=getCurrentStatus();
+  const cells=BADIS.map(b=>{
+    const d=ls[b.id];const pct=d?d.pct:null;
+    const[stxt,scls]=statusLabel(pct);const bc=pctColor(pct);
+    return`<div class="badi-cell"><div class="badi-cell-name">${e(b.name)}</div><div class="badi-bar-bg"><div class="badi-bar" style="width:${pct??0}%;background:${bc}"></div></div><div class="badi-pct">${pct!==null?pct+'%':'–'}</div><div class="badi-status ${scls}">${stxt}</div></div>`;
+  }).join('');
+  const vals=Object.values(ls);const latestTs=vals.length?vals.sort((a,b)=>b.ts-a.ts)[0].ts:null;
+  const tsLbl=latestTs?`Letztes Update: ${latestTs.toLocaleTimeString('de-CH',{hour:'2-digit',minute:'2-digit'})} Uhr`:'Daten aus CSV geladen';
+  return`<div class="badi-stat-grid">${cells}</div><div class="badi-ts">${tsLbl}</div>`;
+}
+
+function renderStatusGridMini(){
+  if(!badiLoaded)return`<div class="loading">Lade Badi-Daten…</div>`;
+  const ls=getCurrentStatus();
+  const cells=BADIS.map(b=>{
+    const d=ls[b.id];const pct=d?d.pct:null;
+    const[stxt,scls]=statusLabel(pct);const bc=pctColor(pct);
+    return`<div class="badi-cell"><div class="badi-cell-name">${e(BADI_SHORT[b.id]||b.name)}</div><div class="badi-bar-bg"><div class="badi-bar" style="width:${pct??0}%;background:${bc}"></div></div><div class="badi-pct">${pct!==null?pct+'%':'–'}</div></div>`;
+  }).join('');
+  return`<div class="badi-stat-grid">${cells}</div>`;
+}
+
+function buildHeatmap(badiId){
   const grid=Array.from({length:7},()=>Array.from({length:16},()=>({sum:0,cnt:0})));
   badiRows.forEach(r=>{
-    const nl=r.name.toLowerCase(),fl=facility.toLowerCase();
-    if(!nl.includes(fl.split(' ')[0].toLowerCase())&&!fl.includes(nl.split(' ')[0].toLowerCase()))return;
+    if(matchBadi(r.name)!==badiId)return;
     const h=r.hour-5;if(h<0||h>=16)return;
     grid[r.dow][h].sum+=r.pct;grid[r.dow][h].cnt++;
   });
   return grid.map(row=>row.map(c=>c.cnt>0?Math.round(c.sum/c.cnt):null));
 }
 
-function getOracle(facility){
+function getOracle(badiId){
   const now=new Date();const dow=(now.getDay()+6)%7;const hr=now.getHours();
-  const preds=[];
-  for(let dh=0;dh<8;dh++){
+  return Array.from({length:8},(_,dh)=>{
     const th=(hr+dh)%24;const td2=dh>=(24-hr)?((dow+1)%7):dow;
-    const similar=badiRows.filter(r=>{
-      const nl=r.name.toLowerCase(),fl=facility.toLowerCase();
-      if(!nl.includes(fl.split(' ')[0].toLowerCase())&&!fl.includes(nl.split(' ')[0].toLowerCase()))return false;
-      return r.dow===td2&&Math.abs(r.hour-th)<=1;
-    });
-    if(!similar.length){preds.push({h:th,pct:null});continue;}
-    let sw=0,sp=0;
-    similar.forEach(r=>{const w=Math.exp(-0.023*r.ageDays);sw+=w;sp+=w*r.pct;});
-    preds.push({h:th,pct:Math.round(sp/sw)});
-  }
-  return preds;
+    const similar=badiRows.filter(r=>matchBadi(r.name)===badiId&&r.dow===td2&&Math.abs(r.hour-th)<=1);
+    if(!similar.length)return{h:th,pct:null};
+    let sw=0,sp=0;similar.forEach(r=>{const w=Math.exp(-0.023*r.ageDays);sw+=w;sp+=w*r.pct;});
+    return{h:th,pct:Math.round(sp/sw)};
+  });
 }
 
-function renderStatusGrid(){
-  const ls=getCurrentStatus();
-  const cells=BADIS.map(b=>{
-    const d=Object.values(ls).find(r=>{
-      const nl=r.name.toLowerCase(),bl=b.toLowerCase();
-      return nl.includes(bl.split(' ')[0].toLowerCase())||bl.includes(nl.split(' ')[0].toLowerCase());
-    });
-    const pct=d?d.pct:null;
-    const [stxt,scls]=statusLabel(pct);
-    const bc=pctColor(pct);
-    return`<div class="badi-cell"><div class="badi-cell-name">${e(BADI_SHORT[b]||b)}</div><div class="badi-bar-bg"><div class="badi-bar" style="width:${pct??0}%;background:${bc}"></div></div><div class="badi-pct">${pct!==null?pct+'%':'–'}</div><div class="badi-status ${scls}">${stxt}</div></div>`;
-  }).join('');
-  const tss=Object.values(ls);
-  const latestTs=tss.length?tss.sort((a,b)=>b.ts-a.ts)[0].ts:null;
-  const tsLbl=latestTs?`Letztes Update: ${latestTs.toLocaleTimeString('de-CH',{hour:'2-digit',minute:'2-digit'})} Uhr`:'Lade Daten…';
-  return`<div class="badi-stat-grid">${cells}</div><div class="badi-ts">${tsLbl}</div>`;
-}
-
-function renderHeatmapHtml(facility){
+function renderHeatmapHtml(badiId){
   if(!badiLoaded)return`<div class="loading">Daten werden geladen…</div>`;
-  const grid=buildHeatmap(facility);
-  const days=['Mo','Di','Mi','Do','Fr','Sa','So'];
-  const hours=Array.from({length:16},(_,i)=>i+5);
+  const grid=buildHeatmap(badiId);
+  const days=['Mo','Di','Mi','Do','Fr','Sa','So'];const hours=Array.from({length:16},(_,i)=>i+5);
   const now=new Date();const todayDow=(now.getDay()+6)%7;const curH=now.getHours();
-  const cols=`30px repeat(16,1fr)`;
-  let h=`<div class="hm-grid" style="display:grid;grid-template-columns:${cols};gap:2px;">`;
-  // header row
+  let h=`<div class="hm-grid" style="display:grid;grid-template-columns:22px repeat(16,1fr);gap:2px;">`;
   h+=`<div class="hm-lbl"></div>`;
-  hours.forEach(hr=>{const isCur=(hr===curH);h+=`<div class="hm-lbl" style="${isCur?'color:var(--swim);font-weight:700':''}">${hr}</div>`;});
-  // day rows
+  hours.forEach(hr=>{h+=`<div class="hm-lbl" style="${hr===curH?'color:var(--swim);font-weight:700':''}">${hr}</div>`;});
   days.forEach((d,di)=>{
     const isToday=di===todayDow;
     h+=`<div class="hm-lbl" style="${isToday?'color:var(--swim);font-weight:700':''}">${d}</div>`;
-    hours.forEach((_,hi)=>{
-      const val=grid[di][hi];const c=pctColor(val);const op=val!==null?1:0.25;const isCur=isToday&&hours[hi]===curH;
+    hours.forEach((hr,hi)=>{
+      const val=grid[di][hi];const c=pctColor(val);const op=val!==null?1:0.2;const isCur=isToday&&hr===curH;
       h+=`<div class="hm-cell" style="background:${c};opacity:${op};${isCur?'box-shadow:0 0 0 2px var(--swim)':''}" title="${val!==null?val+'%':'–'}"></div>`;
     });
   });
   h+='</div>';
-  // legend
   h+=`<div class="hm-legend"><span class="hm-leg-lbl">Leer</span><div class="hm-leg-bar">${[0,20,35,52,68,80,93].map(p=>`<div class="hm-leg-cell" style="background:${pctColor(p)}"></div>`).join('')}</div><span class="hm-leg-lbl">Voll</span></div>`;
+  if(badiRows.length===0)h+=`<div class="debug-box">Hinweis: 0 Rows geparst. Öffne die Konsole (F12) um die CSV-Struktur zu sehen.</div>`;
   return h;
 }
 
-function renderOracleHtml(facility){
+const BESM_SVG=`<svg class="oracle-svg" width="72" height="72" viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg"><circle cx="36" cy="33" r="26" fill="rgba(26,69,96,.07)" stroke="var(--bdi)" stroke-width="1.2" opacity=".7"/><circle cx="36" cy="33" r="18" fill="rgba(26,69,96,.1)"/><ellipse cx="36" cy="33" rx="11" ry="6.5" fill="none" stroke="var(--bdi)" stroke-width="1.1"/><circle cx="36" cy="33" r="3.5" fill="var(--bdi)" opacity=".75"/><circle cx="34.5" cy="31.5" r="1.2" fill="white" opacity=".65"/><text x="14" y="16" font-size="5.5" fill="var(--bdi)" opacity=".5">✦</text><text x="54" y="14" font-size="4.5" fill="var(--bdi)" opacity=".4">✦</text><text x="58" y="48" font-size="5" fill="var(--bdi)" opacity=".35">✦</text><text x="10" y="50" font-size="4" fill="var(--bdi)" opacity=".3">✦</text><path d="M26,59 L36,60 L46,59 L48,65 L24,65 Z" fill="rgba(26,69,96,.18)"/><line x1="24" y1="65" x2="48" y2="65" stroke="var(--bdi)" stroke-width=".8" opacity=".35"/></svg>`;
+
+function renderOracleHtml(badiId){
   if(!badiLoaded)return`<div class="loading">Daten werden geladen…</div>`;
-  const preds=getOracle(facility);
+  const preds=getOracle(badiId);
   const best=preds.reduce((a,b)=>(b.pct!==null&&(a===null||b.pct<a.pct))?b:a,null);
+  const bname=BADIS.find(b=>b.id===badiId)?.name||badiId;
   const slots=preds.map(p=>{
     const isBest=best&&p.h===best.h&&p.pct!==null;
-    const [,scls]=statusLabel(p.pct);
     return`<div class="oracle-slot${isBest?' best':''}"><div class="oracle-h">${String(p.h).padStart(2,'0')}:00</div><div class="oracle-p" style="color:${pctColor(p.pct)}">${p.pct!==null?p.pct+'%':'–'}</div>${isBest?'<div class="oracle-tip">beste Zeit</div>':''}</div>`;
   }).join('');
-  const bestTxt=best&&best.pct!==null?`→ Beste Zeit heute ca. ${String(best.h).padStart(2,'0')}:00 Uhr (~${best.pct}% erwartet)`:'';
-  return`<div class="oracle-name">${e(BADI_SHORT[facility]||facility)}</div><div class="oracle-grid">${slots}</div>${bestTxt?`<div class="oracle-best">${e(bestTxt)}</div>`:''}`;
+  const bestTxt=best&&best.pct!==null?`Beste Zeit heute ca. ${String(best.h).padStart(2,'0')}:00 Uhr — ca. ${best.pct}% erwartet`:'';
+  return`<div class="oracle-hdr">${BESM_SVG}<div class="oracle-intro"><div class="oracle-name">Bésmeralda · ${e(bname)}</div><div class="oracle-desc">Bésmeraldas Funky Fortune Telling Service · kNN mit exponentiellem Recency-Gewicht</div></div></div><div class="oracle-grid">${slots}</div>${bestTxt?`<div class="oracle-best">→ ${e(bestTxt)}</div>`:''}`;
 }
 
-function renderBadiViews(){
-  const db=qs('#dash-badi');if(db)db.innerHTML=renderStatusGrid();
-  const bv=qs('#v-badi');if(bv&&bv.classList.contains('on'))rebuildBadiTab();
+/* ===== VIEW: DASHBOARD ===== */
+function viewDash(){
+  const el=qs('#v-dash');
+  let h=renderCalendar();
+  h+=`<div class="sec-label" style="margin-top:1.2rem">Diese Woche</div>`;
+  h+=renderWeekGrid();
+  h+=`<div class="sec-label">Badi-Status</div>`;
+  h+=`<div id="dash-badi">${badiLoaded?renderStatusGridMini():'<div class="loading">Lade Daten…</div>'}</div>`;
+  el.innerHTML=h;
 }
 
-function rebuildBadiTab(){
-  const bv=qs('#v-badi');if(!bv)return;
-  const sg=qs('#badi-stat',bv);if(sg)sg.innerHTML=badiLoaded?renderStatusGrid():`<div class="loading">Lade Daten…</div>`;
-  const hg=qs('#hm-grid-wrap',bv);if(hg)hg.innerHTML=renderHeatmapHtml(selectedBadi);
-  const og=qs('#oracle-wrap',bv);if(og)og.innerHTML=renderOracleHtml(selectedBadi);
-}
-
-function renderBadiTab(){
-  const bv=qs('#v-badi');if(!bv)return;
-  const pills=BADIS.map(b=>`<button class="hm-pill${b===selectedBadi?' on':''}" data-bdsel="${e(b)}">${e(BADI_SHORT[b]||b)}</button>`).join('');
-  bv.innerHTML=`
-    <div class="badi-hero">
-      <div class="badi-hero-txt"><h2>Bésko's Kleiner Baditracker</h2><p>Live-Belegung · Heatmap · Bésmeralda-Vorhersage</p></div>
-      <a class="badi-ref-btn" href="https://derbsq.github.io/Badi-Tracker/" target="_blank" rel="noopener">Vollansicht →</a>
-    </div>
-    <div class="sec-label">Aktuelle Belegung</div>
+/* ===== VIEW: BADI ===== */
+function viewBadi(){
+  const el=qs('#v-badi');
+  const pills=BADIS.map(b=>`<button class="hm-pill${b.id===selectedBadi?' on':''}" data-bdsel="${e(b.id)}">${e(BADI_SHORT[b.id]||b.name)}</button>`).join('');
+  el.innerHTML=`
+    <div class="sec-label" style="margin-top:.1rem">Aktuelle Belegung</div>
     <div id="badi-stat">${badiLoaded?renderStatusGrid():'<div class="loading">Lade Daten…</div>'}</div>
     <div class="sec-label">Heatmap · Typische Belegung</div>
     <div class="hm-wrap">
-      <div class="hm-select">${pills}</div>
+      <div class="hm-sel" id="hm-pills">${pills}</div>
       <div id="hm-grid-wrap">${renderHeatmapHtml(selectedBadi)}</div>
     </div>
     <div class="sec-label">Bésmeralda · Vorhersage nächste 8h</div>
     <div class="oracle-wrap"><div id="oracle-wrap">${renderOracleHtml(selectedBadi)}</div></div>
     <div class="sec-label">Hallenbad City · Info</div>
-    <div class="card card-dB" style="padding:0">
-      <div class="card-head" data-toggle="hb-info"><span class="badge bdB">HC · Becken</span><span class="card-title"><span class="t">Bahnbelegung & Öffnungszeiten</span><span class="s">Hallenbad City · Zürich</span></span><span class="chev">▶</span></div>
-      <div class="card-body" id="hb-info-body">
-        <div class="card-inner">
-          <div class="phase"><div class="ph-name"><span>Schwimmerbecken (50m)</span></div>
-            <div class="item"><div class="it-body"><div class="it-t">Mo–Fr: 07:00–21:00 · Sa: 08:00–18:00 · So: 08:00–18:00</div><div class="it-n">Mittagspause 11:30–13:30 Vereinsbetrieb. Bahnen reduziert.</div></div></div>
-          </div>
-          <div class="phase"><div class="ph-name"><span>Variobecken (25m)</span></div>
-            <div class="item"><div class="it-body"><div class="it-t">Mo–Fr: 07:00–21:00 · Sa/So: 08:00–18:00</div><div class="it-n">Wechselnde Belegung – Schwimmbahnen, Aquafit, Vereinszeiten.</div></div></div>
-          </div>
-          <div class="warn-box">Öffnungszeiten können variieren. Für aktuelle Infos: <a href="https://www.stadt-zuerich.ch/hallenbad-city" target="_blank" style="color:var(--dA);border-bottom:1px dotted currentColor">stadt-zuerich.ch/hallenbad-city</a></div>
-        </div>
-      </div>
-    </div>`;
+    <div class="card card-dB"><div class="card-head" data-toggle="hb-info"><span class="badge bdB">HC · Becken</span><span class="card-title"><span class="t">Bahnbelegung & Öffnungszeiten</span><span class="s">Hallenbad City · Zürich</span></span><span class="chev">▶</span></div><div class="card-body" id="hb-info-body"><div class="card-inner"><div class="phase"><div class="ph-name"><span>Schwimmerbecken (50m)</span></div><div class="item"><div class="it-body"><div class="it-t">Mo–Fr: 07:00–21:00 · Sa/So: 08:00–18:00</div><div class="it-n">Mittagspause 11:30–13:30 Vereinsbetrieb. Bahnen reduziert. Aktuell unter: <a href="https://www.stadt-zuerich.ch/hallenbad-city" target="_blank" style="color:var(--bdi);border-bottom:1px dotted">stadt-zuerich.ch/hallenbad-city</a></div></div></div></div></div></div></div>`;
 }
 
-/* ===== VIEW: DASHBOARD ===== */
-function viewDash(){
-  const td=today();
-  const now=new Date();const dowNow=(now.getDay()+6)%7;
-  const weekDates=Array.from({length:7},(_,i)=>{const d=new Date(now);d.setDate(now.getDate()-dowNow+i);return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;});
-  const dayNames=['Mo','Di','Mi','Do','Fr','Sa','So'];
-  
-  let h='';
-  let hasAny=false;
-  weekDates.forEach((ds,di)=>{
-    const sessions=SCHED[ds]||[];
-    if(!sessions.length)return;
-    hasAny=true;
-    const isToday=ds===td;
-    const d=new Date(ds);
-    const lbl=`${dayNames[di]} ${d.getDate()}.${d.getMonth()+1}.`;
-    h+=`<div class="wk-date${isToday?' wk-today':''}">${lbl}${isToday?' · Heute':''}</div>`;
-    sessions.forEach(sess=>{
-      const sType=sess.type;
-      const sData=sType==='swim'?SWIM.find(x=>x.id===sess.id):DRYLAND.find(x=>x.id===sess.id);
-      if(!sData)return;
-      const key=sType+':'+sess.id;
-      const logged=!!STATE.done[key];
-      const acc=sType==='swim'?(sData.z1?'z1':'swim'):`d${sess.id}`;
-      const bc=sType==='swim'?sData.bc:sData.bc;
-      const drills=sType==='swim'&&sData.drills?.map(d=>d.u?`<a class="drl" href="${e(d.u)}" target="_blank" rel="noopener">▶ ${e(d.n)}</a>`:`<span class="drt">${e(d.n)}</span>`).join('')||'';
-      const btnC=sType==='swim'?'btn-sw':sData.btn;
-      const foot=renderFoot(key,btnC,sData.badge+' – '+sData.title);
-      const phases=renderPhases(key,sData.phases,sType==='dry');
-      const focus=sData.focus||sData.cue?`<div class="focus-cue"><span class="cue-lbl">${e(sData.cue)}</span>${e(sData.focus||'')}</div>`:'';
-      h+=`<div class="card card-${sType==='swim'?(sData.z1?'z1':'swim'):`${sData.acc}`}${logged?' logged':''}" data-card="${e(key)}">
-        <div class="card-head" data-toggle="${e(key)}"><span class="done-dot"></span><span class="badge ${bc}">${e(sData.badge)}</span><span class="card-title"><span class="t">${e(sData.title)}</span><span class="s">${e(sData.sub)}</span></span><span class="chev">▶</span></div>
-        <div class="card-body"><div class="card-inner">${focus}${drills?`<div class="drills">${drills}</div>`:''}${phases}${foot}</div></div>
-      </div>`;
-    });
-  });
-  if(!hasAny)h=`<div class="empty">Keine Sessions diese Woche geplant.</div>`;
-  h+=`<div class="sec-label" style="margin-top:1.25rem">Badi-Status</div><div id="dash-badi">${badiLoaded?renderStatusGrid():'<div class="loading">Lade Daten…</div>'}</div>`;
-  qs('#v-dash').innerHTML=h;
-}
-
-/* ===== VIEW: SWIM ===== */
+/* ===== VIEW: SCHWIMMEN ===== */
 function viewSwim(){
-  let h=renderCalendar();
-  h+=`<div style="margin-top:1rem"></div>`;
+  let h=`<div style="margin-top:.1rem">`;
+  h+=renderCalendar();
+  h+=`<div style="margin-top:.9rem">`;
   h+=renderPacing();
+  h+='</div>';
   h+=`<div class="sec-label">Übergang · Mai</div>`;
   const may=SWIM.find(s=>s.id==='MAY-ADD');if(may)h+=renderSwimCard(may);
   h+=`<div class="sec-label">Juni · The Kick — Pool-Sessions</div>`;
   SWIM.filter(s=>!s.z1&&s.id!=='MAY-ADD').forEach(s=>{h+=renderSwimCard(s);});
   h+=`<div class="sec-label">Z1 · Aerob-Recovery · Samstags</div>`;
   SWIM.filter(s=>s.z1).forEach(s=>{h+=renderSwimCard(s);});
+  h+='</div>';
   qs('#v-swim').innerHTML=h;
 }
 
-/* ===== VIEW: DRYLAND (with sub-tabs) ===== */
+/* ===== VIEW: DRYLAND ===== */
 function viewDry(){
   const el=qs('#v-dry');
   el.innerHTML=`
     <div class="subtabs">
-      <button class="stab sa on" data-sub="dA">Dryland A</button>
-      <button class="stab sb" data-sub="dB">Dryland B</button>
-      <button class="stab sc" data-sub="dC">Dryland C</button>
+      <button class="stab sa on" data-sub="dA">Pull & Posterior</button>
+      <button class="stab sb" data-sub="dB">Core & Hüfte</button>
+      <button class="stab sc" data-sub="dC">Power</button>
       <button class="stab sm" data-sub="mob">Mobility</button>
       <button class="stab sbw" data-sub="bw">Breathwork</button>
     </div>
-    <div class="subview on" id="sv-dA">${renderDryCard(DRYLAND[0])}</div>
-    <div class="subview" id="sv-dB">${renderDryCard(DRYLAND[1])}</div>
-    <div class="subview" id="sv-dC">${renderDryCard(DRYLAND[2])}</div>
+    <div class="subview on" id="sv-dA">${renderDryDirect(DRYLAND[0])}</div>
+    <div class="subview" id="sv-dB">${renderDryDirect(DRYLAND[1])}</div>
+    <div class="subview" id="sv-dC">${renderDryDirect(DRYLAND[2])}</div>
     <div class="subview" id="sv-mob">${renderMobility()}</div>
     <div class="subview" id="sv-bw">${renderBreathwork()}</div>`;
 }
 
 function renderMobility(){
+  const key='mob:daily';
   let h=`<div class="lead">Täglich · morgens oder post-swim · ~10–15 Min</div>`;
   MOBILITY.phases.forEach(ph=>{
-    h+=`<div class="sec-label">${e(ph.name)} <span style="font-weight:400;font-size:.58rem;color:var(--faint)">${e(ph.meta||'')}</span></div>`;
+    h+=`<div class="sec-label">${e(ph.name)} <span style="font-weight:400;font-size:.57rem;color:var(--faint)">${e(ph.meta||'')}</span></div>`;
     ph.items.forEach((it,i)=>{
       const mk=`mob_${ph.name.replace(/\s/g,'_')}_${i}`;const done=!!STATE.checks[mk];
       h+=`<div class="mob-card${done?' mc-done':''}"><div class="mob-head"><div class="mob-chk${done?' on':''}" data-mobchk="${e(mk)}"></div><div class="mob-name">${e(it.name)}</div><div class="mob-reps">${e(it.reps)}</div></div><div class="mob-mus">${e(it.mus)}</div><div class="mob-note">${e(it.note)}</div></div>`;
     });
   });
-  // Session log for mobility
-  const key='mob:daily';const rv=e(STATE.inputs[key+'_rpe']||'');const nv=e(STATE.inputs[key+'_note']||'');
-  h+=`<div class="sess-foot" style="margin-top:1rem"><div class="sess-meta"><div class="ff ff-rpe"><label>RPE</label><input inputmode="numeric" data-si="rpe" data-key="${e(key)}" value="${rv}" placeholder="–"></div><div class="ff ff-note"><label>Notiz</label><textarea data-si="note" data-key="${e(key)}" placeholder="Gefühl, Besonderheiten…">${nv}</textarea></div></div><div class="sess-btns"><button class="btn btn-mo" data-log="${e(key)}" data-title="Mobility · Daily">Session loggen</button></div><div class="sav" data-sav="${e(key)}">✓ Gespeichert</div></div>`;
+  h+=renderFoot(key,'btn-mo','Mobility · Daily');
   h+=`<div class="warn-box" style="margin-top:.5rem">⚠ Physiotherapie-Übungen (Nacken + Becken) folgen in der nächsten Version.</div>`;
   return h;
 }
@@ -716,26 +756,87 @@ function renderBreathwork(){
   let h=`<div class="lead">Atemarbeit für Downregulation und CO₂-Toleranz.</div>`;
   BREATH.forEach(b=>{
     const key='breath:'+b.id;const logged=!!STATE.done[key];
-    h+=`<div class="card card-bth${logged?' logged':''}" data-card="${e(key)}">
-      <div class="card-head" data-toggle="${e(key)}"><span class="done-dot"></span><span class="badge bbw">${b.pattern.map(p=>p.sec).join('-')}</span><span class="card-title"><span class="t">${e(b.name)}</span><span class="s">${e(b.sub)}</span></span><span class="chev">▶</span></div>
-      <div class="card-body"><div class="card-inner">
-        <div class="focus-cue"><span class="cue-lbl">${e(b.name)}</span>${e(b.desc)}</div>
-        <div class="bw-visual" id="bwv-${e(b.id)}">
-          <div class="bw-circle" id="bwc-${e(b.id)}"><div class="bw-phase" id="bwph-${e(b.id)}">Bereit</div></div>
-          <div class="bw-count" id="bwct-${e(b.id)}">–</div>
-          <div class="bw-rnd" id="bwrn-${e(b.id)}">Runde 0 / ${b.rounds}</div>
-        </div>
-        <div class="bw-btns"><button class="btn btn-bw" data-bwstart="${e(b.id)}">Start</button><button class="btn btn-rst" data-bwstop>Stop</button></div>
-        ${renderFoot(key,'btn-bw','Breathwork · '+b.name)}
-      </div></div></div>`;
+    h+=`<div class="card card-bth${logged?' logged':''}" data-card="${e(key)}"><div class="card-head" data-toggle="${e(key)}"><span class="done-dot"></span><span class="badge bbw">${b.pattern.map(p=>p.sec).join('-')}</span><span class="card-title"><span class="t">${e(b.name)}</span><span class="s">${e(b.sub)}</span></span><span class="chev">▶</span></div><div class="card-body"><div class="card-inner"><div class="focus-cue"><span class="cue-lbl">${e(b.name)}</span>${e(b.desc)}</div><div class="bw-visual" id="bwv-${e(b.id)}"><div class="bw-circle" id="bwc-${e(b.id)}"><div class="bw-phase" id="bwph-${e(b.id)}">Bereit</div></div><div class="bw-count" id="bwct-${e(b.id)}">–</div><div class="bw-rnd" id="bwrn-${e(b.id)}">Runde 0 / ${b.rounds}</div></div><div class="bw-btns"><button class="btn btn-bw" data-bwstart="${e(b.id)}">Start</button><button class="btn btn-rst" data-bwstop>Stop</button></div>${renderFoot(key,'btn-bw','Breathwork · '+b.name)}</div></div></div>`;
   });
   return h;
 }
 
-/* ===== VIEW: LOG ===== */
+/* ===== VIEW: METHOD ===== */
+function viewMethod(){
+  const el=qs('#v-method');
+  el.innerHTML=`
+    <div class="sec-label" style="margin-top:.1rem">Übergeordnete Trainingsprinzipien</div>
+    <div class="mth-block">
+      <h2>5 Prinzipien · Warum dieser Plan</h2>
+      ${[
+        ['01','SAID-Prinzip — Spezifität der Anpassung','Specific Adaptation to Imposed Demands. Das Nervensystem und die Muskulatur passen sich exakt an die gestellten Anforderungen an — nicht allgemein. Daher werden Übungen gewählt, die die Bewegungsmuster des Crawl-Schwimmens direkt spiegeln oder vorbereiten: Zugbewegungen, Hüftstreckung, Anti-Rotation.'],
+        ['02','Concurrent Training Management','Wer gleichzeitig Kraft- und Ausdauertraining macht, riskiert eine gegenseitige Abschwächung der Anpassungen ("Interference Effect", Wilson et al., 2012). Lösung: Schwimmen zuerst, Dryland danach — mindestens 4–6 h Abstand, wenn am selben Tag. Schwimmen hat immer Priorität.'],
+        ['03','Strukturelle Balance — Pull:Push-Ratio','Schwimmer leisten im Wasser fast ausschließlich Zugarbeit — bei 4 Sessions × ~3 km × ~20 Züge/25m sind das grob 10.000+ Pull-Bewegungen pro Woche. Dryland muss diese Dominanz nicht verdoppeln, sondern ausbalancieren: Pull-Volumen hoch, Push-Volumen niedrig, Schultergesundheit aktiv schützen.'],
+        ['04','Progressive Overload','Anpassungen entstehen nur, wenn der Körper konsequent leicht über seiner aktuellen Kapazität gefordert wird. Der Plan steigert systematisch: erst Form, dann Volumen, dann Intensität/Power. Nicht alles auf einmal.'],
+        ['05','Verletzungsprävention als Leistungsprinzip','Eine Woche Ausfall durch Schulter- oder Hüftprobleme kostet mehr als drei Wochen suboptimales Training. Rotatoren, Scapula-Stabilisatoren und Hüftstrukturen werden daher explizit trainiert — nicht als Zusatz, sondern als Fundament.']
+      ].map(([n,t,p])=>`<div class="mth-principle"><span class="mth-pnum">${n}</span><div class="mth-pbody"><strong>${e(t)}</strong><p>${e(p)}</p></div></div>`).join('')}
+    </div>
+
+    <div class="sec-label">Primäre Muskulatur im Crawl-Zug</div>
+    <div class="mth-anatomy">
+      <h3>Was im Wasser zählt</h3>
+      <div class="mth-muscle-grid">
+        ${[['Latissimus dorsi','Hauptmotor Zug'],['Teres major','Zug / Adduktion'],['Serratus anterior','Scapula-Stabilität'],['Rotatorenmanschette','Schultergesundheit'],['Rektus abdominis / Oblique','Core / Rotation'],['Glutes / Hamstrings','Kick / Wasserlage'],['Hüftbeuger / Iliopsoas','Kick-Recovery'],['Rhomboiden / Trapez','Scapula-Kontrolle']].map(([m,r])=>`<div class="mth-muscle">${e(m)}<span class="mth-role">${e(r)}</span></div>`).join('')}
+      </div>
+    </div>
+
+    <div class="mth-concurrent">
+      <h3>Concurrent Training — Interference Effect im Detail</h3>
+      <p>Wilson et al. (2012) zeigten in einer Meta-Analyse, dass Kraft-Hypertrophie-Adaptationen signifikant reduziert werden, wenn Ausdauertraining in unmittelbarer zeitlicher Nähe stattfindet. Ursache: AMPK-Aktivierung durch Ausdauerbelastung hemmt den mTOR-Signalweg, der für Muskelproteinsynthese benötigt wird.</p>
+      <p>Für diesen Plan: Schwimmeinheiten morgens, Dryland abends — oder an Tagen ohne harte Schwimmeinheit. Kein Dryland direkt vor einer intensiven CSS- oder Intervalleinheit. Die aerobe Z1-Session verträgt Dryland am gleichen Tag besser als eine 85%-CSS-Session.</p>
+    </div>
+
+    <div class="sec-label">Session 1 — Pull & Posterior Chain</div>
+    <div style="margin-bottom:1rem">
+      <span class="sec-tag tag-s1">Session 1</span>
+      ${[
+        ['Pull-Ups','Latissimus · Teres major · Bizeps · Rhomboiden','Der Latissimus ist der primäre Kraftgeber in der Unterwasserphase des Crawl — von der Catch-Position bis zum Finish. Toussaint & Beek (1992) zeigten, dass propulsive Kraft im Schwimmen fast ausschließlich durch die obere Extremität erzeugt wird, mit dem Lat als dominantem Muskel. Klimmzüge sind die direkteste Möglichkeit, diesen Muskel im Dryland zu trainieren.','Pull-up-Bewegungsmuster: Schulteradduktion + -extension, identisch mit der Zugphase im Wasser.','Toussaint & Beek (1992) · Morouco et al. (2011)',null],
+        ['Single-Arm Band Row','Lat · Rhomboiden · Trapez · Posteriore Schulter','Ergänzt das Pull-up-Volumen mit einem horizontalen Zugmuster. Trainiert gleichzeitig die Scapula-Retraktoren — diese sind bei Schwimmern chronisch unteraktiv, weil das Wasser keinen horizontalen Widerstand bietet. Schwache Scapula-Kontrolle führt langfristig zu Impingement.','Einarmig, um Rotationsasymmetrien zu detektieren und auszugleichen.',null,null],
+        ['Single-Leg Romanian Deadlift','Hamstrings · Glutes · Rückenstrecker','Die posteriore Kette ist für die Beinschlag-Kraftphase und die horizontale Wasserlage mitverantwortlich. Einbeinige Ausführung trainiert gleichzeitig die hüftstabilisierende Muskulatur — relevant bei Hüftsteifigkeit und Schambeinanamnese.','Hüftscharnierübung: trainiert die exzentrische Belastbarkeit der Hamstrings.',null,null],
+        ['Hollow Hold','Rektus abdominis · Transversus abdominis · Hüftbeuger','Die stromlinienförmige Körperposition im Wasser entspricht exakt der Hollow-Body-Position. Diese isometrische Anti-Extension-Übung schult das neuromuskuläre Muster, das Schwimmer benötigen, um Energie nicht durch Körperwelligkeit zu verlieren.','Anti-Extension Core: verhindert, dass die LWS unter Belastung in die Streckung geht — im Wasser gleichbedeutend mit sinkenden Hüften.','Weston et al. (2015) — Core stability and swimming performance',null],
+        ['Pallof Press','Oblique · Transversus · Gluteus medius','Crawl-Schwimmen erfordert eine präzise Rotation um die Längsachse — während der Core gleichzeitig gegen übermäßige Rotation stabilisiert. Das Pallof Press trainiert genau diese Anti-Rotations-Kapazität.','Anti-Rotation Core: spiegelt die Anforderung, stabile Kraft bei asymmetrischen Armzügen zu halten.',null,null]
+      ].map(([n,m,w,mech,ref,vid])=>`<div class="mth-ex"><div class="mth-ex-top"><span class="mth-ex-name">${e(n)}</span><span class="mth-ex-mus">${e(m)}</span></div><p class="mth-ex-why">${e(w)}</p><p class="mth-ex-mech">${e(mech)}</p>${ref?`<div class="mth-ex-ref">Ref: ${e(ref)}</div>`:''}</div>`).join('')}
+    </div>
+
+    <div class="sec-label">Session 2 — Core, Hüfte & Shoulder Health</div>
+    <div style="margin-bottom:1rem">
+      <span class="sec-tag tag-s2">Session 2</span>
+      <div class="mth-ratio"><div><h4>Pull-Volumen</h4><div class="mth-ratio-big">~70%</div><p>Lat, Row, Pulldowns, Inverted Rows — der Motor im Wasser</p></div><div><h4>Push-Volumen</h4><div class="mth-ratio-big">~30%</div><p>Push-ups, Flys — Balance und Ästhetik, nicht Kraft-Dominanz</p></div></div>
+      ${[
+        ['Side Plank mit Hüfthebung','Gluteus medius · Oblique · Quadratus lumborum','Der Gluteus medius ist entscheidend für laterale Hüftstabilität — im Schwimmen verhindert er ein seitliches Abkippen der Hüfte beim Kick-Zyklus. Schwache Abduktoren sind ein häufiger Faktor bei Schambeinbeschwerden.','Frontale Ebene Stabilität — trainiert die laterale Rumpfkraft, die bei Rotation im Wasser stabilisiert.',null],
+        ['Copenhagen Plank','Adduktoren · Hüftstabilisatoren · Core','Die Adduktoren sind bei klassischem Schwimmtraining systematisch unterversorgt. Gleichzeitig ist die Adduktoren-Belastbarkeit kritisch für Schambein-Resilienz.','Isometrische Adduktionsarbeit in einer Hip-Abduktion-Position — hohe Muskelaktivierung bei geringem Verletzungsrisiko.','Serner et al. (2018), Br J Sports Med'],
+        ['Band External Rotation','Infraspinatus · Teres minor · Rotatorenmanschette','Das wichtigste Präventionswerkzeug für Schwimmer. Die Rotatorenmanschette zentriert den Humerus in der Pfanne — bei hohem Schwimmvolumen wird die interne Rotation (Zugphase) dominant, die externe Rotation vernachlässigt. Resultat: Schulterimpingement ("Swimmer\'s Shoulder").','Ruwe et al. (1994) und Bak & Fauno (1997) dokumentierten, dass über 70% der Wettkampfschwimmer irgendwann Schulterbeschwerden entwickeln.','Ruwe et al. (1994) · Bak & Fauno (1997), Am J Sports Med']
+      ].map(([n,m,w,mech,ref])=>`<div class="mth-ex"><div class="mth-ex-top"><span class="mth-ex-name">${e(n)}</span><span class="mth-ex-mus">${e(m)}</span></div><p class="mth-ex-why">${e(w)}</p><p class="mth-ex-mech">${e(mech)}</p>${ref?`<div class="mth-ex-ref">Ref: ${e(ref)}</div>`:''}</div>`).join('')}
+    </div>
+
+    <div class="sec-label">Session 3 — Power & Pulling Endurance</div>
+    <div style="margin-bottom:1rem">
+      <span class="sec-tag tag-s3">Session 3</span>
+      ${[
+        ['Explosive Band Pulldowns','Latissimus · Teres major · Triceps','Rate of Force Development (RFD) im Catch-Moment ist entscheidend für Vortrieb. Je schneller du in der Catch-Phase Kraft aufbaust, desto mehr Wasser greifst du — und desto weniger Energie verlierst du durch Gleiten ohne Kraftübertragung.','Explosiv konzentrisch + kontrolliert exzentrisch. Das Band bietet einen variablen Widerstand, der am Zugbeginn niedriger ist — ähnlich wie im Wasser.',null],
+        ['Inverted Rows / Australian Pull-Ups','Rhomboiden · Mittlerer Trapez · Posteriore Schulter','Horizontale Zugbewegung — trainiert Scapula-Retraktoren, die im Wasser kaum aktiviert werden. Ergänzt Pull-ups (vertikaler Zug) für ein vollständiges Rücken-Kraftprofil.','Im Calisthenics-Park unter einem niedrigen Gerüst, oder unter einem stabilen Tisch. Körper gerade wie ein Brett — je horizontaler, desto schwerer.',null],
+        ['KB Swings / Band Hip Hinge explosiv','Glutes · Hamstrings · Rückenstrecker · Core','Explosiver Hüftstrecker-Training. Im Schwimmen treibt die Hüftstreckung den Beinschlag — nicht das Knie. Swings trainieren die ballistische Kraftentwicklung der Gluteus-Hamstring-Kette.','Hinging, nicht squatting: Hüfte nach hinten, nicht Knie nach vorne — ein häufiges Technikmissverständnis beim Kettlebell Swing.',null],
+        ['Hanging Knee Raises','Iliopsoas · Rektus abdominis · Griffkraft','Hängende Core-Arbeit kombiniert Hüftbeugung mit Schulter-Stabilität unter Eigengewichtsbelastung — ein funktionelles Muster, das im Wasser beim Kick-Recovery vorkommt.','Progression: Knie heben → Beine gestreckt heben → L-Sit Holds. Langsam steigern.',null]
+      ].map(([n,m,w,mech,ref])=>`<div class="mth-ex"><div class="mth-ex-top"><span class="mth-ex-name">${e(n)}</span><span class="mth-ex-mus">${e(m)}</span></div><p class="mth-ex-why">${e(w)}</p><p class="mth-ex-mech">${e(mech)}</p>${ref?`<div class="mth-ex-ref">Ref: ${e(ref)}</div>`:''}</div>`).join('')}
+    </div>
+
+    <div class="mth-big">
+      <h3>Das große Bild — Warum dieser Plan und nicht ein anderer</h3>
+      <p>Ein klassisches Fitnessprogramm (Bankdrücken, Bizepscurls, Beinpresse) würde dein Schwimmen kaum verbessern und möglicherweise sogar hemmen — durch Schulterüberlastung, fehlende Spezifität und falsches Kraftprofil. Dieser Plan ist umgekehrt aufgebaut: von der Bewegung im Wasser zurück auf die Übung im Dryland.</p>
+      <p>Der Latissimus ist der Motor. Der Core ist der Kraftüberträger. Die Hüfte ist die Basis. Die Schulter ist der Schwachpunkt. Alles andere ist Beigabe.</p>
+      <p>Der Brustfokus sitzt bewusst klein — weil eine breite Brust aus Push-up-Progression und Flys entsteht, ohne das Schultergleichgewicht zu kippen, das du für dein Schwimmvolumen brauchst.</p>
+    </div>`;
+}
+
+/* ===== VIEW: VERLAUF ===== */
 function viewLog(){
   const el=qs('#v-log');
-  let h=`<div class="sec-label">Session-Verlauf</div>`;
+  let h=`<div class="sec-label" style="margin-top:.1rem">Session-Verlauf</div>`;
   if(!STATE.history.length){h+=`<div class="empty">Noch keine Sessions geloggt.</div>`;}
   else{[...STATE.history].reverse().forEach(e2=>{h+=`<div class="hist-e"><div class="he-hd"><span class="he-t">${e(e2.title)}</span><span class="he-d">${e(e2.date)}</span></div><div class="he-s">${e(e2.summary)}</div></div>`;});}
   h+=`<div class="sec-label">Dryland-Progression</div>`;
@@ -749,10 +850,10 @@ function findExName(id){for(const s of DRYLAND)for(const p of s.phases)for(const
 function sparkline(nums){if(nums.length<2)return'';const w=120,hh=28,mn=Math.min(...nums),mx=Math.max(...nums),rng=(mx-mn)||1;const pts=nums.map((n,k)=>{const x=(k/(nums.length-1))*(w-4)+2;const y=hh-2-((n-mn)/rng)*(hh-4);return`${x.toFixed(1)},${y.toFixed(1)}`;}).join(' ');return`<svg class="spark" width="${w}" height="${hh}" viewBox="0 0 ${w} ${hh}"><polyline points="${pts}" fill="none" stroke="var(--swim)" stroke-width="1.5" stroke-linejoin="round"/></svg>`;}
 
 /* ===== LOGGING ===== */
-function flashSav(key){const el=qs(`[data-sav="${CE(key)}"]`);if(!el)return;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2400);}
+function flashSav(key){const el=qs(`[data-sav]`,[...document.querySelectorAll('[data-sav]')].find(el=>el.dataset.sav===key)?document:[]);const target=[...document.querySelectorAll('[data-sav]')].find(el=>el.dataset.sav===key);if(target){target.classList.add('show');setTimeout(()=>target.classList.remove('show'),2400);}}
+
 function logSession(key,title){
-  const[type,id]=key.split(':');
-  let summary='';
+  const[type,id]=key.split(':');let summary='';
   if(type==='dry'){
     const s=DRYLAND.find(d=>d.id===id);
     if(s){const lines=[];s.phases.forEach(p=>p.items.forEach(it=>{if(it.ex){const reps=STATE.inputs[it.id+'_r']||'';const band=STATE.inputs[it.id+'_b']||'';if(reps||band){lines.push(`• ${it.name}: ${reps||'–'}${band?' · '+band:''}`);STATE.progress[it.id]=STATE.progress[it.id]||[];STATE.progress[it.id].push({date:todayFmt(),reps,band});}}}));summary=lines.join('\n');}
@@ -762,12 +863,12 @@ function logSession(key,title){
   if(note)summary+=(summary?'\n':'')+'„'+note+'"';
   STATE.history.push({key,date:todayFmt(),ts:Date.now(),title,summary:summary||'–'});
   STATE.done[key]=true;persist();
-  const card=qs(`[data-card="${CE(key)}"]`);if(card){card.classList.add('logged');const dot=card.querySelector('.done-dot');if(dot)dot.style.background='var(--ok)';}
-  flashSav(key);
-  rendered.log=false;rendered.dash=false;
+  const card=findCard(key);if(card){card.classList.add('logged');const dot=card.querySelector('.done-dot');if(dot)dot.style.background='var(--ok)';}
+  const dd=qs(`.dry-direct`,[...document.querySelectorAll('.dry-direct')].find(el=>el.querySelector(`[data-log="${key}"]`))?document:document);const ddTarget=[...document.querySelectorAll('.dry-direct')].find(el=>el.querySelector(`[data-log="${key}"]`));if(ddTarget){ddTarget.classList.add('logged');const dot=ddTarget.querySelector('.done-dot');if(dot)dot.style.background='var(--ok)';}
+  flashSav(key);rendered.log=false;rendered.dash=false;
 }
 
-/* ===== BREATHWORK TIMER ===== */
+/* ===== BREATHWORK ===== */
 let bwT=null;
 function stopBW(){if(bwT){clearTimeout(bwT);bwT=null;}}
 function startBW(id){
@@ -776,42 +877,41 @@ function startBW(id){
   function run(){
     const p=b.pattern[pi];
     const phEl=qs(`#bwph-${id}`),ctEl=qs(`#bwct-${id}`),rnEl=qs(`#bwrn-${id}`),ciEl=qs(`#bwc-${id}`);
-    if(!phEl)return;
-    phEl.textContent=p.label;
-    if(ciEl){const sc=/ein/i.test(p.label)?'scale(1)':/aus/i.test(p.label)?'scale(.58)':null;if(sc){ciEl.style.transitionDuration=p.sec+'s';ciEl.style.transform=sc;}}
+    if(!phEl)return;phEl.textContent=p.label;
+    if(ciEl){const sc=/ein/i.test(p.label)?'scale(1)':/aus/i.test(p.label)?'scale(.6)':null;if(sc){ciEl.style.transitionDuration=p.sec+'s';ciEl.style.transform=sc;}}
     if(rnEl)rnEl.textContent=`Runde ${round} / ${b.rounds}`;
     let left=p.sec;if(ctEl)ctEl.textContent=left;
     function tick(){left--;if(ctEl)ctEl.textContent=Math.max(left,0);
       if(left<=0){pi++;if(pi>=b.pattern.length){pi=0;round++;if(round>b.rounds){if(phEl)phEl.textContent='Fertig ✓';if(ctEl)ctEl.textContent='';stopBW();return;}}run();return;}
       bwT=setTimeout(tick,1000);}
     bwT=setTimeout(tick,1000);
-  }
-  run();
+  }run();
 }
 
-/* ===== SHOW / TABS ===== */
+/* ===== TAB MANAGEMENT ===== */
 const rendered={};
 function show(tabName,scrollId){
   stopBW();
   qsa('.tab').forEach(t=>t.classList.toggle('on',t.dataset.tab===tabName));
   qsa('.view').forEach(v=>v.classList.toggle('on',v.dataset.view===tabName));
-  const needRefresh=['dash','log'];
-  if(needRefresh.includes(tabName)||!rendered[tabName]){
+  const alwaysRefresh=['dash','log'];
+  if(alwaysRefresh.includes(tabName)||!rendered[tabName]){
     if(tabName==='dash')viewDash();
     else if(tabName==='swim')viewSwim();
     else if(tabName==='dry')viewDry();
-    else if(tabName==='badi'){renderBadiTab();if(!badiLoaded&&!badiLoading)loadBadi();}
+    else if(tabName==='badi'){viewBadi();if(!badiLoaded&&!badiLoading)loadBadi();}
+    else if(tabName==='method')viewMethod();
     else if(tabName==='log')viewLog();
     rendered[tabName]=true;
   }
   window.scrollTo({top:0,behavior:'auto'});
   if(scrollId){
     setTimeout(()=>{
-      const card=qs(`[data-card="${CE(tabName+':'+scrollId)}"]`);
+      const card=findCard(tabName+':'+scrollId);
       if(!card)return;
       card.classList.add('open');
       const nav=qs('nav');const navH=nav?nav.offsetHeight:55;
-      const top=card.getBoundingClientRect().top+window.scrollY-navH-10;
+      const top=card.getBoundingClientRect().top+window.scrollY-navH-12;
       window.scrollTo({top:Math.max(0,top),behavior:'smooth'});
     },90);
   }
@@ -824,19 +924,19 @@ function showSub(subId){
 
 /* ===== EVENTS ===== */
 document.addEventListener('click',ev=>{
-  // Main tabs
   const tab=ev.target.closest('.tab');if(tab){show(tab.dataset.tab);return;}
-  // Sub-tabs
   const stab=ev.target.closest('.stab');if(stab){showSub(stab.dataset.sub);return;}
-  // Card toggle
+  
   const tog=ev.target.closest('[data-toggle]');
   if(tog){
     const k=tog.dataset.toggle;
-    // Handle special (non-data-card) toggles
-    if(k==='hb-info'){const bd=qs('#hb-info-body');if(bd)bd.style.maxHeight=bd.style.maxHeight?'':'none';const c=tog.querySelector('.chev');if(c)c.style.transform=c.style.transform?'':'rotate(90deg)';return;}
-    const card=qs(`[data-card="${CE(k)}"]`);if(card)card.classList.toggle('open');return;
+    if(k==='hb-info'){
+      const bd=qs('#hb-info-body');if(bd)bd.classList.toggle('open');
+      const c=tog.querySelector('.chev');if(c)c.style.transform=c.style.transform.includes('90')?'':'rotate(90deg)';return;
+    }
+    const card=findCard(k);if(card)card.classList.toggle('open');return;
   }
-  // Calendar day click
+
   const cday=ev.target.closest('[data-cday]');
   if(cday){
     const ds=cday.dataset.cday;const csid=ev.target.dataset.csid;const ctype=ev.target.dataset.ctype;
@@ -844,42 +944,40 @@ document.addEventListener('click',ev=>{
     else{const sess=SCHED[ds]||[];if(sess.length){const s=sess[0];show(s.type==='dry'?'dry':'swim',s.id);}}
     return;
   }
-  // Dashboard week row
   const wrow=ev.target.closest('[data-goto-tab]');if(wrow){show(wrow.dataset.gotoTab,wrow.dataset.gotoId);return;}
-  // Log session
   const lb=ev.target.closest('[data-log]');if(lb){logSession(lb.dataset.log,lb.dataset.title||lb.dataset.log);return;}
-  // Reset session
   const rb=ev.target.closest('[data-reset]');
   if(rb){
-    const key=rb.dataset.reset;const id=key.split(':')[1];
-    // Reset dryland exercise checks
-    if(key.startsWith('dry:')){DRYLAND.find(d=>d.id===id)?.phases.forEach(p=>p.items.forEach(it=>{if(it.ex){delete STATE.checks[it.id];const el=qs(`[data-exchk="${CE(it.id)}"]`);if(el){el.classList.remove('on');const nm=el.parentNode.querySelector('.ex-name');if(nm)nm.classList.remove('struck');}}}));}
+    const key=rb.dataset.reset;const id=key.split(':').slice(1).join(':');
+    if(key.startsWith('dry:')){DRYLAND.find(d=>d.id===id)?.phases.forEach(p=>p.items.forEach(it=>{if(it.ex){delete STATE.checks[it.id];const el=[...document.querySelectorAll('[data-exchk]')].find(e=>e.dataset.exchk===it.id);if(el){el.classList.remove('on');const nm=el.parentNode.querySelector('.ex-name');if(nm)nm.classList.remove('struck');}}}));}
     persist();return;
   }
-  // Exercise checkbox
   const xc=ev.target.closest('[data-exchk]');
   if(xc){const rk=xc.dataset.exchk;STATE.checks[rk]=!STATE.checks[rk];persist();xc.classList.toggle('on',STATE.checks[rk]);const nm=xc.parentNode.querySelector('.ex-name');if(nm)nm.classList.toggle('struck',STATE.checks[rk]);return;}
-  // Mobility checkbox
   const mc=ev.target.closest('[data-mobchk]');
   if(mc){const mk=mc.dataset.mobchk;STATE.checks[mk]=!STATE.checks[mk];persist();mc.classList.toggle('on',STATE.checks[mk]);const cd=mc.closest('.mob-card');if(cd)cd.classList.toggle('mc-done',STATE.checks[mk]);return;}
-  // Breathwork
   const bwS=ev.target.closest('[data-bwstart]');if(bwS){startBW(bwS.dataset.bwstart);return;}
   const bwSt=ev.target.closest('[data-bwstop]');if(bwSt){stopBW();return;}
-  // Badi facility selector
-  const bds=ev.target.closest('[data-bdsel]');if(bds){selectedBadi=bds.dataset.bdsel;qsa('.hm-pill').forEach(p=>p.classList.toggle('on',p.dataset.bdsel===selectedBadi));const hg=qs('#hm-grid-wrap');if(hg)hg.innerHTML=renderHeatmapHtml(selectedBadi);const og=qs('#oracle-wrap');if(og)og.innerHTML=renderOracleHtml(selectedBadi);return;}
+  const bds=ev.target.closest('[data-bdsel]');
+  if(bds){
+    selectedBadi=bds.dataset.bdsel;
+    qsa('.hm-pill').forEach(p=>p.classList.toggle('on',p.dataset.bdsel===selectedBadi));
+    const hg=qs('#hm-grid-wrap');if(hg)hg.innerHTML=renderHeatmapHtml(selectedBadi);
+    const og=qs('#oracle-wrap');if(og)og.innerHTML=renderOracleHtml(selectedBadi);return;
+  }
 });
 
 document.addEventListener('input',ev=>{
   const si=ev.target.closest('[data-si]');
-  if(si){const k=si.dataset.key;STATE.inputs[k+'_'+si.dataset.si]=ev.target.value;persist();return;}
+  if(si){STATE.inputs[si.dataset.key+'_'+si.dataset.si]=ev.target.value;persist();return;}
   const ei=ev.target.closest('[data-ei]');
-  if(ei){const rk=ei.dataset.rk;STATE.inputs[rk+'_'+ei.dataset.ei]=ev.target.value;persist();}
+  if(ei){STATE.inputs[ei.dataset.rk+'_'+ei.dataset.ei]=ev.target.value;persist();}
 });
 
 /* ===== INIT ===== */
 show('dash');
 loadBadi();
-setInterval(()=>{if(!badiLoaded)loadBadi();else{badiRows=[];badiLoaded=false;badiLoading=false;loadBadi();}},10*60*1000);
+setInterval(loadBadi,10*60*1000);
 
 })();
 </script>
