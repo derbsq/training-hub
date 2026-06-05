@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Training Hub">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='36' fill='%231a4a2e'/%3E%3Ctext x='50%25' y='58%25' font-size='110' text-anchor='middle' dominant-baseline='middle'%3E🏊%3C/text%3E%3C/svg%3E">
+<meta name="theme-color" content="#f4f1eb">
 <title>Bésko's Little Training Hub</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -1637,191 +1641,552 @@ function toggleDryLog(id,ds,btn){
 }
 
 // ─── BADI-TRACKER VIEW ───────────────────────────────────────
-let badiChart=null;
-let badiTgChart=null;
-let badiWdChart=null;
-let badiSelPool='SSD-4';
-let badiSelView='hm';
+const BADI_WS_URL = 'wss://badi-public.crowdmonitor.ch:9591/api';
+const BADI_CSV_URL = 'https://raw.githubusercontent.com/derbsq/Badi-Tracker/main/data/auslastung.csv';
+const BADI_BASE = 'https://raw.githubusercontent.com/derbsq/Badi-Tracker/main/data/';
+const BADI_TARGETS = [
+  {key:'city',     uid:'SSD-4',   label:'Hallenbad City',     match:['city'],        indoor:true,  lanes:true,  temp:'🌡 28°C · 32°C · 29°C'},
+  {key:'letzigraben',uid:'LETZI-1',label:'Freibad Letzigraben',match:['letzigraben'],indoor:false, lanes:false, temp:'🌡 saisonal ~20–25°C'},
+  {key:'utoquai',  uid:'SSD-10',  label:'Seebad Utoquai',     match:['utoquai'],     indoor:false, lanes:false, temp:'🌡 Seewasser saisonal'},
+  {key:'letten',   uid:'flb6939', label:'Ob. Letten',         match:['letten','flb6939'],indoor:false,lanes:false,temp:'🌡 Limmat saisonal'},
+  {key:'heuried',  uid:'fb012',   label:'Freibad Heuried',    match:['heuried'],     indoor:false, lanes:false, temp:'🌡 saisonal'}
+];
+const HOLIDAYS_2026 = {
+  '2026-01-01':'Neujahr','2026-01-02':'Berchtoldstag','2026-04-03':'Karfreitag',
+  '2026-04-06':'Ostermontag','2026-05-01':'Tag der Arbeit','2026-05-14':'Auffahrt',
+  '2026-05-25':'Pfingstmontag','2026-08-01':'Bundesfeier',
+  '2026-12-25':'Weihnachten','2026-12-26':'Stephanstag'
+};
+const SCHOOL_HOLS = [['2026-04-20','2026-05-02'],['2026-07-13','2026-08-23'],
+  ['2026-10-05','2026-10-18'],['2026-12-24','2027-01-03']];
 
+let BADI_STATE = {
+  live:{}, history:[], bahnen:null, vario:null,
+  selBad: localStorage.getItem('badi:bad')||'city',
+  selView: localStorage.getItem('badi:view')||'heatmap',
+  selMonth: localStorage.getItem('badi:month')||'all',
+  oracleDay: 0,
+  ws: null, wsTimer: null,
+  charts: {}
+};
+
+// OCC COLORS
+const OCC_STOPS = [{r:0.10,c:'#1e3a5f'},{r:0.25,c:'#1a7fa8'},{r:0.45,c:'#1a9e6e'},{r:0.60,c:'#d4a017'},{r:0.75,c:'#c45c2a'},{r:1.01,c:'#a02020'}];
+function ratio2color(r){for(const s of OCC_STOPS){if(r<s.r)return s.c;}return '#a02020';}
+function ratio2label(r){if(r<.10)return{t:'Sehr leer',c:'bst-g'};if(r<.25)return{t:'Leer',c:'bst-g'};if(r<.45)return{t:'Ruhig',c:'bst-y'};if(r<.60)return{t:'Mässig',c:'bst-y'};if(r<.75)return{t:'Voll',c:'bst-r'};return{t:'Überfüllt',c:'bst-r'};}
+
+function isSchoolHol(dateStr){return SCHOOL_HOLS.some(([s,e])=>dateStr>=s&&dateStr<=e);}
+function isBadiHoliday(dateStr){return !!HOLIDAYS_2026[dateStr];}
+
+// ─── WebSocket ────────────────────────────────────────────────
+function badiConnectWS(){
+  if(BADI_STATE.wsTimer){clearTimeout(BADI_STATE.wsTimer);BADI_STATE.wsTimer=null;}
+  if(BADI_STATE.ws&&BADI_STATE.ws.readyState<2){BADI_STATE.ws.close();}
+  const statusEl=document.getElementById('badi-ws-status');
+  if(statusEl)statusEl.textContent='Verbinde…';
+  let ws;
+  try{ws=new WebSocket(BADI_WS_URL);}
+  catch(e){if(statusEl)statusEl.textContent='WS nicht verfügbar';return;}
+  BADI_STATE.ws=ws;
+  ws.onopen=()=>{
+    ws.send('1 all');
+    if(statusEl)statusEl.textContent='🟢 Live';
+  };
+  ws.onmessage=(msg)=>{
+    try{
+      const arr=JSON.parse(msg.data);
+      if(!Array.isArray(arr))return;
+      BADI_TARGETS.forEach(t=>{
+        const e=arr.find(x=>t.match.some(m=>(x.name||'').toLowerCase().includes(m)));
+        if(e)BADI_STATE.live[t.key]=e;
+      });
+      badiRenderLiveCards();
+      if(statusEl){
+        const now=new Date();
+        statusEl.textContent='🟢 Live · '+now.toLocaleTimeString('de-CH',{hour:'2-digit',minute:'2-digit'});
+      }
+    }catch{}
+  };
+  ws.onerror=()=>{if(statusEl)statusEl.textContent='⚠️ Verbindungsfehler';};
+  ws.onclose=()=>{
+    if(statusEl)statusEl.textContent='🔴 Getrennt';
+    BADI_STATE.wsTimer=setTimeout(badiConnectWS,20000);
+  };
+}
+
+// ─── CSV loading ─────────────────────────────────────────────
+function badiParseCSV(text){
+  const lines=text.replace(/\r/g,'').trim().split('\n').filter(l=>l.trim());
+  if(lines.length<2)return[];
+  const sep=lines[0].includes('\t')?'\t':',';
+  const hdrs=lines[0].split(sep).map(h=>h.trim());
+  return lines.slice(1).map(line=>{
+    const vals=line.split(sep);
+    const row={};
+    hdrs.forEach((h,i)=>row[h]=(vals[i]||'').trim());
+    return row;
+  }).filter(r=>r.uid&&r.timestamp_local);
+}
+
+async function badiLoadData(){
+  const statusEl=document.getElementById('badi-hist-status');
+  if(statusEl)statusEl.textContent='Lade historische Daten…';
+  try{
+    const r=await fetch(BADI_CSV_URL,{cache:'no-store'});
+    if(r.ok){
+      const text=await r.text();
+      BADI_STATE.history=badiParseCSV(text);
+      if(statusEl)statusEl.textContent=BADI_STATE.history.length+' Datenpunkte';
+      badiRenderCurrentView();
+    }else throw new Error('CSV '+r.status);
+  }catch(e){
+    if(statusEl)statusEl.textContent='Keine historischen Daten';
+    console.log('Badi CSV fail:',e.message);
+  }
+  // Load bahnen
+  try{
+    const r=await fetch(BADI_BASE+'bahnen_city.json',{cache:'no-store'});
+    if(r.ok)BADI_STATE.bahnen=await r.json();
+  }catch{}
+  try{
+    const r=await fetch(BADI_BASE+'vario_city.json',{cache:'no-store'});
+    if(r.ok)BADI_STATE.vario=await r.json();
+  }catch{}
+  if(BADI_STATE.bahnen||BADI_STATE.vario)badiRenderLanes();
+}
+
+// ─── Live cards ───────────────────────────────────────────────
+function badiRenderLiveCards(){
+  const c=document.getElementById('badi-live-cards');
+  if(!c)return;
+  c.innerHTML=BADI_TARGETS.map(t=>{
+    const e=BADI_STATE.live[t.key];
+    if(!e)return`<div class="badi-cell"><div class="badi-cell-status-bar" style="width:0%;background:#aaa"></div><div class="badi-cell-name">${t.label}</div><div class="badi-pct" style="color:#aaa">—</div><div class="badi-status bst-x">Keine Daten</div></div>`;
+    const fill=parseInt(e.currentfill)||0;
+    const max=parseInt(e.maxspace)||100;
+    const ratio=fill/max;
+    const pct=Math.round(ratio*100);
+    const col=ratio2color(ratio);
+    const lbl=ratio2label(ratio);
+    return`<div class="badi-cell" style="cursor:pointer" onclick="badiSelBad('${t.key}')">
+      <div class="badi-cell-status-bar" style="width:${Math.min(pct,100)}%;background:${col}"></div>
+      <div class="badi-cell-name">${t.label}</div>
+      <div class="badi-pct" style="color:${col}">${pct}%</div>
+      <div class="badi-status ${lbl.c}">${lbl.t}</div>
+      <div style="font-family:var(--mono);font-size:.52rem;color:var(--faint);margin-top:.18rem">${fill}/${max} Pers.</div>
+    </div>`;
+  }).join('');
+  // Update dashboard compact cards too
+  badiRenderDashCards();
+}
+
+function badiRenderDashCards(){
+  const c=document.getElementById('dash-badi-cards');
+  if(!c)return;
+  c.innerHTML=BADI_TARGETS.map(t=>{
+    const e=BADI_STATE.live[t.key];
+    const ratio=e?(parseInt(e.currentfill)||0)/(parseInt(e.maxspace)||100):null;
+    const pct=ratio!==null?Math.round(ratio*100):null;
+    const col=ratio!==null?ratio2color(ratio):'#aaa';
+    const lbl=ratio!==null?ratio2label(ratio):{t:'—',c:'bst-x'};
+    return`<div class="badi-cell">
+      <div class="badi-cell-status-bar" style="width:${pct!==null?Math.min(pct,100):0}%;background:${col}"></div>
+      <div class="badi-cell-name" style="font-size:.7rem">${t.label.replace('Freibad ','').replace('Hallenbad ','').replace('Seebad ','')}</div>
+      <div class="badi-pct" style="color:${col};font-size:1rem">${pct!==null?pct+'%':'—'}</div>
+      <div class="badi-status ${lbl.c}">${lbl.t}</div>
+    </div>`;
+  }).join('');
+}
+
+function badiSelBad(key){
+  BADI_STATE.selBad=key;
+  localStorage.setItem('badi:bad',key);
+  document.querySelectorAll('.badi-pool-btn').forEach(b=>b.classList.toggle('on',b.dataset.bad===key));
+  badiRenderCurrentView();
+}
+
+function badiSelView(view){
+  BADI_STATE.selView=view;
+  localStorage.setItem('badi:view',view);
+  document.querySelectorAll('.badi-view-btn').forEach(b=>b.classList.toggle('on',b.dataset.view===view));
+  badiRenderCurrentView();
+}
+
+function badiSelMonth(m){
+  BADI_STATE.selMonth=m;
+  localStorage.setItem('badi:month',m);
+  document.querySelectorAll('.badi-month-btn').forEach(b=>b.classList.toggle('on',b.dataset.month===m));
+  badiRenderCurrentView();
+}
+
+function badiFilteredData(){
+  const t=BADI_TARGETS.find(t=>t.key===BADI_STATE.selBad)||BADI_TARGETS[0];
+  let data=BADI_STATE.history.filter(r=>r.uid===t.uid);
+  if(BADI_STATE.selMonth!=='all'){
+    data=data.filter(r=>(r.timestamp_local||'').slice(5,7)===BADI_STATE.selMonth);
+  }
+  return data;
+}
+
+// ─── Main view router ─────────────────────────────────────────
+function badiRenderCurrentView(){
+  switch(BADI_STATE.selView){
+    case 'heatmap': badiRenderHeatmap(); break;
+    case 'tagesverlauf': badiRenderTagesverlauf(); break;
+    case 'wochentag': badiRenderWochentag(); break;
+    case 'oracle': badiRenderOracle(); break;
+  }
+}
+
+// ─── Heatmap ─────────────────────────────────────────────────
+function badiRenderHeatmap(){
+  const canvas=document.getElementById('badi-chart-canvas');
+  if(!canvas)return;
+  const data=badiFilteredData();
+  const DAY_MAP={Monday:0,Tuesday:1,Wednesday:2,Thursday:3,Friday:4,Saturday:5,Sunday:6};
+  const DAY_LABELS=['Mo','Di','Mi','Do','Fr','Sa','So'];
+  const HOURS=Array.from({length:16},(_,i)=>i+6);
+  const buckets={};
+  data.forEach(r=>{
+    const d=DAY_MAP[r.weekday];
+    const h=parseInt(r.hour);
+    const ratio=parseFloat(r.fill_ratio);
+    if(d===undefined||isNaN(h)||isNaN(ratio))return;
+    const k=d+'_'+h;
+    if(!buckets[k]){buckets[k]={sum:0,count:0};}
+    buckets[k].sum+=ratio;buckets[k].count++;
+  });
+  // Draw on canvas
+  const W=canvas.parentElement.offsetWidth-32||300;
+  const CELL_W=Math.max((W-30)/HOURS.length,16);
+  const CELL_H=22;
+  canvas.width=W;
+  canvas.height=DAY_LABELS.length*CELL_H+28;
+  const ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  // Today highlight
+  const todayDow=(new Date().getDay()+6)%7;
+  // Draw cells
+  DAY_LABELS.forEach((dl,di)=>{
+    ctx.fillStyle=di===todayDow?'rgba(26,74,46,.08)':'transparent';
+    ctx.fillRect(30,di*CELL_H,W-30,CELL_H);
+    ctx.fillStyle=di===todayDow?'#1a4a2e':'#aaa49d';
+    ctx.font=(di===todayDow?'bold ':'')+`10px DM Mono,monospace`;
+    ctx.fillText(dl,2,di*CELL_H+CELL_H-5);
+    HOURS.forEach((h,hi)=>{
+      const b=buckets[di+'_'+h];
+      const ratio=b?b.sum/b.count:null;
+      ctx.fillStyle=ratio!==null?ratio2color(ratio):'#ede9e0';
+      ctx.fillRect(30+hi*CELL_W,di*CELL_H+1,CELL_W-1,CELL_H-2);
+      if(b&&b.count>0){
+        ctx.fillStyle='rgba(255,255,255,.7)';
+        ctx.font='8px DM Mono,monospace';
+        ctx.fillText(Math.round(ratio*100)+'%',30+hi*CELL_W+2,di*CELL_H+CELL_H-5);
+      }
+    });
+  });
+  // Hour labels
+  ctx.fillStyle='#aaa49d';ctx.font='9px DM Mono,monospace';
+  HOURS.forEach((h,hi)=>{if(h%2===0)ctx.fillText(h+'h',30+hi*CELL_W,DAY_LABELS.length*CELL_H+14);});
+  // Info
+  const info=document.getElementById('badi-chart-info');
+  if(info)info.textContent=data.length>0?`${data.length} Datenpunkte · ${BADI_TARGETS.find(t=>t.key===BADI_STATE.selBad)?.label||''}`:'Noch keine historischen Daten für diese Ansicht.';
+}
+
+// ─── Tagesverlauf ─────────────────────────────────────────────
+function badiRenderTagesverlauf(){
+  const canvas=document.getElementById('badi-chart-canvas');
+  if(!canvas)return;
+  const data=badiFilteredData();
+  const t=BADI_TARGETS.find(t=>t.key===BADI_STATE.selBad)||BADI_TARGETS[0];
+  const todayDow=new Date().getDay();// 0=So,1=Mo...
+  const DAY_MAP_BACK={0:'Sunday',1:'Monday',2:'Tuesday',3:'Wednesday',4:'Thursday',5:'Friday',6:'Saturday'};
+  const selectedDay=DAY_MAP_BACK[todayDow];
+  const HOURS=Array.from({length:16},(_,i)=>i+6);
+  const byHour={};
+  data.filter(r=>r.weekday===selectedDay).forEach(r=>{
+    const h=parseInt(r.hour);const ratio=parseFloat(r.fill_ratio);
+    if(isNaN(h)||isNaN(ratio))return;
+    if(!byHour[h])byHour[h]=[];
+    byHour[h].push(ratio);
+  });
+  const avgs=HOURS.map(h=>{
+    const v=byHour[h];
+    return v&&v.length>0?Math.round((v.reduce((s,x)=>s+x,0)/v.length)*100):null;
+  });
+  // Chart
+  if(BADI_STATE.charts.main)BADI_STATE.charts.main.destroy();
+  canvas.height=180;
+  BADI_STATE.charts.main=new Chart(canvas,{
+    type:'bar',
+    data:{
+      labels:HOURS.map(h=>h+'h'),
+      datasets:[{label:'Ø Belegung %',data:avgs,backgroundColor:avgs.map(v=>v!==null?ratio2color(v/100)+'bb':'#ede9e0'),borderRadius:4}]
+    },
+    options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.y!==null?c.parsed.y+'%':'–'}}},scales:{y:{max:100,ticks:{font:{family:'DM Mono'},callback:v=>v+'%'}}}}
+  });
+  const info=document.getElementById('badi-chart-info');
+  const DAY_DE=['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
+  if(info)info.textContent=`Ø für ${DAY_DE[todayDow]} · ${t.label}`;
+}
+
+// ─── Mittel pro Wochentag ─────────────────────────────────────
+function badiRenderWochentag(){
+  const canvas=document.getElementById('badi-chart-canvas');
+  if(!canvas)return;
+  const data=badiFilteredData();
+  const DAY_ORDER=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+  const DAY_DE=['Mo','Di','Mi','Do','Fr','Sa','So'];
+  const byDay={};
+  data.forEach(r=>{
+    const d=r.weekday;const ratio=parseFloat(r.fill_ratio);
+    if(!d||isNaN(ratio))return;
+    if(!byDay[d])byDay[d]=[];
+    byDay[d].push(ratio);
+  });
+  const avgs=DAY_ORDER.map(d=>{
+    const v=byDay[d];
+    return v&&v.length>0?Math.round((v.reduce((s,x)=>s+x,0)/v.length)*100):0;
+  });
+  if(BADI_STATE.charts.main)BADI_STATE.charts.main.destroy();
+  canvas.height=160;
+  BADI_STATE.charts.main=new Chart(canvas,{
+    type:'bar',
+    data:{labels:DAY_DE,datasets:[{label:'Ø Belegung %',data:avgs,backgroundColor:avgs.map(v=>ratio2color(v/100)+'cc'),borderRadius:5}]},
+    options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{max:100,ticks:{font:{family:'DM Mono'},callback:v=>v+'%'}}}}
+  });
+  const info=document.getElementById('badi-chart-info');
+  if(info)info.textContent=`Ø pro Wochentag · ${BADI_TARGETS.find(t=>t.key===BADI_STATE.selBad)?.label||''}`;
+}
+
+// ─── Bahnenbelegung ───────────────────────────────────────────
+function badiRenderLanes(){
+  const wrap=document.getElementById('badi-lanes-wrap');
+  if(!wrap)return;
+  const now=new Date();
+  const h=now.getHours();const m=String(now.getMinutes()).padStart(2,'0');
+  const timeLbl=`${h}:${m}`;
+  function renderLaneGrid(data,id,title,total){
+    if(!data)return'';
+    const hours=Object.keys(data).sort();
+    const curH=hours.find(hh=>parseInt(hh)===h)||hours[hours.length-1];
+    const slots=data[curH]||{};
+    const lanes=Array.from({length:total},(_,i)=>slots[String(i+1)]||{n:0,max:1,names:[]});
+    const grid=lanes.map((lane,i)=>{
+      const r=lane.max>0?(lane.n/lane.max):0;
+      const col=ratio2color(r);
+      const pct=Math.round(r*100);
+      return`<div style="border:1.5px solid var(--brd);border-radius:7px;padding:.45rem .55rem;background:var(--bg);cursor:default;position:relative"
+        title="Bahn ${i+1}: ${lane.n}/${lane.max} Pers.\n${(lane.names||[]).join(', ')||'Frei'}">
+        <div style="position:absolute;bottom:0;left:0;right:0;height:3px;background:${col};border-radius:0 0 5px 5px;width:${pct}%"></div>
+        <div style="font-family:var(--mono);font-size:.52rem;color:var(--muted)">Bahn ${i+1}</div>
+        <div style="font-family:var(--mono);font-size:.8rem;font-weight:700;color:${col}">${pct}%</div>
+        <div style="font-family:var(--mono);font-size:.5rem;color:var(--faint)">${lane.n}/${lane.max}</div>
+      </div>`;
+    }).join('');
+    return`<div style="margin-bottom:.85rem"><div style="font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.45rem;display:flex;justify-content:space-between"><span>${title}</span><span>Stand: ${timeLbl}</span></div><div style="display:grid;grid-template-columns:repeat(${total},1fr);gap:.3rem">${grid}</div></div>`;
+  }
+  wrap.innerHTML=renderLaneGrid(BADI_STATE.bahnen,'bahnen','Schwimmerbecken (6 Bahnen)',6)+
+                 renderLaneGrid(BADI_STATE.vario,'vario','Variobecken (4 Bahnen)',4);
+}
+
+// ─── Oracle / Bésmeralda ──────────────────────────────────────
+function badiRenderOracle(){
+  const wrap=document.getElementById('badi-oracle-content');
+  if(!wrap)return;
+  const data=BADI_STATE.history;
+  const t=BADI_TARGETS.find(t=>t.key===BADI_STATE.selBad)||BADI_TARGETS[0];
+  const uid=t.uid;
+  const isOutdoor=uid!=='SSD-4';
+
+  const offset=BADI_STATE.oracleDay;
+  const predDate=new Date();predDate.setDate(predDate.getDate()+offset);
+  const todayStr=predDate.toISOString().slice(0,10);
+  const todayDow=predDate.getDay();
+  const DAY_EN=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const todayKey=DAY_EN[todayDow];
+  const isWeekend=todayDow===0||todayDow===6;
+  const isHoliday=isBadiHoliday(todayStr);
+  const isSchool=isSchoolHol(todayStr);
+  const tempC=null;const rainMm=0;
+
+  const W_WEEKDAY=isOutdoor?0.38:0.48;
+  const W_HOLIDAY=0.22;const W_SCHOOL=0.14;
+  const W_TEMP=isOutdoor?0.16:0.06;const W_RAIN=isOutdoor?0.10:0.04;
+
+  const allDays={};
+  data.filter(r=>r.uid===uid).forEach(r=>{
+    const d=(r.timestamp_local||'').slice(0,10);
+    if(!d)return;
+    if(!allDays[d])allDays[d]={weekday:r.weekday,holiday:r.is_holiday==='True',school:r.is_school_holiday==='True',hours:{}};
+    const h=parseInt(r.hour);const ratio=parseFloat(r.fill_ratio);
+    if(!isNaN(h)&&!isNaN(ratio)){
+      if(!allDays[d].hours[h])allDays[d].hours[h]=[];
+      allDays[d].hours[h].push(ratio);
+    }
+  });
+
+  const scored=Object.entries(allDays).map(([date,day])=>{
+    let sw=0;
+    if(isHoliday){sw=(day.holiday||day.weekday==='Sunday')?1.0:0.2;}
+    else{sw=day.weekday===todayKey?1.0:(["Saturday","Sunday"].includes(day.weekday)===isWeekend)?0.4:0.1;}
+    const sh=(day.holiday===isHoliday)?1.0:0.2;
+    const ss=(day.school===isSchool)?1.0:0.3;
+    const similarity=W_WEEKDAY*sw+W_HOLIDAY*sh+W_SCHOOL*ss+W_TEMP*0.5+W_RAIN*0.8;
+    const daysDiff=Math.max(0,(new Date(todayStr)-new Date(date))/86400000);
+    const recency=Math.exp(-daysDiff*0.023);
+    const score=0.70*similarity+0.30*recency;
+    return{date,day,score,daysDiff};
+  }).filter(d=>d.date!==todayStr&&d.daysDiff>0).sort((a,b)=>b.score-a.score);
+
+  const top=scored.slice(0,20);
+  const HOURS=Array.from({length:16},(_,i)=>i+6);
+  const predictions=HOURS.map(h=>{
+    let wSum=0,wValSum=0,n=0;
+    top.forEach(item=>{
+      const vals=item.day.hours[h];
+      if(!vals||!vals.length)return;
+      const mean=vals.reduce((s,v)=>s+v,0)/vals.length;
+      wSum+=item.score;wValSum+=item.score*mean;n++;
+    });
+    if(n===0)return{h,pct:null};
+    let factor=1.0;
+    if(!isOutdoor&&tempC!==null){if(tempC>25)factor=0.7;else if(tempC<10)factor=0.75;}
+    return{h,pct:Math.min(100,Math.round((wValSum/wSum)*100*factor))};
+  });
+
+  const nowH=new Date().getHours();
+  const upcoming=predictions.filter(p=>p.h>=nowH&&p.h<=nowH+8);
+  const bestSlot=upcoming.reduce((b,p)=>p.pct!==null&&(b===null||p.pct<b.pct)?p:b,null);
+
+  const BARNUM=[
+    'Ich spüre, dass Sie in letzter Zeit eine große Veränderung in sich tragen. Das Wasser wird sie klären.',
+    'Die Sterne zeigen: Sie sind jemand, der mehr gibt als er nimmt — auch auf der Bahn.',
+    'Das Pendel schlägt deutlich aus: Heute ist ein Tag der Entscheidungen. Treffen Sie die richtige.',
+    'Ich sehe: Sie haben in jüngster Zeit Ihre Routine hinterfragt. Die Antwort liegt im Wasser.',
+    'Wer ruhige Bahnen sucht, soll ruhige Zeiten wählen. Die Kugel zeigt dir, wann das ist.',
+    'Die Energie des heutigen Tages ist komplex. Früh gehen ist Weisheit, nicht Schwäche.'
+  ];
+  const barnumMsg=BARNUM[Math.floor((new Date().getDate()+offset)%BARNUM.length)];
+
+  const DAY_LABEL_DE=['Heute','Morgen','Übermorgen'];
+  const dayLabel=offset<3?DAY_LABEL_DE[offset]:`In ${offset} Tagen`;
+  const DOW_DE=['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
+
+  let oracleHtml=`<div style="display:flex;gap:.3rem;margin-bottom:.65rem">
+    ${[-0,1,2].map(i=>`<button class="hm-pill${BADI_STATE.oracleDay===i?' on':''}" onclick="BADI_STATE.oracleDay=${i};badiRenderOracle()">${i===0?'Heute':i===1?'Morgen':'Übermorgen'}</button>`).join('')}
+  </div>
+  <div style="font-family:var(--mono);font-size:.67rem;color:var(--swim);margin-bottom:.65rem">
+    ${dayLabel} · ${DOW_DE[predDate.getDay()]}${isHoliday?' · 🎉 '+HOLIDAYS_2026[todayStr]:''}${isSchool?' · 🏖 Schulferien':''}
+  </div>`;
+
+  // Prediction slots
+  oracleHtml+='<div style="display:flex;gap:.28rem;flex-wrap:wrap;margin-bottom:.65rem">';
+  upcoming.slice(0,8).forEach(p=>{
+    const isBest=bestSlot&&p.h===bestSlot.h;
+    const col=p.pct!==null?ratio2color(p.pct/100):'#aaa';
+    oracleHtml+=`<div style="border:1.5px solid ${isBest?'var(--ok)':'var(--brd)'};background:${isBest?'var(--okl)':'var(--bg)'};border-radius:8px;padding:.38rem .48rem;text-align:center;min-width:44px">
+      <div style="font-family:var(--mono);font-size:.57rem;color:var(--muted)">${p.h}:00</div>
+      <div style="font-family:var(--mono);font-size:.88rem;font-weight:700;color:${col}">${p.pct!==null?p.pct+'%':'–'}</div>
+      ${isBest?'<div style="font-family:var(--mono);font-size:.5rem;color:var(--ok)">★ Best</div>':''}
+    </div>`;
+  });
+  oracleHtml+='</div>';
+
+  if(bestSlot&&bestSlot.pct!==null){
+    oracleHtml+=`<div style="background:var(--okl);border:1px solid var(--okb);border-radius:var(--r);padding:.5rem .7rem;font-family:var(--mono);font-size:.7rem;color:var(--ok);margin-bottom:.55rem">★ Bester Zeitpunkt heute: ${bestSlot.h}:00 Uhr · ca. ${bestSlot.pct}% Belegung</div>`;
+  }
+  oracleHtml+=`<div style="font-family:var(--mono);font-size:.68rem;color:var(--muted);line-height:1.55;font-style:italic;border-left:2px solid var(--brd);padding-left:.6rem;margin-top:.25rem">${barnumMsg}</div>`;
+  oracleHtml+=`<details style="margin-top:.65rem"><summary style="font-family:var(--mono);font-size:.6rem;color:var(--faint);cursor:pointer">Algorithmus</summary><div style="font-family:var(--mono);font-size:.6rem;color:var(--muted);margin-top:.4rem;line-height:1.52">kNN mit exponentieller Recency-Gewichtung.<br>Score = 0.70 × Ähnlichkeit + 0.30 × e^(−0.023 × Tage)<br>Halbwertszeit ≈ 30 Tage · Top-20 ähnlichste Tage</div></details>`;
+
+  wrap.innerHTML=oracleHtml;
+  if(top.length===0)wrap.innerHTML=`<div class="info-box">Noch zu wenig historische Daten für Vorhersagen. Bésmeralda braucht mindestens 2 Wochen.</div>`;
+}
+
+// ─── Main render ─────────────────────────────────────────────
 function renderBadi(){
- const v=el('v-badi');
- v.innerHTML=`
-<div class="sl first">AKTUELLE BELEGUNG</div>
-<div class="badi-stat-grid" id="badi-compact-cards"><div class="loading">Verbinde mit Crowdmonitor…</div></div>
-<div class="badi-ts">Live · Crowdmonitor-WebSocket · alle 10 Min historisch</div>
+  const v=el('v-badi');
+  const img=BESM_IMG;
+  v.innerHTML=`
+<div class="sl first">AKTUELLE BELEGUNG <span id="badi-ws-status" style="color:var(--faint);font-size:.55rem;margin-left:.5rem">Verbinde…</span></div>
+<div class="badi-stat-grid" id="badi-live-cards">${BADI_TARGETS.map(t=>`<div class="badi-cell"><div class="badi-cell-status-bar" style="width:0%"></div><div class="badi-cell-name">${t.label}</div><div class="badi-pct" style="color:#aaa">—</div><div class="badi-status bst-x">—</div></div>`).join('')}</div>
 
-<div class="sl">HEATMAP · TYPISCHE BELEGUNG</div>
+<div class="sl">VERLAUF</div>
 <div class="hm-wrap">
- <div class="hm-sel" id="badi-pool-sel">
-  ${POOLS.map(p=>`<button class="hm-pill${p.id==='SSD-4'?' on':''}" data-pid="${p.id}" onclick="selBadiPool('${p.id}',this)">${p.n}</button>`).join('')}
+ <div style="display:flex;gap:.25rem;flex-wrap:wrap;margin-bottom:.5rem">
+  ${BADI_TARGETS.map(t=>`<button class="badi-pool-btn hm-pill${t.key===BADI_STATE.selBad?' on':''}" data-bad="${t.key}" onclick="badiSelBad('${t.key}')">${t.label.replace('Hallenbad ','').replace('Freibad ','').replace('Seebad ','').replace('Flussbad ','')}</button>`).join('')}
  </div>
- <div style="overflow-x:auto"><canvas id="badi-hm-canvas" height="140"></canvas></div>
- <div style="font-family:var(--mono);font-size:.56rem;color:var(--faint);margin-top:.4rem">Mo–So · 04–20 Uhr · Farbe = typische Belegung</div>
+ <div style="display:flex;gap:.2rem;flex-wrap:wrap;margin-bottom:.6rem">
+  ${[['heatmap','Heatmap'],['tagesverlauf','Tagesverlauf'],['wochentag','Mittel/Wochentag'],['oracle','Bésmeralda']].map(([v,l])=>`<button class="badi-view-btn hm-pill${BADI_STATE.selView===v?' on':''}" data-view="${v}" onclick="badiSelView('${v}')">${l}</button>`).join('')}
+ </div>
+ <div style="display:flex;gap:.2rem;flex-wrap:wrap;margin-bottom:.55rem">
+  ${[['all','Alle'],['06','Jun'],['07','Jul'],['08','Aug'],['09','Sep']].map(([m,l])=>`<button class="badi-month-btn hm-pill${BADI_STATE.selMonth===m?' on':''}" data-month="${m}" onclick="badiSelMonth('${m}')">${l}</button>`).join('')}
+ </div>
+ <div style="overflow-x:auto">
+  <div id="badi-oracle-content" style="${BADI_STATE.selView==='oracle'?'':'display:none'}"></div>
+  <canvas id="badi-chart-canvas" style="${BADI_STATE.selView==='oracle'?'display:none':''}"></canvas>
+ </div>
+ <div id="badi-chart-info" style="font-family:var(--mono);font-size:.56rem;color:var(--faint);margin-top:.4rem"></div>
+ <div id="badi-hist-status" style="font-family:var(--mono);font-size:.58rem;color:var(--faint);margin-top:.2rem">Lade…</div>
 </div>
 
-<div class="sl">TAGESVERLAUF</div>
-<div class="hm-wrap">
- <div class="hm-sel" id="badi-day-sel">
-  ${['Mo','Di','Mi','Do','Fr','Sa','So'].map((d,i)=>`<button class="hm-pill${i===new Date().getDay()-1?' on':''}" data-dayidx="${i}" onclick="selBadiDay(${i},this)">${d}</button>`).join('')}
+<div id="badi-lanes-section">
+ <div class="sl">BAHNENBELEGUNG HALLENBAD CITY</div>
+ <div class="hm-wrap" id="badi-lanes-wrap">
+  <div class="loading">Lade Bahnen-Daten…</div>
  </div>
- <canvas id="badi-tg-canvas" height="120"></canvas>
 </div>
 
-<div class="sl">MITTEL PRO WOCHENTAG</div>
-<div class="hm-wrap"><canvas id="badi-wd-canvas" height="100"></canvas></div>
-
-<div class="sl">BÉSMERALDA · THE FUNKY FORTUNE TELLER</div>
+<div class="sl">BÉSMERALDA'S KLEINE KRISTALLKUGEL</div>
 <div class="oracle-wrap">
  <div class="oracle-hdr">
-  <img class="oracle-img" src="${BESM_IMG}" alt="Bésmeralda">
+  <img class="oracle-img" src="${img}" alt="Bésmeralda">
   <div>
    <div class="oracle-name">Bésmeralda The Funky Fortune Teller</div>
-   <div class="oracle-sub">Vorhersage nächste 8h</div>
-   <div class="oracle-desc">kNN · exponentielle Recency-Gewichtung</div>
+   <div class="oracle-sub">Sie sieht alles. Meistens. Ungefähr.</div>
+   <div class="oracle-desc">kNN · exponentielle Recency-Gewichtung · w = 0.70 × Ähnlichkeit + 0.30 × e^(−0.023 × Tage)</div>
   </div>
  </div>
- <div id="oracle-content">
-  <div class="oracle-grid" id="oracle-grid"><div class="loading">Orakel erwacht…</div></div>
-  <div id="oracle-best"></div>
- </div>
+ <div id="badi-oracle-besmeralda"><div class="loading">Kugel erwacht…</div></div>
+</div>
+<div style="font-family:var(--mono);font-size:.58rem;color:var(--faint);text-align:center;padding:.6rem 0">
+ Live via Crowdmonitor-WebSocket · Historische Daten alle 10 Min · <a href="https://derbsq.github.io/Badi-Tracker/" target="_blank" style="color:var(--bdi)">→ Vollständiger Tracker</a>
 </div>`;
 
- renderBadiCards('#badi-compact-cards');
- loadBadiData();
-}
+  // Separate full oracle (Bésmeralda section)
+  BADI_STATE.selView='heatmap';
+  document.querySelectorAll('.badi-view-btn').forEach(b=>b.classList.toggle('on',b.dataset.view==='heatmap'));
 
-async function loadBadiData(){
- await loadBadiCSV();
- renderBadiCards('#badi-compact-cards');
- renderBadiCards('#dash-badi-cards');
- buildHeatmap(badiSelPool);
- buildTagesverlauf(badiSelPool,(new Date().getDay()+6)%7);
- buildWochentag(badiSelPool);
- buildOracle(badiSelPool);
- connectBadiWS();
-}
-
-function selBadiPool(pid,btn){
- badiSelPool=pid;
- document.querySelectorAll('#badi-pool-sel .hm-pill').forEach(b=>b.classList.remove('on'));
- if(btn)btn.classList.add('on');
- buildHeatmap(pid);buildWochentag(pid);buildOracle(pid);
-}
-function selBadiDay(di,btn){
- document.querySelectorAll('#badi-day-sel .hm-pill').forEach(b=>b.classList.remove('on'));
- if(btn)btn.classList.add('on');
- buildTagesverlauf(badiSelPool,di);
-}
-
-const OCC_COLS=['#1e3a5f','#1a7fa8','#1a9e6e','#d4a017','#c45c2a','#a02020'];
-function occ2col6(p){if(p<10)return 0;if(p<25)return 1;if(p<45)return 2;if(p<60)return 3;if(p<75)return 4;return 5;}
-
-function parseCSVRows(){
- // Parse from badiData object - reconstruct hourly data
- const rows=[];
- Object.values(badiData).forEach(r=>{
-  const ts=r.timestamp_utc||r.timestamp;
-  const uid=r.uid;
-  const pct=parseFloat(r.pct||r.belegung||0);
-  if(ts&&uid)rows.push({ts:new Date(ts),uid,pct,dow:(new Date(ts).getDay()+6)%7,hr:new Date(ts).getHours()});
- });
- return rows;
-}
-
-function buildHeatmap(poolId){
- const canvas=el('badi-hm-canvas');if(!canvas)return;
- // Build 7×17 grid (Mo–So, 4–20h)
- const DOW=7,HOURS=17,H0=4;
- const sums=Array.from({length:DOW},()=>Array(HOURS).fill(0));
- const cnts=Array.from({length:DOW},()=>Array(HOURS).fill(0));
- Object.values(badiData).filter(r=>r.uid===poolId).forEach(r=>{
-  const ts=new Date(r.timestamp_utc||r.timestamp);
-  const dow=(ts.getDay()+6)%7;
-  const hr=ts.getHours()-H0;
-  const pct=parseFloat(r.pct||r.belegung||0);
-  if(hr>=0&&hr<HOURS){sums[dow][hr]+=pct;cnts[dow][hr]++;}
- });
- const avgs=sums.map((row,d)=>row.map((s,h)=>cnts[d][h]>0?s/cnts[d][h]:null));
- // Draw on canvas
- const W=canvas.offsetWidth||300;
- const cellW=Math.max((W-30)/HOURS,12);
- const cellH=16;
- canvas.width=W;canvas.height=DOW*cellH+20;
- const ctx=canvas.getContext('2d');
- ctx.clearRect(0,0,canvas.width,canvas.height);
- const DAYS=['Mo','Di','Mi','Do','Fr','Sa','So'];
- ctx.font='9px DM Mono,monospace';ctx.fillStyle='#aaa49d';
- DAYS.forEach((d,i)=>{ctx.fillText(d,0,i*cellH+cellH-4);});
- avgs.forEach((row,di)=>{
-  row.forEach((v,hi)=>{
-   ctx.fillStyle=v===null?'#ede9e0':OCC_COLS[occ2col6(v)];
-   ctx.fillRect(30+hi*cellW,di*cellH,cellW-1,cellH-1);
+  badiConnectWS();
+  badiLoadData().then(()=>{
+    badiRenderCurrentView();
+    // Also render the separate Bésmeralda section
+    const bOrac=document.getElementById('badi-oracle-besmeralda');
+    if(bOrac){
+      const savedView=BADI_STATE.selView;
+      BADI_STATE.selView='oracle';
+      const tmpWrap=document.createElement('div');
+      tmpWrap.id='badi-oracle-content';
+      const oldWrap=document.getElementById('badi-oracle-content');
+      if(oldWrap)document.body.appendChild(tmpWrap);
+      BADI_STATE.selView=savedView;
+      // Just render oracle separately
+      badiRenderOracleInto(bOrac);
+    }
   });
- });
- // Hour labels
- for(let h=0;h<HOURS;h+=4){
-  ctx.fillStyle='#aaa49d';
-  ctx.fillText(`${h+H0}h`,30+h*cellW,DOW*cellH+14);
- }
 }
 
-function buildTagesverlauf(poolId,dow){
- const canvas=el('badi-tg-canvas');if(!canvas)return;
- const H0=4,HOURS=17;
- const sums=Array(HOURS).fill(0);const cnts=Array(HOURS).fill(0);
- Object.values(badiData).filter(r=>r.uid===poolId).forEach(r=>{
-  const ts=new Date(r.timestamp_utc||r.timestamp);
-  if((ts.getDay()+6)%7!==dow)return;
-  const hr=ts.getHours()-H0;
-  const pct=parseFloat(r.pct||r.belegung||0);
-  if(hr>=0&&hr<HOURS){sums[hr]+=pct;cnts[hr]++;}
- });
- const avgs=sums.map((s,h)=>cnts[h]>0?Math.round(s/cnts[h]):0);
- const labels=Array.from({length:HOURS},(_,h)=>`${h+H0}h`);
- if(badiTgChart)badiTgChart.destroy();
- badiTgChart=new Chart(canvas,{type:'bar',data:{labels,datasets:[{label:'%',data:avgs,backgroundColor:avgs.map(v=>OCC_COLS[occ2col6(v)]),borderRadius:3}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{max:100,ticks:{font:{family:'DM Mono'}}}}}});
-}
-
-function buildWochentag(poolId){
- const canvas=el('badi-wd-canvas');if(!canvas)return;
- const sums=Array(7).fill(0);const cnts=Array(7).fill(0);
- Object.values(badiData).filter(r=>r.uid===poolId).forEach(r=>{
-  const ts=new Date(r.timestamp_utc||r.timestamp);
-  const dow=(ts.getDay()+6)%7;
-  const pct=parseFloat(r.pct||r.belegung||0);
-  sums[dow]+=pct;cnts[dow]++;
- });
- const avgs=sums.map((s,d)=>cnts[d]>0?Math.round(s/cnts[d]):0);
- if(badiWdChart)badiWdChart.destroy();
- badiWdChart=new Chart(canvas,{type:'bar',data:{labels:['Mo','Di','Mi','Do','Fr','Sa','So'],datasets:[{data:avgs,backgroundColor:avgs.map(v=>OCC_COLS[occ2col6(v)]),borderRadius:3}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{max:100,ticks:{font:{family:'DM Mono'}}}}}});
-}
-
-function buildOracle(poolId){
- const g=el('oracle-grid');const ob=el('oracle-best');
- if(!g)return;
- // Simple: find best hours today (lowest avg)
- const H0=4,HOURS=17;
- const now=new Date();
- const todayDow=(now.getDay()+6)%7;
- const sums=Array(HOURS).fill(0);const cnts=Array(HOURS).fill(0);
- Object.values(badiData).filter(r=>r.uid===poolId).forEach(r=>{
-  const ts=new Date(r.timestamp_utc||r.timestamp);
-  if((ts.getDay()+6)%7!==todayDow)return;
-  const hr=ts.getHours()-H0;
-  const pct=parseFloat(r.pct||r.belegung||0);
-  if(hr>=0&&hr<HOURS){sums[hr]+=pct;cnts[hr]++;}
- });
- const avgs=sums.map((s,h)=>cnts[h]>0?Math.round(s/cnts[h]):null);
- const currentH=now.getHours();
- const upcoming=Array.from({length:8},(_,i)=>currentH+i).filter(h=>h>=H0&&h<H0+HOURS);
- g.innerHTML=upcoming.slice(0,6).map(h=>{
-  const hi=h-H0;
-  const v=avgs[hi];
-  const isBest=v!==null&&v===Math.min(...upcoming.map(hh=>avgs[hh-H0]??999));
-  return `<div class="oracle-slot${isBest?' best':''}"><div class="oracle-h">${h}:00</div><div class="oracle-p" style="color:${v!==null?OCC_COLS[occ2col6(v)]:'#aaa'}">${v!==null?v+'%':'–'}</div>${isBest?'<div class="oracle-tip">★ Jetzt</div>':''}</div>`;
- }).join('');
- const msgs=['Die Sterne zeigen freie Bahnen…','Bésmeralda sieht: Es wird gut sein.','Das Wasser ruft — hör auf die Kugel.','Die Kugel trübt sich. Geduld ist eine Tugend.'];
- if(ob)ob.innerHTML=`<div class="oracle-best">${msgs[Math.floor(Math.random()*msgs.length)]}</div>`;
+function badiRenderOracleInto(container){
+  // Same as oracle but writes to given container
+  const tempWrap=document.getElementById('badi-oracle-content');
+  if(tempWrap)tempWrap.style.display='block';
+  BADI_STATE.selView='oracle';
+  badiRenderOracle();
+  if(container&&tempWrap){
+    container.innerHTML=tempWrap.innerHTML;
+    tempWrap.style.display='none';
+  }
+  BADI_STATE.selView='heatmap';
 }
 
 // ─── METHOD VIEW ─────────────────────────────────────────────
@@ -1949,6 +2314,13 @@ document.addEventListener('DOMContentLoaded',()=>{
   if(c.pace&&el('css-manual'))el('css-manual').value=c.pace;
  },200);
 });
+
+// ─── PWA SERVICE WORKER ─────────────────────────────────────
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('sw.js').catch(()=>{});
+  });
+}
 
 </script>
 </body>
