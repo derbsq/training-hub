@@ -1,0 +1,18 @@
+{
+  "name": "Bésko's Little Training Hub",
+  "short_name": "Training Hub",
+  "description": "Schwimmen, Dryland, Badi-Tracker — alles auf einen Blick",
+  "start_url": "/training-hub/",
+  "display": "standalone",
+  "background_color": "#f4f1eb",
+  "theme_color": "#1a4a2e",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='36' fill='%231a4a2e'/%3E%3Ctext x='50%25' y='58%25' font-size='110' text-anchor='middle' dominant-baseline='middle'%3E🏊%3C/text%3E%3C/svg%3E",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
