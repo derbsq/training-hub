@@ -1058,15 +1058,19 @@ const qsa=(s,p=document)=>p.querySelectorAll(s);
 const fmtDate=(d)=>d.toLocaleDateString('de-DE',{weekday:'short',day:'numeric',month:'numeric'});
 const fmtDateFull=(s)=>{const d=new Date(s);return d.toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long'})};
 
-function parseTime(s){// MM:SS → seconds
+function parseTime(s){// MM:SS.xx → seconds
  if(!s||!s.includes(':'))return 0;
- const[m,sec]=s.split(':').map(Number);
- return m*60+(sec||0);
+ const[mStr,secStr]=s.split(':');
+ const m=parseInt(mStr)||0;
+ const sec=parseFloat(secStr)||0;
+ return m*60+sec;
 }
-function fmtTime(secs){// seconds → MM:SS
+function fmtTime(secs,decimals=0){// seconds → MM:SS or MM:SS.xx
  const m=Math.floor(secs/60);
- const s=Math.round(secs%60);
- return `${m}:${s<10?'0':''}${s}`;
+ const s=secs%60;
+ const sf=decimals>0?s.toFixed(decimals):String(Math.round(s)).padStart(2,'0');
+ const sm=typeof sf==='string'?sf:String(sf);
+ return `${m}:${sm.includes('.')?sm.padStart(5,'0'):sm.padStart(2,'0')}`;
 }
 function calcPace(css_secs,pct){return fmtTime(css_secs/(pct/100));}
 function getCSSpace(){
@@ -1212,43 +1216,73 @@ function saveApiKey(){
 
 // ─── CSS CALCULATOR ──────────────────────────────────────────
 function calcCSS(){
- const t4=parseTime(el('css-t400').value);
- const t2=parseTime(el('css-t200').value);
+ const t4=parseTime(el('css-t400')?.value||'');
+ const t2=parseTime(el('css-t200')?.value||'');
  const re=el('css-result');
  const rg=el('css-pace-grid');
- if(!t4||!t2||t4<=t2){re.innerHTML='<span style="color:var(--faint)">Zeiten eingeben</span>';rg.innerHTML='';return;}
+ if(!t4||!t2||t4<=t2){
+  if(re)re.innerHTML='<span style="color:var(--faint)">Zeiten eingeben</span>';
+  if(rg)rg.innerHTML='';
+  return;
+ }
  const css=(t4-t2)/2;
- const pace=fmtTime(css);
- re.innerHTML=`<div class="css-result-big">${pace} /100m</div><div class="css-hint">CSS = (${fmtTime(t4)} − ${fmtTime(t2)}) ÷ 2</div>`;
- const zones=[[65,'EASY'],[70,''],[75,'STEADY'],[80,''],[85,'CSS'],[90,''],[95,''],[100,'MAX']];
- rg.innerHTML=zones.map(([p,l])=>`<div class="pcell${p===85?' hot':''}">${l?`<div class="pz">${p}% ${l}</div>`:`<div class="pz">${p}%</div>`}<div class="pv">${calcPace(css,p)}</div></div>`).join('');
- // save to CSS data
- const c=S.css();c.pace=pace;c.t400=el('css-t400').value;c.t200=el('css-t200').value;S.setcss(c);
- // Update pacing box
- renderPacingBox();
+ const pace=fmtTime(css,2);
+ if(re)re.innerHTML=`<div class="css-result-big">${pace} /100m</div><div class="css-hint">CSS = (${fmtTime(t4,2)} − ${fmtTime(t2,2)}) ÷ 2</div>`;
+ if(rg){
+  const zones=[[65,'EASY'],[70,''],[75,'STEADY'],[80,''],[85,'CSS'],[90,''],[95,''],[100,'MAX']];
+  rg.innerHTML=zones.map(([p,l])=>`<div class="pcell${p===85?' hot':''}"><div class="pz">${p}%${l?' '+l:''}</div><div class="pv">${fmtTime(css/(p/100),2)}</div></div>`).join('');
+ }
+ const c=S.css();c.calcPace=pace;c.t400=el('css-t400').value;c.t200=el('css-t200').value;S.setcss(c);
 }
 
 function saveCSSEntry(){
+ const pace=el('css-entry-pace')?.value.trim();
+ const date=el('css-entry-date')?.value||TODAY_STR;
+ const note=el('css-entry-note')?.value.trim()||'';
+ if(!pace||!pace.includes(':'))return;
  const c=S.css();
- if(!c.pace)return;
- const note=el('css-note')?.value.trim()||'';
  c.hist=c.hist||[];
- c.hist.unshift({date:TODAY_STR,pace:c.pace,note});
- if(c.hist.length>10)c.hist.pop();
+ c.hist.unshift({id:Date.now(),date,pace,note});
+ if(c.hist.length>20)c.hist.pop();
+ S.setcss(c);
+ if(el('css-entry-pace'))el('css-entry-pace').value='';
+ if(el('css-entry-note'))el('css-entry-note').value='';
+ renderCSSHistory();
+}
+
+function deleteCSSEntry(id){
+ const c=S.css();
+ c.hist=(c.hist||[]).filter(e=>e.id!==id);
  S.setcss(c);
  renderCSSHistory();
- const s=el('css-saved-msg');if(s){s.classList.add('show');setTimeout(()=>s.classList.remove('show'),2000);}
+}
+
+function editCSSEntry(id){
+ const c=S.css();
+ const e=(c.hist||[]).find(x=>x.id===id);
+ if(!e)return;
+ const newPace=prompt('CSS Zeit bearbeiten:',e.pace);
+ if(!newPace)return;
+ e.pace=newPace.trim();
+ S.setcss(c);
+ renderCSSHistory();
 }
 
 function renderCSSHistory(){
  const c=S.css();
  const h=el('css-history');
  if(!h)return;
- if(!c.hist||!c.hist.length){h.innerHTML='<div class="empty" style="padding:.8rem 0">Noch keine CSS-Zeiten gespeichert</div>';return;}
- h.innerHTML=c.hist.map(e=>`<div class="css-pb-entry"><span class="css-pb-val">${e.pace}/100m${e.note?' · '+e.note:''}</span><span class="css-pb-date">${e.date.slice(5)}</span></div>`).join('');
+ if(!c.hist?.length){h.innerHTML='<div class="empty" style="padding:.6rem 0;font-size:.68rem">Noch keine Messungen gespeichert</div>';return;}
+ h.innerHTML=c.hist.map(e=>`<div class="css-pb-entry">
+  <span class="css-pb-val">${e.pace}/100m${e.note?' · <span style="font-weight:400;color:var(--muted)">'+e.note+'</span>':''}</span>
+  <span style="display:flex;align-items:center;gap:.4rem">
+   <span class="css-pb-date">${e.date?.slice(5)||''}</span>
+   <button onclick="editCSSEntry(${e.id})" style="font-family:var(--mono);font-size:.55rem;color:var(--muted);border:1px solid var(--brd);border-radius:4px;padding:.08rem .3rem;cursor:pointer">✎</button>
+   <button onclick="deleteCSSEntry(${e.id})" style="font-family:var(--mono);font-size:.55rem;color:var(--dA);border:1px solid rgba(139,58,26,.25);border-radius:4px;padding:.08rem .3rem;cursor:pointer">✕</button>
+  </span>
+ </div>`).join('');
 }
 
-// ─── PACING BOX ──────────────────────────────────────────────
 function renderPacingBox(){
  const pb=document.querySelector('.pacing-box');if(!pb)return;
  const css=getCSSpace();
@@ -1413,88 +1447,184 @@ function gotoDry(id){switchTab('dry');setTimeout(()=>{const tabs=document.queryS
 // ─── SWIM VIEW ───────────────────────────────────────────────
 function renderSwim(){
  const v=el('v-swim');
+
+ // Find single next session
+ const nextEntry=Object.entries(SCHED)
+  .filter(([d,ev])=>d>=TODAY_STR&&ev.some(e=>e.type==='swim'&&!S.isLogged(d,e.id)))
+  .sort((a,b)=>a[0]<b[0]?-1:1)[0];
+ const nextId=nextEntry?nextEntry[1].find(e=>e.type==='swim'&&!S.isLogged(nextEntry[0],e.id))?.id:null;
+
  const css=getCSSpace();
  const zones=[[65,'EASY'],[70,''],[75,'STEADY'],[80,''],[85,'CSS'],[90,''],[95,''],[100,'MAX']];
 
- // CSS Calc box
- const cssCalc=`<div class="sl first">CSS KALKULATOR</div>
+ // ── 1. PACING (top, always) ───────────────────────────────
+ const pcells=zones.map(([p,l])=>`<div class="pcell${p===85?' hot':''}"><div class="pz">${p}%${l?' '+l:''}</div><div class="pv">${calcPace(css,p)}</div></div>`).join('');
+ const pacingHtml=`<div class="sl first">PACING</div>
+<div class="pacing-box">
+ <div class="pacing-sub">85% / CSS = ${fmtTime(css,2)} /100m</div>
+ <div class="pace-grid">${pcells}</div>
+ <div style="display:flex;gap:.4rem;align-items:center;flex-wrap:wrap;padding-top:.55rem;border-top:1px solid rgba(26,74,46,.2);margin-top:.5rem">
+  <span style="font-family:var(--mono);font-size:.61rem;color:var(--swim)">Training CSS:</span>
+  <input id="css-manual" placeholder="1:35.00" style="width:78px;background:#fff;border:1.5px solid rgba(26,74,46,.25);border-radius:7px;padding:.25rem .42rem;font-family:var(--mono);font-size:.8rem" oninput="setCSSManual(this.value)">
+  <span style="font-family:var(--mono);font-size:.58rem;color:var(--faint)">unabhängig vom Kalkulator</span>
+ </div>
+</div>`;
+
+ // ── 2. CSS KALKULATOR ─────────────────────────────────────
+ const cssCalcHtml=`<div class="sl">CSS KALKULATOR</div>
 <div class="css-calc-box">
- <h3>Critical Swim Speed berechnen</h3>
- <div class="css-row">
-  <label>200m Zeit</label><input id="css-t200" placeholder="2:50" style="width:72px" oninput="calcCSS()">
-  <label style="margin-left:.5rem">400m Zeit</label><input id="css-t400" placeholder="6:00" style="width:72px" oninput="calcCSS()">
+ <h3>CSS aus Zeiten berechnen</h3>
+ <div class="css-row" style="gap:.55rem;flex-wrap:wrap">
+  <label>200m</label><input id="css-t200" placeholder="2:50.00" style="width:80px" oninput="calcCSS()">
+  <label>400m</label><input id="css-t400" placeholder="6:00.00" style="width:80px" oninput="calcCSS()">
  </div>
- <div id="css-result"><span style="color:var(--faint);font-family:var(--mono);font-size:.75rem">Zeiten eingeben → CSS wird berechnet</span></div>
- <div class="pace-grid" id="css-pace-grid"></div>
- <div class="css-pb-add">
-  <input id="css-note" placeholder="Notiz (optional)" style="flex:1">
-  <button class="btn btn-sw" style="flex:0 0 auto;padding:.38rem .75rem;font-size:.66rem" onclick="saveCSSEntry()">💾 Speichern</button>
+ <div id="css-result" style="margin:.35rem 0 .5rem"><span style="color:var(--faint);font-family:var(--mono);font-size:.75rem">Zeiten eingeben → CSS wird berechnet</span></div>
+ <div class="pace-grid" id="css-pace-grid" style="margin-bottom:.65rem"></div>
+ <div class="sl" style="margin-top:.65rem">MESSUNGEN SPEICHERN</div>
+ <div style="display:flex;gap:.35rem;flex-wrap:wrap;margin-bottom:.45rem;align-items:flex-end">
+  <div class="ff"><label>CSS Zeit</label><input id="css-entry-pace" placeholder="1:33.52" style="width:84px;background:var(--bg);border:1.5px solid var(--brd);border-radius:7px;padding:.28rem .44rem;font-family:var(--mono);font-size:.78rem"></div>
+  <div class="ff"><label>Datum</label><input id="css-entry-date" type="date" value="${TODAY_STR}" style="background:var(--bg);border:1.5px solid var(--brd);border-radius:7px;padding:.28rem .44rem;font-family:var(--mono);font-size:.72rem"></div>
+  <div class="ff" style="flex:1;min-width:80px"><label>Notiz</label><input id="css-entry-note" placeholder="optional" style="width:100%;background:var(--bg);border:1.5px solid var(--brd);border-radius:7px;padding:.28rem .44rem;font-family:var(--mono);font-size:.72rem"></div>
+  <button class="btn btn-sw" style="flex:0 0 auto;padding:.38rem .75rem;font-size:.66rem;align-self:flex-end" onclick="saveCSSEntry()">Speichern</button>
  </div>
- <div class="sav" id="css-saved-msg">✓ CSS gespeichert</div>
- <div class="sl" style="margin-top:.8rem">PROGRESSION</div>
  <div id="css-history"></div>
 </div>`;
 
- // Pacing box
- const pcells=zones.map(([p,l])=>`<div class="pcell${p===85?' hot':''}">${l?`<div class="pz">${p}% ${l}</div>`:`<div class="pz">${p}%</div>`}<div class="pv">${calcPace(css,p)}</div></div>`).join('');
- const pacingBox=`<div class="sl">PACING · /100m</div>
-<div class="pacing-box">
- <h3>Pacing · /100m</h3>
- <div class="pacing-sub">CSS / 85% = ${fmtTime(css)} /100m · unten anpassen</div>
- <div class="pace-grid">${pcells}</div>
- <div style="display:flex;gap:.4rem;align-items:center;flex-wrap:wrap;padding-top:.55rem;border-top:1px solid rgba(26,74,46,.2)">
-  <span style="font-family:var(--mono);font-size:.61rem;color:var(--swim)">CSS manuell:</span>
-  <input id="css-manual" placeholder="1:35" style="width:68px;background:#fff;border:1.5px solid rgba(26,74,46,.25);border-radius:7px;padding:.25rem .42rem;font-family:var(--mono);font-size:.78rem" oninput="setCSSManual(this.value)">
- </div>
-</div>`;
-
- // Session Generator
- const genBox=`<div class="sl">SESSION GENERATOR</div>
+ // ── 3. BÉSKAI SESSION GENERATOR ──────────────────────────
+ const genHtml=`<div class="sl">BÉSKAI'S SESSION GENERATOR</div>
 <div class="gen-box">
- <h3>🤖 KI-Session</h3>
- <div class="gen-sub">Beschreibe deine Session — z.B. "kurze Recovery, 1200m, Fokus Catch" oder "intensive 2000m mit Hypoxik"</div>
+ <h3>BésKI's Session Generator</h3>
+ <div class="gen-sub">Claude generiert deine Session — Distanz, Fokus, Intensität, Stimmung.</div>
  <div class="gen-row">
-  <input class="gen-input" id="gen-input" placeholder="kurze Recovery Session, 1200m, Fokus Catch…">
-  <button class="gen-btn" onclick="generateSession()">→ Generieren</button>
+  <input class="gen-input" id="gen-input" placeholder="Eine geht noch…">
+  <button class="gen-btn" onclick="generateSession()">→ Los</button>
  </div>
  <div id="gen-output"></div>
- <div style="font-family:var(--mono);font-size:.57rem;color:var(--faint);margin-top:.5rem">API Key einmalig eingeben → lokal gespeichert · <span class="cal-ev-goto" onclick="el('api-modal').classList.remove('hidden')">Key ändern</span></div>
+ <div style="font-family:var(--mono);font-size:.57rem;color:var(--faint);margin-top:.5rem">API Key → lokal · <span class="cal-ev-goto" style="cursor:pointer" onclick="el('api-modal').classList.remove('hidden')">Key ändern</span></div>
 </div>`;
 
- // Sessions by week
+ // ── 4. SESSIONS NACH WOCHE ────────────────────────────────
  const weeks={
-  'ÜBERGANG · MAI':['MAY-ADD'],
-  'WOCHE 1':['W1S1','W1S2','W1S3','Z1-1'],
-  'WOCHE 2':['W2S1','W2S2','W2S3','Z1-2'],
-  'WOCHE 3':['W3S1','W3S2','W3S3','Z1-3'],
-  'WOCHE 4':['W4S1','W4S2','W4S3'],
+  'WOCHE 1':['W1S1','MAY-ADD','W1S2','W1S3'],
+  'WOCHE 2':['W2S1','W2S2','W2S3','Z1-1'],
+  'WOCHE 3':['W3S1','W3S2','W3S3','Z1-2'],
+  'WOCHE 4':['W4S1','W4S2','W4S3','Z1-3'],
   'WOCHE 5':['W5S1','W5S2']
  };
 
- let sessHtml='<div class="sl">SESSIONS · NACH WOCHE</div>';
+ let sessHtml='<div class="sl">SESSIONS</div>';
  Object.entries(weeks).forEach(([wn,ids])=>{
   const sessions=ids.map(id=>SWIM.find(s=>s.id===id)).filter(Boolean);
   sessHtml+=`<div class="wk-swim-group"><div class="wk-swim-label">${wn}</div><div class="wk-swim-row">`;
   sessions.forEach(s=>{
    const ds=Object.entries(SCHED).find(([,ev])=>ev.some(e=>e.id===s.id))?.[0]||'';
    const logged=ds?S.isLogged(ds,s.id):false;
-   const isNext=ds&&ds>=TODAY_STR&&!logged;
-   sessHtml+=`<div class="wk-swim-cell ${s.z1?'wsc-z1':'wsc-sw'} ${logged?'logged':''} ${isNext?'is-next':''}" data-sid="${s.id}" onclick="openSwimSession('${s.id}','${ds}')">
-    ${isNext?'<div class="wsc-flag fn">→ Nächste</div>':logged?'<div class="wsc-flag fd">✓ Erledigt</div>':''}
+   const isNext=s.id===nextId;
+   const isPast=ds&&ds<TODAY_STR;
+   sessHtml+=`<div class="wk-swim-cell ${s.z1?'wsc-z1':'wsc-sw'} ${logged?'logged':''} ${isNext?'is-next':''} ${isPast&&!logged?'wsc-past':''}" data-sid="${s.id}" onclick="openSwimSession('${s.id}','${ds}')">
+    ${isNext?'<div class="wsc-flag fn">→ Nächste</div>':logged?'<div class="wsc-flag fd">✓</div>':''}
     <div class="wsc-badge">${s.badge}</div>
     <div class="wsc-title">${s.title}</div>
     <div class="wsc-meta">${s.km} km · ${s.date||'–'}</div>
    </div>`;
   });
-  // Pad to even grid if needed (optional)
+  // pad to even cols if needed
+  while(sessions.length%2!==0){sessions.push(null);sessHtml+=`<div class="wsc-empty"><span>—</span></div>`;}
   sessHtml+=`</div></div>`;
  });
 
- v.innerHTML=cssCalc+pacingBox+genBox+sessHtml;
- renderCSSHistory();
+ // ── 5. PDF UPLOAD + ICS ───────────────────────────────────
+ const pdfHtml=`<div class="sl">PDF IMPORT · ICS EXPORT</div>
+<div class="css-calc-box">
+ <h3>Neuen Trainingsplan importieren</h3>
+ <div style="font-family:var(--mono);font-size:.68rem;color:var(--muted);margin-bottom:.75rem;line-height:1.5">PDF hochladen → BésKI liest die Sessions aus → ICS für Kalender exportieren.</div>
+ <div style="display:flex;gap:.45rem;flex-wrap:wrap;margin-bottom:.65rem">
+  <label style="display:flex;align-items:center;gap:.5rem;background:var(--bg);border:1.5px dashed var(--brd);border-radius:var(--r);padding:.5rem .8rem;cursor:pointer;flex:1;font-family:var(--mono);font-size:.7rem;color:var(--muted)">
+   <span>📄</span><span id="pdf-label">PDF auswählen…</span>
+   <input type="file" accept=".pdf" id="pdf-input" style="display:none" onchange="pdfSelected(this)">
+  </label>
+  <button class="btn btn-sw" style="flex:0 0 auto;padding:.5rem .9rem;font-size:.68rem" onclick="parsePDF()">→ Analysieren</button>
+ </div>
+ <div id="pdf-status" style="font-family:var(--mono);font-size:.68rem;color:var(--muted)"></div>
+ <div id="pdf-result"></div>
+ <div style="margin-top:.65rem;padding-top:.65rem;border-top:1px solid var(--brd);display:flex;gap:.4rem;flex-wrap:wrap">
+  <button class="btn btn-rst" style="font-size:.66rem;flex:0 0 auto" onclick="exportICS()">📅 ICS für aktuellen Plan exportieren</button>
+  <span style="font-family:var(--mono);font-size:.6rem;color:var(--faint);align-self:center">→ In Apple Kalender importieren</span>
+ </div>
+</div>`;
+
+ v.innerHTML=pacingHtml+cssCalcHtml+genHtml+sessHtml+pdfHtml;
+
+ // Restore saved values
+ const c=S.css();
  const manInput=el('css-manual');
- const c=S.css();if(c.pace&&manInput)manInput.value=c.pace;
+ if(c.pace&&manInput)manInput.value=c.pace;
+ if(c.t200&&el('css-t200'))el('css-t200').value=c.t200;
+ if(c.t400&&el('css-t400'))el('css-t400').value=c.t400;
+ if(c.t200&&c.t400)calcCSS();
+ renderCSSHistory();
 }
+
+function pdfSelected(inp){
+ const f=inp.files[0];
+ if(f){const lb=el('pdf-label');if(lb)lb.textContent=f.name;}
+}
+
+async function parsePDF(){
+ const key=S.apikey();
+ if(!key){el('api-modal').classList.remove('hidden');return;}
+ const inp=el('pdf-input');
+ if(!inp?.files?.length){el('pdf-status').textContent='Bitte zuerst eine PDF auswählen.';return;}
+ const file=inp.files[0];
+ el('pdf-status').textContent='BésKI liest die PDF…';
+ el('pdf-result').innerHTML='';
+ try{
+  const base64=await new Promise((res,rej)=>{
+   const r=new FileReader();
+   r.onload=()=>res(r.result.split(',')[1]);
+   r.onerror=()=>rej(new Error('Read failed'));
+   r.readAsDataURL(file);
+  });
+  const resp=await fetch('https://api.anthropic.com/v1/messages',{
+   method:'POST',
+   headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01'},
+   body:JSON.stringify({
+    model:'claude-sonnet-4-20250514',max_tokens:4000,
+    system:`Du bist ein Schwimmtraining-Assistent. Extrahiere alle Swim-Sessions aus dem Trainingsplan-PDF. Antworte NUR mit einem JSON-Array ohne Markdown-Backticks. Format: [{"id":"W1S1","badge":"W1 · S1","title":"Session Titel","km":"2.8","date":"Datum","focus":"Fokus-Text","cue":"Cue","phases":[{"n":"Warm Up","items":["Übung 1","Übung 2"]}]}]`,
+    messages:[{role:'user',content:[
+     {type:'document',source:{type:'base64',media_type:'application/pdf',data:base64}},
+     {type:'text',text:'Extrahiere alle Swim-Sessions aus diesem Trainingsplan als JSON.'}
+    ]}]
+   })
+  });
+  const data=await resp.json();
+  const text=(data.content||[]).map(x=>x.text||'').join('');
+  const clean=text.replace(/```json|```/g,'').trim();
+  const sessions=JSON.parse(clean);
+  el('pdf-status').textContent=`✅ ${sessions.length} Sessions gefunden`;
+  el('pdf-result').innerHTML=`<div style="background:var(--okl);border:1px solid var(--okb);border-radius:var(--r);padding:.55rem .7rem;font-family:var(--mono);font-size:.68rem;color:var(--ok);margin-top:.45rem">${sessions.map(s=>`${s.badge}: ${s.title} (${s.km}km)`).join('<br>')}</div>`;
+ }catch(e){el('pdf-status').textContent='Fehler: '+e.message;}
+}
+
+function exportICS(){
+ let ics='BEGIN:VCALENDAR\r\nVERSION:2.0\r\nCALSCALE:GREGORIAN\r\nPRODID:-//BéskoTrainingHub//v6//DE\r\n';
+ Object.entries(SCHED).sort((a,b)=>a[0]<b[0]?-1:1).forEach(([ds,evs])=>{
+  evs.forEach(e=>{
+   const s=SWIM.find(x=>x.id===e.id);
+   const dry=DRY[e.id];
+   const title=s?`🏊 ${s.title} (${s.km}km)`:dry?`💪 ${dry.title}`:`Training`;
+   const desc=s?s.cue||s.focus||'':dry?dry.focus||'':'';
+   const dtStr=ds.replace(/-/g,'')+'T060000Z';
+   const dtEnd=ds.replace(/-/g,'')+'T080000Z';
+   ics+=`BEGIN:VEVENT\r\nDTSTART:${dtStr}\r\nDTEND:${dtEnd}\r\nSUMMARY:${title}\r\nDESCRIPTION:${desc.replace(/,/g,'\\,')}\r\nEND:VEVENT\r\n`;
+  });
+ });
+ ics+='END:VCALENDAR';
+ const blob=new Blob([ics],{type:'text/calendar'});
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+ a.download='besko-training-juni-2026.ics';a.click();
+}
+
 
 function setCSSManual(v){
  if(!v||!v.includes(':'))return;
