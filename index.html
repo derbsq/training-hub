@@ -5,10 +5,6 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Training Hub">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='36' fill='%231a4a2e'/%3E%3Ctext x='50%25' y='58%25' font-size='110' text-anchor='middle' dominant-baseline='middle'%3E🏊%3C/text%3E%3C/svg%3E">
-<meta name="theme-color" content="#f4f1eb">
 <title>Bésko's Little Training Hub</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -824,39 +820,39 @@ const DRY = {
   bw:{label:'Outdoor / Calisthenics',icon:'🌳',
    phases:[
     {n:'Warm-Up',dur:'5 Min',items:[
-     {n:'Band Pull-Aparts',s:'2×15',mus:'Rhomboiden · Trapez',cue:'Band auf Brusthöhe. Schulterblätter zusammenziehen, kontrolliert zurück.',held:false},
-     {n:'Scapular Pull-Ups',s:'2×8',mus:'Serratus · Trapez',cue:'Hängen, nur Schulterblätter nach unten und zusammen — Arme bleiben gestreckt.',held:false},
-     {n:'Hip Circles + 90/90 Hüfte',s:'10/Seite + 30s/Seite',mus:'Hüftrotation',cue:'Große Kreise aus der Hüfte. 90/90: Sanft vorbeugen, Hüfte öffnen.',held:true,dur:30}
+     {n:'Band Pull-Aparts',yt:'https://www.youtube.com/results?search_query=band+pull+aparts+shoulder+health',s:'2×15',mus:'Rhomboiden · Trapez',cue:'Band auf Brusthöhe. Schulterblätter zusammenziehen, kontrolliert zurück.',held:false},
+     {n:'Scapular Pull-Ups',yt:'https://www.youtube.com/results?search_query=scapular+pull+ups+activation',s:'2×8',mus:'Serratus · Trapez',cue:'Hängen, nur Schulterblätter nach unten und zusammen — Arme bleiben gestreckt.',held:false},
+     {n:'Hip Circles + 90/90 Hüfte',yt:'https://www.youtube.com/results?search_query=hip+circles+90+90+hip+stretch',s:'10/Seite + 30s/Seite',mus:'Hüftrotation',cue:'Große Kreise aus der Hüfte. 90/90: Sanft vorbeugen, Hüfte öffnen.',held:true,dur:30}
     ]},
     {n:'Hauptteil',dur:'3 Runden',items:[
-     {n:'Pull-Ups',s:'5×3–4',mus:'Lat · Teres · Bizeps · Rhomboiden',cue:'2–3 Reps unter Max. 1s hoch / 2s runter. 90s Pause.',held:false},
-     {n:'Single-Leg Band RDL',s:'3×10/Seite',mus:'Hintere Kette · Glutes',cue:'Band unter Fuß. Standbein leicht gebeugt. Hüfte zurück, Oberkörper parallel. Kontrolliert zurück.',held:false},
-     {n:'Single-Arm Band Row',s:'3×10/Seite',mus:'Lat · Rhomboiden · Trapez',cue:'Band auf Hüfthöhe. Ellbogen eng, Schulterblatt zusammenziehen. 60s Pause.',held:false}
+     {n:'Pull-Ups',yt:'https://www.youtube.com/results?search_query=pull+ups+technique+lat+activation',s:'5×3–4',mus:'Lat · Teres · Bizeps · Rhomboiden',cue:'2–3 Reps unter Max. 1s hoch / 2s runter. 90s Pause.',held:false},
+     {n:'Single-Leg Band RDL',yt:'https://www.youtube.com/results?search_query=single+leg+romanian+deadlift+band',s:'3×10/Seite',mus:'Hintere Kette · Glutes',cue:'Band unter Fuß. Standbein leicht gebeugt. Hüfte zurück, Oberkörper parallel. Kontrolliert zurück.',held:false},
+     {n:'Single-Arm Band Row',yt:'https://www.youtube.com/results?search_query=single+arm+band+row+technique',s:'3×10/Seite',mus:'Lat · Rhomboiden · Trapez',cue:'Band auf Hüfthöhe. Ellbogen eng, Schulterblatt zusammenziehen. 60s Pause.',held:false}
     ]},
     {n:'Core',dur:'',items:[
-     {n:'Hollow Hold',s:'3×30s',mus:'Anterior Core',cue:'Unterer Rücken flach. Arme & Beine gestreckt. Nur so tief, wie Rücken unten bleibt.',held:true,dur:30},
-     {n:'Bird Dog',s:'3×8/Seite',mus:'Multifidus · Core',cue:'Auf allen Vieren. Arm + gegenüber Bein gleichzeitig strecken. 3s halten. Hüfte parallel.',held:true,dur:3}
+     {n:'Hollow Hold',yt:'https://www.youtube.com/results?search_query=hollow+body+hold+core',s:'3×30s',mus:'Anterior Core',cue:'Unterer Rücken flach. Arme & Beine gestreckt. Nur so tief, wie Rücken unten bleibt.',held:true,dur:30},
+     {n:'Bird Dog',yt:'https://www.youtube.com/results?search_query=bird+dog+exercise+core+stability',s:'3×8/Seite',mus:'Multifidus · Core',cue:'Auf allen Vieren. Arm + gegenüber Bein gleichzeitig strecken. 3s halten. Hüfte parallel.',held:true,dur:3}
     ]},
     {n:'Mobility',dur:'',items:[
      {n:'Childs Pose',s:'3×30s',mus:'Lat · T-Spine',cue:'Arme nach vorne, Stirn auf Boden. Tief ausatmen, Rücken weicht.',held:true,dur:30},
-     {n:'Thread the Needle',s:'3×10/Seite',mus:'T-Spine Rotation',cue:'Auf allen Vieren. Arm durch und drehen. Langsam, geführt.',held:false}
+     {n:'Thread the Needle',yt:'https://www.youtube.com/results?search_query=thread+the+needle+thoracic+mobility',s:'3×10/Seite',mus:'T-Spine Rotation',cue:'Auf allen Vieren. Arm durch und drehen. Langsam, geführt.',held:false}
     ]}
    ]},
   gym:{label:'Sportzentrum Josef',icon:'🏋️',
    phases:[
     {n:'Warm-Up',dur:'5 Min',items:[
-     {n:'Band Pull-Aparts',s:'2×15',mus:'Rhomboiden · Trapez',cue:'Band auf Brusthöhe. Schulterblätter zusammenziehen.',held:false},
-     {n:'Scapular Pull-Ups',s:'2×8',mus:'Serratus · Trapez',cue:'Nur Schulterblätter — Arme gestreckt bleiben.',held:false},
-     {n:'Hip Circles + 90/90 Hüfte',s:'10/Seite + 30s/Seite',mus:'Hüftrotation',cue:'Große Kreise. 90/90: Hüfte sanft öffnen.',held:true,dur:30}
+     {n:'Band Pull-Aparts',yt:'https://www.youtube.com/results?search_query=band+pull+aparts+shoulder+health',s:'2×15',mus:'Rhomboiden · Trapez',cue:'Band auf Brusthöhe. Schulterblätter zusammenziehen.',held:false},
+     {n:'Scapular Pull-Ups',yt:'https://www.youtube.com/results?search_query=scapular+pull+ups+activation',s:'2×8',mus:'Serratus · Trapez',cue:'Nur Schulterblätter — Arme gestreckt bleiben.',held:false},
+     {n:'Hip Circles + 90/90 Hüfte',yt:'https://www.youtube.com/results?search_query=hip+circles+90+90+hip+stretch',s:'10/Seite + 30s/Seite',mus:'Hüftrotation',cue:'Große Kreise. 90/90: Hüfte sanft öffnen.',held:true,dur:30}
     ]},
     {n:'Hauptteil',dur:'3 Runden',items:[
-     {n:'Pull-Ups',s:'5×3–4',mus:'Lat · Teres · Bizeps · Rhomboiden',cue:'2–3 Reps unter Max. Gewichtsweste wenn möglich. 90s Pause.',held:false},
-     {n:'Single-Leg RDL mit KB oder Langhantel',s:'3×10/Seite',mus:'Hintere Kette · Glutes',cue:'KB in gegenüberliegender Hand oder Langhantel mit beiden Händen. Hüfte zurück, Rücken neutral.',held:false},
-     {n:'Barbell Row',s:'3×8–10',mus:'Lat · Rhomboiden · Trapez',cue:'Hüftscharnier. Stange zum Bauchnabel. Schulterblätter zusammen, kontrolliert senken. 60s Pause.',held:false}
+     {n:'Pull-Ups',yt:'https://www.youtube.com/results?search_query=pull+ups+technique+lat+activation',s:'5×3–4',mus:'Lat · Teres · Bizeps · Rhomboiden',cue:'2–3 Reps unter Max. Gewichtsweste wenn möglich. 90s Pause.',held:false},
+     {n:'Single-Leg RDL mit KB oder Langhantel',yt:'https://www.youtube.com/results?search_query=single+leg+rdl+kettlebell+technique',s:'3×10/Seite',mus:'Hintere Kette · Glutes',cue:'KB in gegenüberliegender Hand oder Langhantel mit beiden Händen. Hüfte zurück, Rücken neutral.',held:false},
+     {n:'Barbell Row',yt:'https://www.youtube.com/results?search_query=barbell+row+technique+back',s:'3×8–10',mus:'Lat · Rhomboiden · Trapez',cue:'Hüftscharnier. Stange zum Bauchnabel. Schulterblätter zusammen, kontrolliert senken. 60s Pause.',held:false}
     ]},
     {n:'Core',dur:'',items:[
-     {n:'Hollow Hold',s:'3×30s',mus:'Anterior Core',cue:'Unterer Rücken flach, Arme & Beine gestreckt.',held:true,dur:30},
-     {n:'Bird Dog',s:'3×8/Seite',mus:'Multifidus · Core',cue:'3s halten, Hüfte parallel.',held:true,dur:3}
+     {n:'Hollow Hold',yt:'https://www.youtube.com/results?search_query=hollow+body+hold+core',s:'3×30s',mus:'Anterior Core',cue:'Unterer Rücken flach, Arme & Beine gestreckt.',held:true,dur:30},
+     {n:'Bird Dog',yt:'https://www.youtube.com/results?search_query=bird+dog+exercise+core+stability',s:'3×8/Seite',mus:'Multifidus · Core',cue:'3s halten, Hüfte parallel.',held:true,dur:3}
     ]},
     {n:'Mobility',dur:'',items:[
      {n:'Childs Pose',s:'3×30s',mus:'Lat · T-Spine',cue:'Tief ausatmen, Rücken weicht.',held:true,dur:30}
@@ -872,43 +868,43 @@ const DRY = {
   bw:{label:'Outdoor / Calisthenics',icon:'🌳',
    phases:[
     {n:'Warm-Up',dur:'5 Min',items:[
-     {n:'Shoulder CARs',s:'2×5/Seite',mus:'Schulterkapsel',cue:'Langsam, maximale Rotationsreichweite. Nur Schulter bewegt sich — Rumpf stabil.',held:false},
-     {n:'Banded Hip Circles',s:'10/Seite',mus:'Hüftabduktoren · Glutes',cue:'Band über Knie. Große Kreise, Becken stabil.',held:false},
-     {n:'Cat-Cow',s:'10 Wiederholungen',mus:'T-Spine · Lumbar',cue:'Mit Atemzug synchronisieren. Einatmen = Katze, Ausatmen = Kuh.',held:false}
+     {n:'Shoulder CARs',yt:'https://www.youtube.com/results?search_query=shoulder+CARs+controlled+articular+rotation',s:'2×5/Seite',mus:'Schulterkapsel',cue:'Langsam, maximale Rotationsreichweite. Nur Schulter bewegt sich — Rumpf stabil.',held:false},
+     {n:'Banded Hip Circles',yt:'https://www.youtube.com/results?search_query=banded+hip+circles+glute+activation',s:'10/Seite',mus:'Hüftabduktoren · Glutes',cue:'Band über Knie. Große Kreise, Becken stabil.',held:false},
+     {n:'Cat-Cow',yt:'https://www.youtube.com/results?search_query=cat+cow+spine+mobility',s:'10 Wiederholungen',mus:'T-Spine · Lumbar',cue:'Mit Atemzug synchronisieren. Einatmen = Katze, Ausatmen = Kuh.',held:false}
     ]},
     {n:'Hauptteil',dur:'3 Runden',items:[
-     {n:'Dead Bug',s:'3×8/Seite',mus:'Transversus Abdominis · Iliacus',cue:'Unterer Rücken flach auf Boden — immer. Arm + gegenüber Bein strecken, 3s halten. Langsam zurück.',held:true,dur:3},
-     {n:'Pallof Press mit Band',s:'3×10/Seite',mus:'Anterior Core · Obliques',cue:'Band seitlich. Press nach vorne, 2s halten, zurück. Kein Drehen des Rumpfs — Anti-Rotation!',held:true,dur:2},
-     {n:'Single-Leg Hip Thrust',s:'3×12/Seite',mus:'Glutes · Hamstrings',cue:'Schultern auf Bank/Stufe. Fuß flach. Hüfte oben halten, Gesäß spannen. 60s Pause.',held:false},
-     {n:'Copenhagen Plank',s:'3×20s/Seite',mus:'Adduktoren · Obliques',cue:'Fuß auf Stufe/Bank, Körper in Linie. Hüfte nicht absinken.',held:true,dur:20}
+     {n:'Dead Bug',yt:'https://www.youtube.com/results?search_query=dead+bug+exercise+core+anti+extension',s:'3×8/Seite',mus:'Transversus Abdominis · Iliacus',cue:'Unterer Rücken flach auf Boden — immer. Arm + gegenüber Bein strecken, 3s halten. Langsam zurück.',held:true,dur:3},
+     {n:'Pallof Press mit Band',yt:'https://www.youtube.com/results?search_query=pallof+press+band+anti+rotation+core',s:'3×10/Seite',mus:'Anterior Core · Obliques',cue:'Band seitlich. Press nach vorne, 2s halten, zurück. Kein Drehen des Rumpfs — Anti-Rotation!',held:true,dur:2},
+     {n:'Single-Leg Hip Thrust',yt:'https://www.youtube.com/results?search_query=single+leg+hip+thrust+glute',s:'3×12/Seite',mus:'Glutes · Hamstrings',cue:'Schultern auf Bank/Stufe. Fuß flach. Hüfte oben halten, Gesäß spannen. 60s Pause.',held:false},
+     {n:'Copenhagen Plank',yt:'https://www.youtube.com/results?search_query=copenhagen+plank+adductor+core',s:'3×20s/Seite',mus:'Adduktoren · Obliques',cue:'Fuß auf Stufe/Bank, Körper in Linie. Hüfte nicht absinken.',held:true,dur:20}
     ]},
     {n:'Core',dur:'',items:[
-     {n:'Hollow Body Hold',s:'3×30s',mus:'Anterior Core',cue:'Rücken flach, Arme neben Kopf oder gestreckt.',held:true,dur:30},
-     {n:'Stir the Pot',s:'3×8/Seite',mus:'Core · Schulter',cue:'Ellbogen auf Oberfläche. Kleine Kreise aus dem Core heraus.',held:false}
+     {n:'Hollow Body Hold',yt:'https://www.youtube.com/results?search_query=hollow+body+hold+core',s:'3×30s',mus:'Anterior Core',cue:'Rücken flach, Arme neben Kopf oder gestreckt.',held:true,dur:30},
+     {n:'Stir the Pot',yt:'https://www.youtube.com/results?search_query=stir+the+pot+exercise+ball+core',s:'3×8/Seite',mus:'Core · Schulter',cue:'Ellbogen auf Oberfläche. Kleine Kreise aus dem Core heraus.',held:false}
     ]},
     {n:'Mobility',dur:'',items:[
-     {n:'Couch Stretch',s:'3×45s/Seite',mus:'Hüftflexoren · Quad',cue:'Hinterer Fuß an Wand/Bank. Becken nach vorne kippen.',held:true,dur:45}
+     {n:'Couch Stretch',yt:'https://www.youtube.com/results?search_query=couch+stretch+hip+flexor',s:'3×45s/Seite',mus:'Hüftflexoren · Quad',cue:'Hinterer Fuß an Wand/Bank. Becken nach vorne kippen.',held:true,dur:45}
     ]}
    ]},
   gym:{label:'Sportzentrum Josef',icon:'🏋️',
    phases:[
     {n:'Warm-Up',dur:'5 Min',items:[
-     {n:'Shoulder CARs',s:'2×5/Seite',mus:'Schulterkapsel',cue:'Langsam, maximale Reichweite.',held:false},
-     {n:'Banded Hip Circles',s:'10/Seite',mus:'Hüftabduktoren',cue:'Band über Knie, Becken stabil.',held:false},
-     {n:'Cat-Cow',s:'10 Wdh.',mus:'T-Spine',cue:'Mit Atemzug synchronisieren.',held:false}
+     {n:'Shoulder CARs',yt:'https://www.youtube.com/results?search_query=shoulder+CARs+controlled+articular+rotation',s:'2×5/Seite',mus:'Schulterkapsel',cue:'Langsam, maximale Reichweite.',held:false},
+     {n:'Banded Hip Circles',yt:'https://www.youtube.com/results?search_query=banded+hip+circles+glute+activation',s:'10/Seite',mus:'Hüftabduktoren',cue:'Band über Knie, Becken stabil.',held:false},
+     {n:'Cat-Cow',yt:'https://www.youtube.com/results?search_query=cat+cow+spine+mobility',s:'10 Wdh.',mus:'T-Spine',cue:'Mit Atemzug synchronisieren.',held:false}
     ]},
     {n:'Hauptteil',dur:'3 Runden',items:[
-     {n:'Dead Bug',s:'3×8/Seite',mus:'Transversus Abdominis',cue:'Rücken flach — immer. 3s halten.',held:true,dur:3},
-     {n:'Pallof Press am Cable',s:'3×10/Seite',mus:'Anterior Core · Obliques',cue:'Cable auf Brusthöhe. Press & halten 2s. Anti-Rotation.',held:true,dur:2},
-     {n:'Single-Leg Hip Thrust',s:'3×12/Seite',mus:'Glutes · Hamstrings',cue:'Auf Bank. Hüfte oben, Gesäß spannen. 60s Pause.',held:false},
-     {n:'Copenhagen Plank',s:'3×20s/Seite',mus:'Adduktoren · Obliques',cue:'Fuß auf Bank, Körper in Linie.',held:true,dur:20}
+     {n:'Dead Bug',yt:'https://www.youtube.com/results?search_query=dead+bug+exercise+core+anti+extension',s:'3×8/Seite',mus:'Transversus Abdominis',cue:'Rücken flach — immer. 3s halten.',held:true,dur:3},
+     {n:'Pallof Press am Cable',yt:'https://www.youtube.com/results?search_query=pallof+press+cable+anti+rotation',s:'3×10/Seite',mus:'Anterior Core · Obliques',cue:'Cable auf Brusthöhe. Press & halten 2s. Anti-Rotation.',held:true,dur:2},
+     {n:'Single-Leg Hip Thrust',yt:'https://www.youtube.com/results?search_query=single+leg+hip+thrust+glute',s:'3×12/Seite',mus:'Glutes · Hamstrings',cue:'Auf Bank. Hüfte oben, Gesäß spannen. 60s Pause.',held:false},
+     {n:'Copenhagen Plank',yt:'https://www.youtube.com/results?search_query=copenhagen+plank+adductor+core',s:'3×20s/Seite',mus:'Adduktoren · Obliques',cue:'Fuß auf Bank, Körper in Linie.',held:true,dur:20}
     ]},
     {n:'Core',dur:'',items:[
-     {n:'Hollow Body Hold',s:'3×30s',mus:'Anterior Core',cue:'Rücken flach.',held:true,dur:30},
-     {n:'Stir the Pot mit Ball',s:'3×8/Seite',mus:'Core · Schulter',cue:'Ellbogen auf Ball. Kleine Kreise.',held:false}
+     {n:'Hollow Body Hold',yt:'https://www.youtube.com/results?search_query=hollow+body+hold+core',s:'3×30s',mus:'Anterior Core',cue:'Rücken flach.',held:true,dur:30},
+     {n:'Stir the Pot mit Ball',yt:'https://www.youtube.com/results?search_query=stir+the+pot+stability+ball+core',s:'3×8/Seite',mus:'Core · Schulter',cue:'Ellbogen auf Ball. Kleine Kreise.',held:false}
     ]},
     {n:'Mobility',dur:'',items:[
-     {n:'Couch Stretch',s:'3×45s/Seite',mus:'Hüftflexoren',cue:'Fuß an Bank, Becken nach vorne.',held:true,dur:45}
+     {n:'Couch Stretch',yt:'https://www.youtube.com/results?search_query=couch+stretch+hip+flexor',s:'3×45s/Seite',mus:'Hüftflexoren',cue:'Fuß an Bank, Becken nach vorne.',held:true,dur:45}
     ]}
    ]}
  },
@@ -921,42 +917,42 @@ const DRY = {
   bw:{label:'Outdoor / Calisthenics',icon:'🌳',
    phases:[
     {n:'Warm-Up',dur:'3 Min',items:[
-     {n:'Jump Rope oder Jumping Jacks',s:'3 Min',mus:'Ganzkörper-Aktivierung',cue:'Locker, Rhythmus finden.',held:false},
-     {n:'Shoulder CARs',s:'2×5/Seite',mus:'Schulterkapsel',cue:'Langsam, maximale Reichweite.',held:false}
+     {n:'Jump Rope oder Jumping Jacks',yt:'https://www.youtube.com/results?search_query=jump+rope+technique+beginner',s:'3 Min',mus:'Ganzkörper-Aktivierung',cue:'Locker, Rhythmus finden.',held:false},
+     {n:'Shoulder CARs',yt:'https://www.youtube.com/results?search_query=shoulder+CARs+controlled+articular+rotation',s:'2×5/Seite',mus:'Schulterkapsel',cue:'Langsam, maximale Reichweite.',held:false}
     ]},
     {n:'Pulling Endurance',dur:'',items:[
-     {n:'Explosive Band Pulldowns',s:'3×8',mus:'Lat · Teres · Bizeps',cue:'Band über Kopf. Explosive Zugbewegung nach unten — wie Catch im Wasser. 90s Pause.',held:false},
-     {n:'Inverted Rows',s:'3×10',mus:'Rhomboiden · Biceps · Rücken',cue:'Körper schräg unter Stange. Brust zur Stange, kontrolliert senken. 60s Pause.',held:false},
-     {n:'Band Hip Hinge',s:'3×15',mus:'Hintere Kette',cue:'Band um Hüfte. Hinge zurück, explosive Hüftstreckung. Glutes bei Extension anspannen.',held:false}
+     {n:'Explosive Band Pulldowns',yt:'https://www.youtube.com/results?search_query=band+lat+pulldown+explosive',s:'3×8',mus:'Lat · Teres · Bizeps',cue:'Band über Kopf. Explosive Zugbewegung nach unten — wie Catch im Wasser. 90s Pause.',held:false},
+     {n:'Inverted Rows',yt:'https://www.youtube.com/results?search_query=inverted+rows+technique+bodyweight',s:'3×10',mus:'Rhomboiden · Biceps · Rücken',cue:'Körper schräg unter Stange. Brust zur Stange, kontrolliert senken. 60s Pause.',held:false},
+     {n:'Band Hip Hinge',yt:'https://www.youtube.com/results?search_query=band+hip+hinge+posterior+chain',s:'3×15',mus:'Hintere Kette',cue:'Band um Hüfte. Hinge zurück, explosive Hüftstreckung. Glutes bei Extension anspannen.',held:false}
     ]},
     {n:'Power & Plyometrics',dur:'',items:[
-     {n:'Broad Jumps',s:'4×5',mus:'Gesamte Unterkörperkraft',cue:'Max. Weite. Weiche Landung, absorbieren. 90s Pause.',held:false},
-     {n:'Sprint oder Plyo Push-Ups',s:'4×8',mus:'Explosive Kraft',cue:'Max. Intensität. 90s Pause.',held:false}
+     {n:'Broad Jumps',yt:'https://www.youtube.com/results?search_query=broad+jump+plyometric+technique',s:'4×5',mus:'Gesamte Unterkörperkraft',cue:'Max. Weite. Weiche Landung, absorbieren. 90s Pause.',held:false},
+     {n:'Sprint oder Plyo Push-Ups',yt:'https://www.youtube.com/results?search_query=plyo+push+ups+explosive',s:'4×8',mus:'Explosive Kraft',cue:'Max. Intensität. 90s Pause.',held:false}
     ]},
     {n:'Grease the Groove',dur:'',items:[
-     {n:'Pull-Up Grease the Groove',s:'5 Min · alle 2 Min 3 Reps',mus:'Lat · Bizeps',cue:'Weit unter Max. Qualität der Bewegung wichtiger als Anzahl.',held:false}
+     {n:'Pull-Up Grease the Groove',yt:'https://www.youtube.com/results?search_query=grease+the+groove+pull+ups+method',s:'5 Min · alle 2 Min 3 Reps',mus:'Lat · Bizeps',cue:'Weit unter Max. Qualität der Bewegung wichtiger als Anzahl.',held:false}
     ]}
    ]},
   gym:{label:'Sportzentrum Josef',icon:'🏋️',
    phases:[
     {n:'Warm-Up',dur:'3 Min',items:[
-     {n:'Jump Rope',s:'3 Min',mus:'Ganzkörper-Aktivierung',cue:'Locker, Rhythmus. Fußfederung.',held:false},
-     {n:'Shoulder CARs',s:'2×5/Seite',mus:'Schulterkapsel',cue:'Maximale Reichweite.',held:false}
+     {n:'Jump Rope',yt:'https://www.youtube.com/results?search_query=jump+rope+technique+workout',s:'3 Min',mus:'Ganzkörper-Aktivierung',cue:'Locker, Rhythmus. Fußfederung.',held:false},
+     {n:'Shoulder CARs',yt:'https://www.youtube.com/results?search_query=shoulder+CARs+controlled+articular+rotation',s:'2×5/Seite',mus:'Schulterkapsel',cue:'Maximale Reichweite.',held:false}
     ]},
     {n:'Schwere Kraft',dur:'',items:[
-     {n:'Trap Bar Deadlift oder konventioneller Deadlift',s:'3×3–5',mus:'Hintere Kette · Rücken · Core',cue:'Schwer & progressiv. Neutraler Rücken — immer. 3–5 Reps je nach Tagesform. 2–3 Min Pause.',held:false},
-     {n:'Goblet Squat oder Back Squat',s:'3×8',mus:'Quad · Glutes · Core',cue:'Goblet: KB vor der Brust, tiefe Kniebeuge. Back Squat: Oberschenkel parallel oder tiefer. 90s Pause.',held:false}
+     {n:'Trap Bar Deadlift oder konventioneller Deadlift',yt:'https://www.youtube.com/results?search_query=trap+bar+deadlift+technique',s:'3×3–5',mus:'Hintere Kette · Rücken · Core',cue:'Schwer & progressiv. Neutraler Rücken — immer. 3–5 Reps je nach Tagesform. 2–3 Min Pause.',held:false},
+     {n:'Goblet Squat oder Back Squat',yt:'https://www.youtube.com/results?search_query=goblet+squat+technique',s:'3×8',mus:'Quad · Glutes · Core',cue:'Goblet: KB vor der Brust, tiefe Kniebeuge. Back Squat: Oberschenkel parallel oder tiefer. 90s Pause.',held:false}
     ]},
     {n:'Power & Rotation',dur:'',items:[
-     {n:'KB Swings (Russian oder American)',s:'3×15',mus:'Glutes · Hintere Kette',cue:'Hüftexplosion — nicht Arme. Fersen im Boden. Bei American: Arme über Kopf, Core fest.',held:false},
-     {n:'Medball Slam oder Landmine Rotation',s:'3×8 oder 3×10/Seite',mus:'Core · Obliques · Schultern',cue:'Slam: Ball hoch, explosiv runter. Landmine: Rotation aus Hüfte & Core.',held:false}
+     {n:'KB Swings (Russian oder American)',yt:'https://www.youtube.com/results?search_query=kettlebell+swing+russian+american+technique',s:'3×15',mus:'Glutes · Hintere Kette',cue:'Hüftexplosion — nicht Arme. Fersen im Boden. Bei American: Arme über Kopf, Core fest.',held:false},
+     {n:'Medball Slam oder Landmine Rotation',yt:'https://www.youtube.com/results?search_query=medicine+ball+slam+landmine+rotation',s:'3×8 oder 3×10/Seite',mus:'Core · Obliques · Schultern',cue:'Slam: Ball hoch, explosiv runter. Landmine: Rotation aus Hüfte & Core.',held:false}
     ]},
     {n:'Plyometrics',dur:'',items:[
-     {n:'Broad Jumps',s:'4×5',mus:'Gesamte Unterkörperkraft',cue:'Max. Weite auf Hallenboden. Weiche Landung. 90s Pause.',held:false},
-     {n:'Box Jumps (wenn vorhanden)',s:'3×5',mus:'Explosive Kraft',cue:'Auf Kiste, weiche Landung. Oder: Vertical Jumps.',held:false}
+     {n:'Broad Jumps',yt:'https://www.youtube.com/results?search_query=broad+jump+plyometric+technique',s:'4×5',mus:'Gesamte Unterkörperkraft',cue:'Max. Weite auf Hallenboden. Weiche Landung. 90s Pause.',held:false},
+     {n:'Box Jumps (wenn vorhanden)',yt:'https://www.youtube.com/results?search_query=box+jump+technique+plyometric',s:'3×5',mus:'Explosive Kraft',cue:'Auf Kiste, weiche Landung. Oder: Vertical Jumps.',held:false}
     ]},
     {n:'Pulling Endurance',dur:'',items:[
-     {n:'Gewichtete Pull-Ups oder Grease the Groove',s:'Gewichtet: 3×5 oder GtG: 5 Min',mus:'Lat · Bizeps · Rhomboiden',cue:'Gewichtet: Weit unter Max. GtG: alle 2 Min 3 Reps, maximale Qualität.',held:false}
+     {n:'Gewichtete Pull-Ups oder Grease the Groove',yt:'https://www.youtube.com/results?search_query=weighted+pull+ups+technique',s:'Gewichtet: 3×5 oder GtG: 5 Min',mus:'Lat · Bizeps · Rhomboiden',cue:'Gewichtet: Weit unter Max. GtG: alle 2 Min 3 Reps, maximale Qualität.',held:false}
     ]}
    ]}
  },
@@ -969,30 +965,30 @@ const DRY = {
   bw:{label:'Überall',icon:'🧘',
    phases:[
     {n:'T-Spine & Schulter',dur:'8 Min',items:[
-     {n:'Thread the Needle',s:'3×10/Seite',mus:'T-Spine Rotation',cue:'Auf allen Vieren. Arm durch und drehen. Langsam, geführt. Brust dreht zur Decke.',held:false},
-     {n:'Open Book',s:'3×10/Seite',mus:'T-Spine · Pec',cue:'Seitenlage. Knie gestapelt, oberen Arm öffnen. Augen folgen der Hand.',held:false},
-     {n:'Wall Slides',s:'3×12',mus:'Schulterblatt · Rotatorenmanschette',cue:'Rücken an Wand. Arme in W-Form. Langsam hochschieben, Kontakt halten.',held:false},
+     {n:'Thread the Needle',yt:'https://www.youtube.com/results?search_query=thread+the+needle+thoracic+mobility',s:'3×10/Seite',mus:'T-Spine Rotation',cue:'Auf allen Vieren. Arm durch und drehen. Langsam, geführt. Brust dreht zur Decke.',held:false},
+     {n:'Open Book',yt:'https://www.youtube.com/results?search_query=open+book+rotation+thoracic+mobility',s:'3×10/Seite',mus:'T-Spine · Pec',cue:'Seitenlage. Knie gestapelt, oberen Arm öffnen. Augen folgen der Hand.',held:false},
+     {n:'Wall Slides',yt:'https://www.youtube.com/results?search_query=wall+slides+shoulder+health',s:'3×12',mus:'Schulterblatt · Rotatorenmanschette',cue:'Rücken an Wand. Arme in W-Form. Langsam hochschieben, Kontakt halten.',held:false},
      {n:'Shoulder CARS',s:'2×5/Seite',mus:'Schulterkapsel',cue:'Volle Kreisbahn. Nur Schulter — Rumpf bleibt stabil.',held:false}
     ]},
     {n:'Hüfte & Oberschenkel',dur:'8 Min',items:[
-     {n:'90/90 Hip Stretch',s:'3×45s/Seite',mus:'Hüftrotation innen & außen',cue:'Beide Beine 90°. Sanft vorbeugen. Kein Druck — Gewicht ist genug.',held:true,dur:45},
-     {n:'Couch Stretch',s:'3×45s/Seite',mus:'Hüftflexoren · Quad',cue:'Hinterer Fuß an Wand oder Bank. Becken nach vorne kippen, aufrecht halten.',held:true,dur:45},
-     {n:'Hip Flexor Lunge',s:'3×30s/Seite',mus:'Iliopsoas',cue:'Tiefer Ausfallschritt. Hinteres Knie auf Boden. Becken tief — Rücken gerade.',held:true,dur:30}
+     {n:'90/90 Hip Stretch',yt:'https://www.youtube.com/results?search_query=90+90+hip+stretch+mobility',s:'3×45s/Seite',mus:'Hüftrotation innen & außen',cue:'Beide Beine 90°. Sanft vorbeugen. Kein Druck — Gewicht ist genug.',held:true,dur:45},
+     {n:'Couch Stretch',yt:'https://www.youtube.com/results?search_query=couch+stretch+hip+flexor',s:'3×45s/Seite',mus:'Hüftflexoren · Quad',cue:'Hinterer Fuß an Wand oder Bank. Becken nach vorne kippen, aufrecht halten.',held:true,dur:45},
+     {n:'Hip Flexor Lunge',yt:'https://www.youtube.com/results?search_query=hip+flexor+lunge+stretch',s:'3×30s/Seite',mus:'Iliopsoas',cue:'Tiefer Ausfallschritt. Hinteres Knie auf Boden. Becken tief — Rücken gerade.',held:true,dur:30}
     ]},
     {n:'Cool Down',dur:'4 Min',items:[
      {n:'Childs Pose',s:'1×60s',mus:'Lat · T-Spine',cue:'Ausatmen und loslassen.',held:true,dur:60},
-     {n:'Supine Twist',s:'1×30s/Seite',mus:'T-Spine · Hüfte',cue:'Auf dem Rücken. Knie zur Seite. Sanft.',held:true,dur:30}
+     {n:'Supine Twist',yt:'https://www.youtube.com/results?search_query=supine+spinal+twist+mobility',s:'1×30s/Seite',mus:'T-Spine · Hüfte',cue:'Auf dem Rücken. Knie zur Seite. Sanft.',held:true,dur:30}
     ]}
    ]},
   gym:{label:'Überall',icon:'🧘',phases:[
    {n:'T-Spine & Schulter',dur:'8 Min',items:[
-    {n:'Thread the Needle',s:'3×10/Seite',mus:'T-Spine',cue:'Auf allen Vieren, Arm durch.',held:false},
-    {n:'Wall Slides',s:'3×12',mus:'Schulterblatt',cue:'Rücken an Wand.',held:false},
+    {n:'Thread the Needle',yt:'https://www.youtube.com/results?search_query=thread+the+needle+thoracic+mobility',s:'3×10/Seite',mus:'T-Spine',cue:'Auf allen Vieren, Arm durch.',held:false},
+    {n:'Wall Slides',yt:'https://www.youtube.com/results?search_query=wall+slides+shoulder+health',s:'3×12',mus:'Schulterblatt',cue:'Rücken an Wand.',held:false},
     {n:'Shoulder CARS',s:'2×5/Seite',mus:'Schulterkapsel',cue:'Volle Kreisbahn.',held:false}
    ]},
    {n:'Hüfte & Oberschenkel',dur:'8 Min',items:[
-    {n:'90/90 Hip Stretch',s:'3×45s/Seite',mus:'Hüftrotation',cue:'Sanft vorbeugen.',held:true,dur:45},
-    {n:'Couch Stretch an Bank',s:'3×45s/Seite',mus:'Hüftflexoren',cue:'Fuß auf Bank, Becken kippen.',held:true,dur:45}
+    {n:'90/90 Hip Stretch',yt:'https://www.youtube.com/results?search_query=90+90+hip+stretch+mobility',s:'3×45s/Seite',mus:'Hüftrotation',cue:'Sanft vorbeugen.',held:true,dur:45},
+    {n:'Couch Stretch an Bank',yt:'https://www.youtube.com/results?search_query=couch+stretch+hip+flexor+bench',s:'3×45s/Seite',mus:'Hüftflexoren',cue:'Fuß auf Bank, Becken kippen.',held:true,dur:45}
    ]},
    {n:'Cool Down',dur:'4 Min',items:[
     {n:'Childs Pose',s:'1×60s',mus:'Lat',cue:'Ausatmen.',held:true,dur:60}
@@ -1008,14 +1004,14 @@ const DRY = {
   bw:{label:'Überall',icon:'🌬️',
    phases:[
     {n:'Box Breathing — Fokus',dur:'4 Min',items:[
-     {n:'4-4-4-4 Box Breathing',s:'8 Runden',mus:'Zwerchfell · Vagusnerv',cue:'4 Sek einatmen · 4 Sek halten · 4 Sek ausatmen · 4 Sek halten. Vor dem Training oder Wettkampf. Nervensystem zentrieren.',held:true,dur:16},
+     {n:'4-4-4-4 Box Breathing',yt:'https://www.youtube.com/results?search_query=box+breathing+technique+performance',s:'8 Runden',mus:'Zwerchfell · Vagusnerv',cue:'4 Sek einatmen · 4 Sek halten · 4 Sek ausatmen · 4 Sek halten. Vor dem Training oder Wettkampf. Nervensystem zentrieren.',held:true,dur:16},
     ]},
     {n:'4-7-8 — Erholung',dur:'4 Min',items:[
-     {n:'4-7-8 Breathing',s:'6 Runden',mus:'Parasympathikus',cue:'4 Sek einatmen · 7 Sek halten · 8 Sek ausatmen. Stärker beruhigend als Box Breathing. Ideal nach dem Training oder abends.',held:true,dur:19}
+     {n:'4-7-8 Breathing',yt:'https://www.youtube.com/results?search_query=4+7+8+breathing+technique+sleep+recovery',s:'6 Runden',mus:'Parasympathikus',cue:'4 Sek einatmen · 7 Sek halten · 8 Sek ausatmen. Stärker beruhigend als Box Breathing. Ideal nach dem Training oder abends.',held:true,dur:19}
     ]},
     {n:'CO2-Toleranz',dur:'5 Min',items:[
-     {n:'Hypoxic Breath Holds',s:'5 Runden',mus:'Atemmuskulatur · Toleranz',cue:'Normal einatmen → ausatmen → Atem anhalten so lange wie möglich. 90s Pause zwischen Runden. ⚠️ Niemals im oder am Wasser üben.',held:false},
-     {n:'Breath Table',s:'4 Runden',mus:'CO2-Toleranz',cue:'30 tiefe Atemzüge → Atem anhalten (Phase 1). Dann normal atmen (Phase 2). Phasen wechseln. CO2 steigt → Drang zu atmen lernen aushalten.',held:false}
+     {n:'Hypoxic Breath Holds',yt:'https://www.youtube.com/results?search_query=breath+holds+CO2+tolerance+training',s:'5 Runden',mus:'Atemmuskulatur · Toleranz',cue:'Normal einatmen → ausatmen → Atem anhalten so lange wie möglich. 90s Pause zwischen Runden. ⚠️ Niemals im oder am Wasser üben.',held:false},
+     {n:'Breath Table',yt:'https://www.youtube.com/results?search_query=breath+table+CO2+tolerance+wim+hof',s:'4 Runden',mus:'CO2-Toleranz',cue:'30 tiefe Atemzüge → Atem anhalten (Phase 1). Dann normal atmen (Phase 2). Phasen wechseln. CO2 steigt → Drang zu atmen lernen aushalten.',held:false}
     ]}
    ]},
   gym:{label:'Überall',icon:'🌬️',phases:[
@@ -1615,11 +1611,12 @@ function showDrySess(id,btn){
      <span class="ex-tgt v${id}">${ex.s||''}</span>
     </div>`;
    if(ex.cue)h+=`<div class="ex-cue">${ex.cue}</div>`;
-   h+=`<div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap">`;
+   h+=`<div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin-top:.28rem">`;
    h+=`<button class="ex-done-btn ${done?'done':''}" onclick="toggleExDone('${key}',this,document.getElementById('exitem-${key}'))">✓</button>`;
    if(ex.held&&ex.dur){
     h+=`<div class="timer-wrap"><button class="timer-btn" onclick="startTimer('${key}',${ex.dur},this)">▶</button><span class="timer-disp">${fmtTime(ex.dur)}</span></div>`;
    }
+   if(ex.yt){h+=`<a href="${ex.yt}" target="_blank" rel="noopener" class="ex-yt">▶ Technik</a>`;}
    h+=`</div></div>`;
   });
   h+=`</div>`;
@@ -2235,16 +2232,16 @@ function buildMethodSci(){
 
 function buildLibBW(){
  const exs=[
-  {n:'Pull-Ups',mus:'Lat · Teres · Bizeps · Rhomboiden',why:'Wichtigste Dryland-Übung für Schwimmer. Exakter Pull-Mechanismus wie Catch → Follow-through.',yt:'https://www.youtube.com/results?search_query=pull+up+technique'},
-  {n:'Inverted Rows',mus:'Rhomboiden · Bizeps · Rücken',why:'Horizontale Zuglinie — ergänzt vertikale Pull-Ups. Ideal bei Verletzungen oder als Aufbau.',yt:''},
-  {n:'Explosive Band Pulldowns',mus:'Lat · Teres',why:'Imitiert Catch-Phase explosiv. Neuronale Aktivierung für Wasserübertragung.',yt:''},
-  {n:'Band Hip Hinge',mus:'Glutes · Hamstrings · Erector Spinae',why:'Hintere Kette für Kick-Power. Ohne gute Hüftstabilität kein effizienter Kick.',yt:''},
-  {n:'Dead Bug',mus:'Transversus Abdominis',why:'Anti-Extension Core. Schützt Lendenwirbelsäule, schult Koordination.',yt:'https://www.youtube.com/results?search_query=dead+bug+exercise'},
-  {n:'Hollow Hold',mus:'Anterior Core',why:'Schwimmer-spezifische Core-Position. Exakt die Position im Wasser.',yt:'https://www.youtube.com/results?search_query=hollow+body+hold'},
+  {n:'Pull-Ups',yt:'https://www.youtube.com/results?search_query=pull+ups+technique+lat+activation',mus:'Lat · Teres · Bizeps · Rhomboiden',why:'Wichtigste Dryland-Übung für Schwimmer. Exakter Pull-Mechanismus wie Catch → Follow-through.',yt:'https://www.youtube.com/results?search_query=pull+up+technique'},
+  {n:'Inverted Rows',yt:'https://www.youtube.com/results?search_query=inverted+rows+technique+bodyweight',mus:'Rhomboiden · Bizeps · Rücken',why:'Horizontale Zuglinie — ergänzt vertikale Pull-Ups. Ideal bei Verletzungen oder als Aufbau.',yt:''},
+  {n:'Explosive Band Pulldowns',yt:'https://www.youtube.com/results?search_query=band+lat+pulldown+explosive',mus:'Lat · Teres',why:'Imitiert Catch-Phase explosiv. Neuronale Aktivierung für Wasserübertragung.',yt:''},
+  {n:'Band Hip Hinge',yt:'https://www.youtube.com/results?search_query=band+hip+hinge+posterior+chain',mus:'Glutes · Hamstrings · Erector Spinae',why:'Hintere Kette für Kick-Power. Ohne gute Hüftstabilität kein effizienter Kick.',yt:''},
+  {n:'Dead Bug',yt:'https://www.youtube.com/results?search_query=dead+bug+exercise+core+anti+extension',mus:'Transversus Abdominis',why:'Anti-Extension Core. Schützt Lendenwirbelsäule, schult Koordination.',yt:'https://www.youtube.com/results?search_query=dead+bug+exercise'},
+  {n:'Hollow Hold',yt:'https://www.youtube.com/results?search_query=hollow+body+hold+core',mus:'Anterior Core',why:'Schwimmer-spezifische Core-Position. Exakt die Position im Wasser.',yt:'https://www.youtube.com/results?search_query=hollow+body+hold'},
   {n:'Pallof Press',mus:'Obliques · Core',why:'Anti-Rotation. Verhindert Rotation des Rumpfs — essentiell für geradliniges Schwimmen.',yt:''},
-  {n:'Single-Leg Band RDL',mus:'Glutes · Hamstrings',why:'Unilateral — deckt Schwächen auf. Stabilität für Flip-Turn und Kick.',yt:''},
-  {n:'Broad Jumps',mus:'Gesamte Unterkörperkraft',why:'Explosive Kraft für Abstoß. Neuronale Power-Übertragung.',yt:''},
-  {n:'Scapular Pull-Ups',mus:'Serratus Anterior · Trapez',why:'Schulterblatt-Kontrolle. Schwimmer brauchen aktive Protraktion und Depression.',yt:''}
+  {n:'Single-Leg Band RDL',yt:'https://www.youtube.com/results?search_query=single+leg+romanian+deadlift+band',mus:'Glutes · Hamstrings',why:'Unilateral — deckt Schwächen auf. Stabilität für Flip-Turn und Kick.',yt:''},
+  {n:'Broad Jumps',yt:'https://www.youtube.com/results?search_query=broad+jump+plyometric+technique',mus:'Gesamte Unterkörperkraft',why:'Explosive Kraft für Abstoß. Neuronale Power-Übertragung.',yt:''},
+  {n:'Scapular Pull-Ups',yt:'https://www.youtube.com/results?search_query=scapular+pull+ups+activation',mus:'Serratus Anterior · Trapez',why:'Schulterblatt-Kontrolle. Schwimmer brauchen aktive Protraktion und Depression.',yt:''}
  ];
  return`<div class="sl first">BODYWEIGHT / OUTDOOR LIBRARY</div>
  <div class="info-box">Ausrüstung: Resistance Bands · Klimmzugstange · Calisthenics Park. Ideal: Outdoor Ghetto Gym.</div>
@@ -2254,7 +2251,7 @@ function buildLibBW(){
 function buildLibGym(){
  const exs=[
   {n:'Trap Bar Deadlift',mus:'Hintere Kette · Rücken · Core',why:'Schwerste bilaterale Kraftübung. Sicherer als Langhantel-Deadlift für Rücken. Maximale Kraftentwicklung hintere Kette.',yt:'https://www.youtube.com/results?search_query=trap+bar+deadlift+technique'},
-  {n:'Barbell Row',mus:'Lat · Rhomboiden · Bizeps · Rücken',why:'Horizontal ziehen mit maximaler Last. Ergänzt Pull-Ups vertikal. Schultergürtel-Stabilität.',yt:''},
+  {n:'Barbell Row',yt:'https://www.youtube.com/results?search_query=barbell+row+technique+back',mus:'Lat · Rhomboiden · Bizeps · Rücken',why:'Horizontal ziehen mit maximaler Last. Ergänzt Pull-Ups vertikal. Schultergürtel-Stabilität.',yt:''},
   {n:'Goblet Squat / Back Squat',mus:'Quad · Glutes · Core',why:'Beinarbeit für Sprungkraft und Abstoß. Goblet = Technik. Back Squat = Last.',yt:''},
   {n:'KB Swings',mus:'Glutes · Hintere Kette · Core',why:'Explosivste Hüft-Übung. Direkte Übertragung auf Kick-Power und Abstoß.',yt:'https://www.youtube.com/results?search_query=kettlebell+swing+technique'},
   {n:'Landmine Rotation',mus:'Obliques · Core · Schultern',why:'Gewichtete Rotation. Direkte Übertragung auf Rollbewegung im Crawl.',yt:''},
@@ -2314,13 +2311,6 @@ document.addEventListener('DOMContentLoaded',()=>{
   if(c.pace&&el('css-manual'))el('css-manual').value=c.pace;
  },200);
 });
-
-// ─── PWA SERVICE WORKER ─────────────────────────────────────
-if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('sw.js').catch(()=>{});
-  });
-}
 
 </script>
 </body>
