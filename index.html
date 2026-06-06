@@ -1072,7 +1072,7 @@ function fmtTime(secs,decimals=0){// seconds → MM:SS or MM:SS.xx
  const sm=typeof sf==='string'?sf:String(sf);
  return `${m}:${sm.includes('.')?sm.padStart(5,'0'):sm.padStart(2,'0')}`;
 }
-function calcPace(css_secs,pct){return fmtTime(css_secs/(pct/100));}
+function calcPace(css_secs,pct){return fmtTime(css_secs*85/pct);}
 function getCSSpace(){
  const c=S.css();
  if(c.pace)return parseTime(c.pace);
@@ -1230,7 +1230,7 @@ function calcCSS(){
  if(re)re.innerHTML=`<div class="css-result-big">${pace} /100m</div><div class="css-hint">CSS = (${fmtTime(t4,2)} − ${fmtTime(t2,2)}) ÷ 2</div>`;
  if(rg){
   const zones=[[65,'EASY'],[70,''],[75,'STEADY'],[80,''],[85,'CSS'],[90,''],[95,''],[100,'MAX']];
-  rg.innerHTML=zones.map(([p,l])=>`<div class="pcell${p===85?' hot':''}"><div class="pz">${p}%${l?' '+l:''}</div><div class="pv">${fmtTime(css/(p/100),2)}</div></div>`).join('');
+  rg.innerHTML=zones.map(([p,l])=>`<div class="pcell${p===85?' hot':''}"><div class="pz">${p}%${l?' '+l:''}</div><div class="pv">${fmtTime(css*85/p,2)}</div></div>`).join('');
  }
  const c=S.css();c.calcPace=pace;c.t400=el('css-t400').value;c.t200=el('css-t200').value;S.setcss(c);
 }
