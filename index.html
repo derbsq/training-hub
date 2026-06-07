@@ -31,12 +31,12 @@ img{max-width:100%;display:block}
 
 /* LAYOUT */
 .wrap{max-width:760px;margin:0 auto;padding:0 var(--pad)}
-header{padding:2.2rem var(--pad) 1.4rem;max-width:760px;margin:0 auto;border-bottom:2px solid var(--ink)}
+header{padding:3.2rem var(--pad) 2.4rem;max-width:760px;margin:0 auto;border-bottom:2px solid var(--ink);text-align:center}
 h1{font-size:clamp(1.35rem,5vw,2.2rem);font-weight:800;letter-spacing:-.025em;line-height:1.1}
 .h1m{color:var(--muted);font-weight:600}
 
 /* NAV TABS */
-nav{position:sticky;top:0;z-index:50;background:rgba(244,241,235,.97);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1.5px solid var(--brd)}
+nav{position:sticky;top:0;z-index:50;background:rgba(244,241,235,.97);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1.5px solid var(--brd);text-align:center}
 .tabs{display:flex;gap:.2rem;max-width:760px;margin:0 auto;padding:.45rem .65rem;overflow-x:auto;scrollbar-width:none}
 .tabs::-webkit-scrollbar{display:none}
 .tab{flex:0 0 auto;font-family:var(--mono);font-size:.63rem;letter-spacing:.05em;color:var(--muted);border:1.5px solid transparent;border-radius:999px;padding:.38rem .8rem;white-space:nowrap;transition:all .12s}
@@ -1420,13 +1420,13 @@ function renderDash(){
     if(e.type==='swim'){
      const sw=SWIM.find(x=>x.id===e.id);
      pcls=logged?'wk-pill-done':(e.id.startsWith('Z')?'wk-pill-z1':'wk-pill-sw');
-     const stitle=sw?(sw.title.length>12?sw.title.slice(0,11)+'…':sw.title):'Swim';
+     const stitle=sw?sw.badge:e.id;
      pills+=`<div class="wk-sess-pill ${pcls}" onclick="openSwimSession('${e.id}','${ds}')">${logged?'✓ ':''}${stitle}</div>`;
     }else if(e.type==='dry'){
      const sess=DRY[e.id];
      const dr=DRY[e.id];
      pcls=logged?'wk-pill-done':`wk-pill-d${e.id.toLowerCase()}A`;
-     const dtitle=dr?(dr.title.length>12?dr.title.slice(0,11)+'…':dr.title):'Dry '+e.id;
+     const dtitle='Dry '+e.id;
      pills+=`<div class="wk-sess-pill ${pcls}" onclick="dashToggleDry('${e.id}','${ds}',this)">${logged?'✓ ':''}${dtitle}</div>`;
     }
    });
@@ -1461,7 +1461,7 @@ function renderDash(){
  ];
  const badiCardsHtml=`<div class="sl">BADI STATUS</div>
 <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.35rem;margin-bottom:.6rem" id="dash-badi-4">
- ${BADI_4.map(t=>buildBadiCard(t)).join('')}
+ ${BADI_DASH.map(t=>buildBadiCard(t)).join('')}
 </div>
 <div style="font-family:var(--mono);font-size:.55rem;color:var(--faint);text-align:center;margin-bottom:1rem" id="badi-ts-dash">Live · Crowdmonitor</div>`;
 
@@ -1521,6 +1521,12 @@ function formatLettenPace(speedMs){
 }
 
 // Pool temp cache (from WebSocket data)
+const BADI_DASH=[
+ {key:'city',uid:'SSD-4',name:'City',indoor:true},
+ {key:'letzigraben',uid:'LETZI-1',name:'Letzi',indoor:false},
+ {key:'utoquai',uid:'SSD-10',name:'Uto',indoor:false},
+ {key:'letten',uid:'flb6939',name:'Letten',indoor:false,isLetten:true}
+];
 const POOL_TEMPS={};
 if(typeof DASH_WEEK_OFFSET==='undefined')window.DASH_WEEK_OFFSET=0;
 let WEEK_WX={};
@@ -1554,9 +1560,8 @@ async function loadWeatherWeek(){
     wxEl.innerHTML=`<span class="wx-icon">${icon}</span><div><div class="wx-main">${Math.round(c.temperature)}°C</div><div class="wx-sub">${wmoDesc(c.weathercode)} · ${Math.round(c.windspeed)} km/h</div></div><div class="wx-right">Zürich<br>${new Date().toLocaleTimeString('de-CH',{hour:'2-digit',minute:'2-digit'})}</div>`;
    }
   }
-  // Re-render week columns with weather
-  const wcEl=el('v-dash')?.querySelector('.wk-combined');
-  if(wcEl)renderDash();
+  // Update week columns without full re-render
+  updateWeekWxCols();
  }catch(e){console.log('Weather fail:',e.message);}
  // Limmat data for Letten
  loadLettenData();
@@ -1572,6 +1577,20 @@ function wmoDesc(code){
  if(code===0)return'Klar';if(code<=2)return'Leicht bewölkt';if(code===3)return'Bewölkt';
  if(code<=48)return'Nebel';if(code<=55)return'Nieselregen';if(code<=67)return'Regen';
  if(code<=77)return'Schnee';if(code<=82)return'Schauer';return'Gewitter';
+}
+
+function updateWeekWxCols(){
+ // Update individual weather cells in the week view without full re-render
+ document.querySelectorAll('.wk-col[data-ds]').forEach(col=>{
+  const ds=col.dataset.ds;
+  const wx=WEEK_WX[ds];if(!wx)return;
+  const iconEl=col.querySelector('.wk-wx-icon');
+  const tempEl=col.querySelector('.wk-wx-temp');
+  const rainEl=col.querySelector('.wk-wx-rain-fill');
+  if(iconEl)iconEl.textContent=wx.icon;
+  if(tempEl)tempEl.innerHTML=`<span>${Math.round(wx.max)}°</span> ${Math.round(wx.min)}°`;
+  if(rainEl)rainEl.style.width=wx.rain+'%';
+ });
 }
 
 async function loadLettenData(){
@@ -1590,6 +1609,21 @@ async function loadLettenData(){
   // Refresh dashboard
   const card=el('dash-badi-4');if(card)refreshBadiCards();
  }catch(e){console.log('Letten fail:',e.message);}
+}
+
+function openDashDry(id,ds){
+ // Toggle dry session done from calendar click
+ dashToggleDry(id,ds,null);
+ // Close calendar panel
+ const panel=el('cal-panel');
+ if(panel)panel.classList.remove('show');
+ // Show brief confirmation
+ const calPanel=el('cal-panel');
+ if(calPanel){
+  const logged=S.isLogged(ds,'dry-'+id);
+  calPanel.classList.add('show');
+  openCalDay(ds);
+ }
 }
 
 function dashToggleDry(id,ds,btn){
@@ -1612,13 +1646,7 @@ function dashToggleDry(id,ds,btn){
 
 function refreshBadiCards(){
  const c=el('dash-badi-4');if(!c)return;
- const BADI_4=[
-  {key:'city',uid:'SSD-4',name:'City',indoor:true},
-  {key:'letzigraben',uid:'LETZI-1',name:'Letzi',indoor:false},
-  {key:'utoquai',uid:'SSD-10',name:'Uto',indoor:false},
-  {key:'letten',uid:'flb6939',name:'Letten',indoor:false,isLetten:true}
- ];
- c.innerHTML=BADI_4.map(t=>buildBadiCard(t)).join('');
+ c.innerHTML=BADI_DASH.map(t=>buildBadiCard(t)).join('');
 }
 
 
@@ -1635,10 +1663,10 @@ function openCalDay(ds){
  ev.forEach(e=>{
   if(e.type==='swim'){
    const s=SWIM.find(x=>x.id===e.id);if(!s)return;
-   html+=`<div class="cal-ev-item"><span class="cal-ev-badge bsw">${s.badge}</span><div><div class="cal-ev-text">${s.title}</div><div class="cal-ev-sub">${s.km} km</div></div><span class="cal-ev-goto" onclick="gotoSwim('${s.id}')">→ Öffnen</span></div>`;
+   html+=`<div class="cal-ev-item"><span class="cal-ev-badge bsw">Swim</span><div><div class="cal-ev-text">${s.title}</div><div class="cal-ev-sub">${s.km} km</div></div><span class="cal-ev-goto" onclick="gotoSwim('${s.id}')">→ Öffnen</span></div>`;
   }else if(e.type==='dry'){
    const sess=DRY[e.id];if(!sess)return;
-   html+=`<div class="cal-ev-item"><span class="cal-ev-badge bd${e.id.toLowerCase()}A">${e.id === 'A' ? 'DRYLAND A' : e.id === 'B' ? 'DRYLAND B' : 'DRYLAND C'}</span><div><div class="cal-ev-text">${sess.title}</div><div class="cal-ev-sub">${sess.dur}</div></div><span class="cal-ev-goto" onclick="gotoDry('${e.id}')">→ Öffnen</span></div>`;
+   html+=`<div class="cal-ev-item"><span class="cal-ev-badge bd${e.id.toLowerCase()}A">Dry</span><div><div class="cal-ev-text">${sess.title}</div><div class="cal-ev-sub">${sess.dur}</div></div><span class="cal-ev-goto" onclick="openDashDry('${e.id}','${ds}')">→ Öffnen</span></div>`;
   }
  });
  panel.innerHTML=html;
