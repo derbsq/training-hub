@@ -37,7 +37,7 @@ h1{font-size:clamp(1.35rem,5vw,2.2rem);font-weight:800;letter-spacing:-.025em;li
 
 /* NAV TABS */
 nav{position:sticky;top:0;z-index:50;background:rgba(244,241,235,.97);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1.5px solid var(--brd);text-align:center}
-.tabs{display:flex;gap:.2rem;max-width:760px;margin:0 auto;padding:.45rem .65rem;overflow-x:auto;scrollbar-width:none}
+.tabs{display:flex;gap:.2rem;max-width:760px;margin:0 auto;padding:.45rem .65rem;overflow-x:auto;scrollbar-width:none;justify-content:safe center}
 .tabs::-webkit-scrollbar{display:none}
 .tab{flex:0 0 auto;font-family:var(--mono);font-size:.63rem;letter-spacing:.05em;color:var(--muted);border:1.5px solid transparent;border-radius:999px;padding:.38rem .8rem;white-space:nowrap;transition:all .12s}
 .tab.on{color:var(--bg);font-weight:700}
@@ -72,6 +72,7 @@ main{padding-top:.5rem}
 .cal-day{display:flex;flex-direction:column;align-items:center;padding:3px 1px 5px;border-radius:7px;cursor:default;min-height:40px;transition:background .1s;position:relative}
 .cal-day.has-s{cursor:pointer}
 .cal-day.has-s:active{background:var(--surf2)}
+.cal-day.has-s{cursor:pointer;-webkit-tap-highlight-color:rgba(26,74,46,.12)}
 .cal-day.today .cal-dn-w{background:var(--swim);color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center}
 .cal-dn{font-family:var(--mono);font-size:.63rem;color:var(--faint)}
 .cal-day.has-s .cal-dn{color:var(--ink);font-weight:700}
@@ -398,28 +399,28 @@ main{padding-top:.5rem}
 .wk-nav-title{font-family:var(--mono);font-size:.72rem;font-weight:700;color:var(--ink)}
 .wk-nav-btn{font-family:var(--mono);font-size:.85rem;padding:.3rem .65rem;border:1.5px solid var(--brd);border-radius:7px;color:var(--muted);cursor:pointer;background:transparent;transition:all .12s}
 .wk-nav-btn:active{background:var(--surf2)}
-.wk-combined{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
-.wk-col{display:flex;flex-direction:column;align-items:center;background:var(--surf);border-radius:8px;padding:.35rem .18rem .45rem;min-height:90px;cursor:default}
-.wk-col.wk-today{background:var(--swl);outline:1.5px solid rgba(26,74,46,.25)}
-.wk-col.wk-past{opacity:.6}
-.wk-col-dow{font-family:var(--mono);font-size:.46rem;letter-spacing:.04em;text-transform:uppercase;color:var(--faint);margin-bottom:1px}
-.wk-col-d{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:.65rem;font-weight:700;color:var(--muted);margin-bottom:2px}
-.wk-col.wk-today .wk-col-d{background:var(--swim);color:#fff}
-.wk-wx-icon{font-size:.92rem;line-height:1;margin-bottom:1px}
-.wk-wx-temp{font-family:var(--mono);font-size:.52rem;color:var(--muted);white-space:nowrap}
-.wk-wx-temp span{color:var(--dA)}
-.wk-wx-rain{width:100%;height:2px;border-radius:1px;background:var(--brd);margin:2px 0 3px;overflow:hidden}
-.wk-wx-rain-fill{height:100%;background:#1a7fa8;border-radius:1px}
-.wk-sess-wrap{display:flex;flex-direction:column;gap:2px;width:100%;margin-top:auto}
-.wk-sess-pill{font-size:.47rem;font-weight:700;border-radius:4px;padding:2px 3px;text-align:center;line-height:1.25;cursor:pointer;transition:all .12s;word-break:break-word}
-.wk-sess-pill:active{opacity:.7}
-.wk-pill-sw{background:var(--swl);color:var(--swim)}
-.wk-pill-z1{background:rgba(58,138,90,.12);color:var(--z1)}
-.wk-pill-dA{background:var(--dAl);color:var(--dA)}
-.wk-pill-dB{background:var(--dBl);color:var(--dB)}
-.wk-pill-dC{background:var(--dCl);color:var(--dC)}
-.wk-pill-done{background:var(--okl)!important;color:var(--ok)!important;opacity:.75}
-.wk-rest{font-family:var(--mono);font-size:.44rem;color:var(--faint);margin-top:auto;padding-top:2px}
+.wk-row{display:flex;align-items:center;padding:.52rem 0;border-bottom:1px solid var(--brd);gap:.6rem;cursor:pointer;transition:background .1s}
+.wk-row:last-child{border-bottom:none}
+.wk-row:active{background:var(--surf2)}
+.wk-row.wk-today{background:rgba(26,74,46,.04);border-radius:6px;padding-left:.4rem;padding-right:.4rem}
+.wk-row.wk-past .wk-row-name{opacity:.5}
+.wk-row-day{flex:0 0 46px;text-align:left}
+.wk-row-dow{font-family:var(--mono);font-size:.56rem;text-transform:uppercase;color:var(--faint)}
+.wk-row-d{font-family:var(--mono);font-size:.75rem;font-weight:700;color:var(--muted);width:20px;height:20px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center}
+.wk-row.wk-today .wk-row-d{background:var(--swim);color:#fff}
+.wk-row-wx{flex:0 0 52px;font-family:var(--mono);font-size:.56rem;text-align:center;line-height:1.35}
+.wk-row-wx-icon{font-size:.85rem;display:block}
+.wk-row-wx-temp{color:var(--muted)}
+.wk-row-sessions{flex:1;display:flex;flex-direction:column;gap:3px;min-width:0}
+.wk-row-sess{font-size:.78rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wk-row-badge{font-family:var(--mono);font-size:.54rem;padding:.1rem .32rem;border-radius:3px;display:inline-flex;align-items:center;gap:.22rem;cursor:pointer}
+.wk-badge-sw{background:var(--swl);color:var(--swim)}
+.wk-badge-z1{background:rgba(58,138,90,.12);color:var(--z1)}
+.wk-badge-dA{background:var(--dAl);color:var(--dA)}
+.wk-badge-dB{background:var(--dBl);color:var(--dB)}
+.wk-badge-dC{background:var(--dCl);color:var(--dC)}
+.wk-badge-done{background:var(--okl);color:var(--ok)}
+.wk-rest{font-family:var(--mono);font-size:.68rem;color:var(--faint)}
 
 /* BADI CARDS NEW FORMAT */
 .badi-card{background:var(--surf);border:1.5px solid var(--brd);border-radius:var(--r);padding:.6rem .55rem .65rem;position:relative;overflow:hidden;cursor:pointer;transition:all .12s}
@@ -1395,7 +1396,7 @@ function renderDash(){
  const weekEnd=new Date(weekStart);weekEnd.setDate(weekStart.getDate()+6);
  const weekLabel=weekStart.toLocaleDateString('de-DE',{day:'numeric',month:'short'})+' – '+weekEnd.toLocaleDateString('de-DE',{day:'numeric',month:'short',year:'numeric'});
 
- let wxCols='';
+ let wkRows='';
  for(let i=0;i<7;i++){
   const day=new Date(weekStart);day.setDate(weekStart.getDate()+i);
   const ds=day.toISOString().slice(0,10);
@@ -1404,62 +1405,48 @@ function renderDash(){
   const wd=day.toLocaleDateString('de-DE',{weekday:'short'}).toUpperCase().slice(0,2);
   const dm=day.getDate();
   const evs=SCHED[ds]||[];
-  // Weather slot
   const wxD=WEEK_WX[ds]||{};
-  const wxIcon=wxD.icon||'';const wxMax=wxD.max!==undefined?Math.round(wxD.max)+'°':'';
-  const wxMin=wxD.min!==undefined?Math.round(wxD.min)+'°':'';
-  const wxRain=wxD.rain||0;
-  // Session pills
-  let pills='';
+  const wxIcon=wxD.icon||'';
+  const wxTemp=wxD.max!==undefined?`${Math.round(wxD.max)}° ${Math.round(wxD.min)}°`:'';
+
+  let sessHtml='';
   if(isSun&&!evs.length){
-   pills=`<div class="wk-rest">Rest</div>`;
+   sessHtml='<span class="wk-rest">Ruhetag</span>';
+  }else if(!evs.length){
+   sessHtml='<span class="wk-rest">—</span>';
   }else{
    evs.forEach(e=>{
     const logged=e.type==='swim'?S.isLogged(ds,e.id):S.isLogged(ds,'dry-'+e.id);
-    let pcls='',label='';
     if(e.type==='swim'){
      const sw=SWIM.find(x=>x.id===e.id);
-     pcls=logged?'wk-pill-done':(e.id.startsWith('Z')?'wk-pill-z1':'wk-pill-sw');
-     const stitle=sw?sw.badge:e.id;
-     pills+=`<div class="wk-sess-pill ${pcls}" onclick="openSwimSession('${e.id}','${ds}')">${logged?'✓ ':''}${stitle}</div>`;
+     const name=sw?sw.title:'Swim';
+     const bcls=logged?'wk-badge-done':(e.id.startsWith('Z')?'wk-badge-z1':'wk-badge-sw');
+     sessHtml+=`<div style="margin-bottom:2px"><div class="wk-row-sess">${name}</div><span class="wk-row-badge ${bcls}" onclick="openSwimSession('${e.id}','${ds}')">${logged?'✓ ':''}${sw?sw.badge:e.id}</span></div>`;
     }else if(e.type==='dry'){
-     const sess=DRY[e.id];
-     const dr=DRY[e.id];
-     pcls=logged?'wk-pill-done':`wk-pill-d${e.id.toLowerCase()}A`;
-     const dtitle='Dry '+e.id;
-     pills+=`<div class="wk-sess-pill ${pcls}" onclick="dashToggleDry('${e.id}','${ds}',this)">${logged?'✓ ':''}${dtitle}</div>`;
+     const dr=DRY[e.id];const name=dr?dr.title:'Dry '+e.id;
+     const bcls=logged?'wk-badge-done':`wk-badge-d${e.id.toLowerCase()}A`;
+     sessHtml+=`<div style="margin-bottom:2px"><div class="wk-row-sess">${name}</div><span class="wk-row-badge ${bcls}" onclick="dashToggleDry('${e.id}','${ds}',this)">${logged?'✓ Erledigt':'als erledigt'}</span></div>`;
     }
    });
   }
-  wxCols+=`<div class="wk-col${isToday?' wk-today':''}${isPast?' wk-past':''}">
-   <div class="wk-col-dow">${wd}</div>
-   <div class="wk-col-d">${dm}</div>
-   ${wxIcon?`<div class="wk-wx-icon">${wxIcon}</div>`:'<div class="wk-wx-icon" style="height:.92rem"></div>'}
-   <div class="wk-wx-temp"><span>${wxMax}</span>${wxMin?' '+wxMin:''}</div>
-   <div class="wk-wx-rain"><div class="wk-wx-rain-fill" style="width:${wxRain}%"></div></div>
-   <div class="wk-sess-wrap">${pills}</div>
+  wkRows+=`<div class="wk-row${isToday?' wk-today':''}${isPast?' wk-past':''}" data-ds="${ds}">
+   <div class="wk-row-day"><div class="wk-row-dow">${wd}</div><div class="wk-row-d">${dm}</div></div>
+   <div class="wk-row-wx"><span class="wk-row-wx-icon">${wxIcon}</span><span class="wk-row-wx-temp">${wxTemp}</span></div>
+   <div class="wk-row-sessions">${sessHtml}</div>
   </div>`;
  }
 
- const weekHtml=`<div class="wx" id="wx-strip" style="margin-top:.9rem"><span class="wx-icon"></span><div><div class="wx-main">Wetter lädt…</div><div class="wx-sub">Zürich</div></div><div class="wx-right">Jetzt</div></div>
-<div class="sl">DIESE WOCHE</div>
+ const weekHtml=`<div class="sl">DIESE WOCHE</div>
 <div style="background:var(--surf);border:1.5px solid var(--brd);border-radius:var(--r2);padding:.85rem">
- <div class="wk-nav">
+ <div class="wk-nav" style="margin-bottom:.7rem">
   <button class="wk-nav-btn" onclick="window.DASH_WEEK_OFFSET--;renderDash()">←</button>
   <span class="wk-nav-title">${weekLabel}</span>
   <button class="wk-nav-btn" onclick="window.DASH_WEEK_OFFSET++;renderDash()">→</button>
  </div>
- <div class="wk-combined">${wxCols}</div>
+ <div id="wk-list">${wkRows}</div>
 </div>`;
 
- // ── BADI STATUS ───────────────────────────────────────────
- const BADI_4=[
-  {key:'city',  uid:'SSD-4',   name:'City',  icon:'',indoor:true},
-  {key:'letzigraben',uid:'LETZI-1',name:'Letzi', icon:'',indoor:false},
-  {key:'utoquai',uid:'SSD-10', name:'Uto',   icon:'',indoor:false},
-  {key:'letten',uid:'flb6939', name:'Letten',icon:'',indoor:false,isLetten:true}
- ];
- const badiCardsHtml=`<div class="sl">BADI STATUS</div>
+const badiCardsHtml=`<div class="sl">BADI STATUS</div>
 <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.35rem;margin-bottom:.6rem" id="dash-badi-4">
  ${BADI_DASH.map(t=>buildBadiCard(t)).join('')}
 </div>
@@ -1580,16 +1567,12 @@ function wmoDesc(code){
 }
 
 function updateWeekWxCols(){
- // Update individual weather cells in the week view without full re-render
- document.querySelectorAll('.wk-col[data-ds]').forEach(col=>{
-  const ds=col.dataset.ds;
-  const wx=WEEK_WX[ds];if(!wx)return;
-  const iconEl=col.querySelector('.wk-wx-icon');
-  const tempEl=col.querySelector('.wk-wx-temp');
-  const rainEl=col.querySelector('.wk-wx-rain-fill');
+ document.querySelectorAll('.wk-row[data-ds]').forEach(row=>{
+  const ds=row.dataset.ds;const wx=WEEK_WX[ds];if(!wx)return;
+  const iconEl=row.querySelector('.wk-row-wx-icon');
+  const tempEl=row.querySelector('.wk-row-wx-temp');
   if(iconEl)iconEl.textContent=wx.icon;
-  if(tempEl)tempEl.innerHTML=`<span>${Math.round(wx.max)}°</span> ${Math.round(wx.min)}°`;
-  if(rainEl)rainEl.style.width=wx.rain+'%';
+  if(tempEl)tempEl.textContent=`${Math.round(wx.max)}° ${Math.round(wx.min)}°`;
  });
 }
 
