@@ -422,11 +422,11 @@ main{padding-top:.5rem}
 .wk-rest{font-family:var(--mono);font-size:.44rem;color:var(--faint);margin-top:auto;padding-top:2px}
 
 /* BADI CARDS NEW FORMAT */
-.badi-card{background:var(--surf);border:1.5px solid var(--brd);border-radius:var(--r2);padding:.85rem;position:relative;overflow:hidden;cursor:pointer;transition:all .12s}
+.badi-card{background:var(--surf);border:1.5px solid var(--brd);border-radius:var(--r);padding:.6rem .55rem .65rem;position:relative;overflow:hidden;cursor:pointer;transition:all .12s}
 .badi-card:active{opacity:.85}
 .badi-card-bar{position:absolute;bottom:0;left:0;height:3px;transition:width .4s}
-.badi-card-name{font-size:.75rem;font-weight:700;margin-bottom:.28rem;color:var(--ink)}
-.badi-card-count{font-family:var(--mono);font-size:1.4rem;font-weight:700;line-height:1;margin-bottom:.08rem}
+.badi-card-name{font-size:.68rem;font-weight:700;margin-bottom:.22rem;color:var(--ink)}
+.badi-card-count{font-family:var(--mono);font-size:1.1rem;font-weight:700;line-height:1;margin-bottom:.06rem}
 .badi-card-max{font-family:var(--mono);font-size:.62rem;color:var(--muted);margin-left:.15rem}
 .badi-card-pct{font-family:var(--mono);font-size:.65rem;font-weight:700;margin-bottom:.28rem}
 .badi-card-temp{font-family:var(--mono);font-size:.62rem;color:var(--muted);margin-bottom:.12rem;display:flex;align-items:center;gap:.25rem}
@@ -1067,11 +1067,11 @@ const DRY = {
 
 // ─── POOLS (Badi) ─────────────────────────────────────────
 const POOLS = [
- {id:'SSD-4',  n:'HB City',     full:'Hallenbad City',    icon:'🏊', indoor:true},
- {id:'LETZI-1',n:'Letzigraben', full:'Freibad Letzigraben',icon:'🌞', indoor:false},
- {id:'SSD-10', n:'Utoquai',     full:'Seebad Utoquai',     icon:'🌊', indoor:false},
- {id:'flb6939',n:'Ob. Letten',  full:'Flussbad Ob. Letten',icon:'🏞️', indoor:false},
- {id:'flb6940',n:'Un. Letten',  full:'Flussbad Un. Letten',icon:'🌊', indoor:false}
+ {id:'SSD-4',  n:'HB City',     full:'Hallenbad City',    icon:'', indoor:true},
+ {id:'LETZI-1',n:'Letzigraben', full:'Freibad Letzigraben',icon:'', indoor:false},
+ {id:'SSD-10', n:'Utoquai',     full:'Seebad Utoquai',     icon:'', indoor:false},
+ {id:'flb6939',n:'Ob. Letten',  full:'Flussbad Ob. Letten',icon:'', indoor:false},
+ {id:'flb6940',n:'Un. Letten',  full:'Flussbad Un. Letten',icon:'', indoor:false}
 ];
 
 // ─── STORAGE ─────────────────────────────────────────────────
@@ -1372,8 +1372,7 @@ function renderDash(){
  const firstDay=new Date(2026,5,1);
  const dow=(firstDay.getDay()+6)%7;
  const days=['Mo','Di','Mi','Do','Fr','Sa','So'];
- let calHtml=`<div class="wx" id="wx-strip" style="margin-top:1.4rem"><span class="wx-icon">⏳</span><div><div class="wx-main">Wird geladen…</div><div class="wx-sub">Zürich</div></div><div class="wx-right">Jetzt</div></div>
-<div class="cal-wrap">
+ let calHtml=`<div class="cal-wrap" style="margin-top:1.4rem">
  <div class="cal-hdr"><div><div class="cal-ml">JUNI 2026</div></div><div class="cal-tl" id="cal-kick-tag">The Kick</div></div>
  <div class="cal-grid">
   ${days.map(d=>`<div class="cal-dow">${d}</div>`).join('')}`;
@@ -1419,16 +1418,13 @@ function renderDash(){
     const logged=e.type==='swim'?S.isLogged(ds,e.id):S.isLogged(ds,'dry-'+e.id);
     let pcls='',label='';
     if(e.type==='swim'){
-     const s=SWIM.find(x=>x.id===e.id);
      pcls=logged?'wk-pill-done':(e.id.startsWith('Z')?'wk-pill-z1':'wk-pill-sw');
-     label=s?s.badge:'SW';
-     const cb=e.type==='swim'?`openSwimSession('${e.id}','${ds}')`:`gotoDry('${e.id}')`;
-     pills+=`<div class="wk-sess-pill ${pcls}" onclick="${cb}">${logged?'✓ ':''+(label)}</div>`;
+     const cb=`openSwimSession('${e.id}','${ds}')`;
+     pills+=`<div class="wk-sess-pill ${pcls}" onclick="${cb}">${logged?'✓ Swim':'Swim'}</div>`;
     }else if(e.type==='dry'){
      const sess=DRY[e.id];
      pcls=logged?'wk-pill-done':`wk-pill-d${e.id.toLowerCase()}A`;
-     label='DRY '+e.id;
-     pills+=`<div class="wk-sess-pill ${pcls}" onclick="gotoDry('${e.id}')">${logged?'✓ ':''}${label}</div>`;
+     pills+=`<div class="wk-sess-pill ${pcls}" onclick="gotoDry('${e.id}')">${logged?'✓ Dry':'Dry'}</div>`;
     }
    });
   }
@@ -1442,7 +1438,8 @@ function renderDash(){
   </div>`;
  }
 
- const weekHtml=`<div class="sl">DIESE WOCHE</div>
+ const weekHtml=`<div class="wx" id="wx-strip" style="margin-top:.9rem"><span class="wx-icon">⏳</span><div><div class="wx-main">Wird geladen…</div><div class="wx-sub">Zürich</div></div><div class="wx-right">Jetzt</div></div>
+<div class="sl">DIESE WOCHE</div>
 <div style="background:var(--surf);border:1.5px solid var(--brd);border-radius:var(--r2);padding:.85rem">
  <div class="wk-nav">
   <button class="wk-nav-btn" onclick="DASH_WEEK_OFFSET--;renderDash()">←</button>
@@ -1454,13 +1451,13 @@ function renderDash(){
 
  // ── BADI STATUS ───────────────────────────────────────────
  const BADI_4=[
-  {key:'city',  uid:'SSD-4',   name:'City',  icon:'🏊',indoor:true},
-  {key:'letzigraben',uid:'LETZI-1',name:'Letzi', icon:'🌞',indoor:false},
-  {key:'utoquai',uid:'SSD-10', name:'Uto',   icon:'🌊',indoor:false},
-  {key:'letten',uid:'flb6939', name:'Letten',icon:'🏞️',indoor:false,isLetten:true}
+  {key:'city',  uid:'SSD-4',   name:'City',  icon:'',indoor:true},
+  {key:'letzigraben',uid:'LETZI-1',name:'Letzi', icon:'',indoor:false},
+  {key:'utoquai',uid:'SSD-10', name:'Uto',   icon:'',indoor:false},
+  {key:'letten',uid:'flb6939', name:'Letten',icon:'',indoor:false,isLetten:true}
  ];
  const badiCardsHtml=`<div class="sl">BADI STATUS</div>
-<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:.55rem;margin-bottom:.6rem" id="dash-badi-4">
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.35rem;margin-bottom:.6rem" id="dash-badi-4">
  ${BADI_4.map(t=>buildBadiCard(t)).join('')}
 </div>
 <div style="font-family:var(--mono);font-size:.55rem;color:var(--faint);text-align:center;margin-bottom:1rem" id="badi-ts-dash">Live · Crowdmonitor</div>`;
@@ -1481,7 +1478,7 @@ function buildBadiCard(t){
   const statusC=letten.speed===undefined?'bst-x':letten.speed<0.5?'badi-status-ruhig':letten.speed<1.2?'badi-status-moderat':'badi-status-stark';
   const statusT=letten.speed===undefined?'—':letten.speed<0.5?'🟢 ruhig':letten.speed<1.2?'🟡 moderat':'🔴 stark';
   return`<div class="badi-card" onclick="switchTab('badi')">
-   <div class="badi-card-name">${t.icon} ${t.name}</div>
+   <div class="badi-card-name">${t.name}</div>
    <div class="badi-card-count" style="color:var(--bdi)">${wtemp}</div>
    <div class="badi-letten-flow">Limmat · ${flow} · ${speed}</div>
    <div class="badi-letten-pace">△ ${pace}/100m</div>
@@ -1489,7 +1486,7 @@ function buildBadiCard(t){
   </div>`;
  }
  if(!live)return`<div class="badi-card" onclick="switchTab('badi')">
-  <div class="badi-card-name">${t.icon} ${t.name}</div>
+  <div class="badi-card-name">${t.name}</div>
   <div class="badi-card-count" style="color:var(--faint)">—</div>
   <div class="badi-card-pct bst-x">Verbinde…</div>
  </div>`;
@@ -1502,7 +1499,7 @@ function buildBadiCard(t){
  const temp=POOL_TEMPS[t.key]?`🌡 ${POOL_TEMPS[t.key]}`:'';
  return`<div class="badi-card" onclick="switchTab('badi')">
   <div class="badi-card-bar" style="width:${Math.min(pct,100)}%;background:${col}"></div>
-  <div class="badi-card-name">${t.icon} ${t.name}</div>
+  <div class="badi-card-name">${t.name}</div>
   <div style="display:flex;align-items:baseline;gap:.18rem">
    <span class="badi-card-count" style="color:${col}">${fill}</span>
    <span class="badi-card-max">/ ${max}</span>
@@ -1532,7 +1529,7 @@ async function loadWeatherWeek(){
   // Open-Meteo (MeteoSwiss station data, free, no key)
   const url='https://api.open-meteo.com/v1/forecast?latitude=47.3769&longitude=8.5417'
    +'&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunshine_duration'
-   +'&current_weather=true&timezone=Europe%2FZurich&forecast_days=14';
+   +'&current_weather=true&timezone=Europe%2FZurich&past_days=6&forecast_days=14';
   const r=await fetch(url);const d=await r.json();
   const dates=d.daily.time;
   WEEK_WX={};
@@ -1595,10 +1592,10 @@ async function loadLettenData(){
 function refreshBadiCards(){
  const c=el('dash-badi-4');if(!c)return;
  const BADI_4=[
-  {key:'city',uid:'SSD-4',name:'City',icon:'🏊',indoor:true},
-  {key:'letzigraben',uid:'LETZI-1',name:'Letzi',icon:'🌞',indoor:false},
-  {key:'utoquai',uid:'SSD-10',name:'Uto',icon:'🌊',indoor:false},
-  {key:'letten',uid:'flb6939',name:'Letten',icon:'🏞️',indoor:false,isLetten:true}
+  {key:'city',uid:'SSD-4',name:'City',indoor:true},
+  {key:'letzigraben',uid:'LETZI-1',name:'Letzi',indoor:false},
+  {key:'utoquai',uid:'SSD-10',name:'Uto',indoor:false},
+  {key:'letten',uid:'flb6939',name:'Letten',indoor:false,isLetten:true}
  ];
  c.innerHTML=BADI_4.map(t=>buildBadiCard(t)).join('');
 }
