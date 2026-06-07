@@ -1,30 +1,34 @@
 const CACHE = 'training-hub-v6';
-const ASSETS = [
-  '/training-hub/',
-  '/training-hub/index.html',
-  'https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap',
-  'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js'
-];
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS).catch(() => {})));
   self.skipWaiting();
 });
 
 self.addEventListener('activate', e => {
-  e.waitUntil(caches.keys().then(keys =>
-    Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
-  ));
+  e.waitUntil(
+    caches.keys().then(keys =>
+      Promise.all(keys.map(k => caches.delete(k)))
+    )
+  );
   self.clients.claim();
 });
 
+// Network-first: always try network, fall back to cache only if offline
 self.addEventListener('fetch', e => {
-  // Network first for API/WS, cache first for assets
-  if (e.request.url.includes('crowdmonitor') || e.request.url.includes('open-meteo') ||
-      e.request.url.includes('raw.githubusercontent')) {
-    return; // don't cache live data
-  }
+  if (e.request.method !== 'GET') return;
+  // Skip non-http(s) and API calls
+  if (!e.request.url.startsWith('http')) return;
+  
   e.respondWith(
-    caches.match(e.request).then(cached => cached || fetch(e.request).catch(() => cached))
+    fetch(e.request)
+      .then(response => {
+        // Cache successful responses for offline fallback
+        if (response.ok) {
+          const clone = response.clone();
+          caches.open(CACHE).then(c => c.put(e.request, clone));
+        }
+        return response;
+      })
+      .catch(() => caches.match(e.request))
   );
 });
