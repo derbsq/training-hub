@@ -47,13 +47,13 @@ nav{position:sticky;top:0;z-index:50;background:rgba(244,241,235,.97);backdrop-f
 .tab[data-tab=dry].on{background:var(--dA)}
 .tab[data-tab=method].on{background:var(--dC)}
 .tab[data-tab=log].on{background:var(--ink)}
-main{padding-top:1.8rem}
+main{padding-top:.5rem}
 .view{display:none;animation:vu .16s ease}.view.on{display:block}
 @keyframes vu{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
 
 /* SECTION LABELS */
 .sl{font-family:var(--mono);font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin:1.8rem 0 .7rem}
-.sl.first{margin-top:0}
+.sl.first{margin-top:1.4rem}
 
 /* WEATHER STRIP */
 .wx{display:flex;align-items:center;gap:.5rem;background:var(--surf);border:1.5px solid var(--brd);border-radius:var(--r);padding:.55rem .85rem;margin-bottom:.9rem;font-family:var(--mono);font-size:.7rem}
@@ -391,6 +391,49 @@ main{padding-top:1.8rem}
 .ws-badge{font-family:var(--mono);font-size:.44rem;color:var(--muted);margin-bottom:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ws-title{font-size:.62rem;font-weight:700;line-height:1.2;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .ws-km{font-family:var(--mono);font-size:.52rem;color:var(--muted);margin-top:1px}
+
+
+/* WEEK + WEATHER COMBINED */
+.wk-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem}
+.wk-nav-title{font-family:var(--mono);font-size:.72rem;font-weight:700;color:var(--ink)}
+.wk-nav-btn{font-family:var(--mono);font-size:.85rem;padding:.3rem .65rem;border:1.5px solid var(--brd);border-radius:7px;color:var(--muted);cursor:pointer;background:transparent;transition:all .12s}
+.wk-nav-btn:active{background:var(--surf2)}
+.wk-combined{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.wk-col{display:flex;flex-direction:column;align-items:center;background:var(--surf);border-radius:8px;padding:.35rem .18rem .45rem;min-height:90px;cursor:default}
+.wk-col.wk-today{background:var(--swl);outline:1.5px solid rgba(26,74,46,.25)}
+.wk-col.wk-past{opacity:.6}
+.wk-col-dow{font-family:var(--mono);font-size:.46rem;letter-spacing:.04em;text-transform:uppercase;color:var(--faint);margin-bottom:1px}
+.wk-col-d{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:.65rem;font-weight:700;color:var(--muted);margin-bottom:2px}
+.wk-col.wk-today .wk-col-d{background:var(--swim);color:#fff}
+.wk-wx-icon{font-size:.92rem;line-height:1;margin-bottom:1px}
+.wk-wx-temp{font-family:var(--mono);font-size:.52rem;color:var(--muted);white-space:nowrap}
+.wk-wx-temp span{color:var(--dA)}
+.wk-wx-rain{width:100%;height:2px;border-radius:1px;background:var(--brd);margin:2px 0 3px;overflow:hidden}
+.wk-wx-rain-fill{height:100%;background:#1a7fa8;border-radius:1px}
+.wk-sess-wrap{display:flex;flex-direction:column;gap:2px;width:100%;margin-top:auto}
+.wk-sess-pill{font-size:.44rem;font-weight:700;border-radius:4px;padding:2px 3px;text-align:center;line-height:1.3;cursor:pointer;transition:all .12s}
+.wk-sess-pill:active{opacity:.7}
+.wk-pill-sw{background:var(--swl);color:var(--swim)}
+.wk-pill-z1{background:rgba(58,138,90,.12);color:var(--z1)}
+.wk-pill-dA{background:var(--dAl);color:var(--dA)}
+.wk-pill-dB{background:var(--dBl);color:var(--dB)}
+.wk-pill-dC{background:var(--dCl);color:var(--dC)}
+.wk-pill-done{background:var(--okl)!important;color:var(--ok)!important;opacity:.75}
+.wk-rest{font-family:var(--mono);font-size:.44rem;color:var(--faint);margin-top:auto;padding-top:2px}
+
+/* BADI CARDS NEW FORMAT */
+.badi-card{background:var(--surf);border:1.5px solid var(--brd);border-radius:var(--r2);padding:.85rem;position:relative;overflow:hidden;cursor:pointer;transition:all .12s}
+.badi-card:active{opacity:.85}
+.badi-card-bar{position:absolute;bottom:0;left:0;height:3px;transition:width .4s}
+.badi-card-name{font-size:.75rem;font-weight:700;margin-bottom:.28rem;color:var(--ink)}
+.badi-card-count{font-family:var(--mono);font-size:1.4rem;font-weight:700;line-height:1;margin-bottom:.08rem}
+.badi-card-max{font-family:var(--mono);font-size:.62rem;color:var(--muted);margin-left:.15rem}
+.badi-card-pct{font-family:var(--mono);font-size:.65rem;font-weight:700;margin-bottom:.28rem}
+.badi-card-temp{font-family:var(--mono);font-size:.62rem;color:var(--muted);margin-bottom:.12rem;display:flex;align-items:center;gap:.25rem}
+.badi-card-status{font-family:var(--mono);font-size:.63rem;font-weight:700;margin-top:.1rem}
+.badi-letten-flow{font-family:var(--mono);font-size:.6rem;color:var(--muted);line-height:1.45}
+.badi-letten-pace{font-family:var(--mono);font-size:.65rem;color:var(--bdi);font-weight:700}
+.badi-status-ruhig{color:var(--ok)}.badi-status-moderat{color:#b07a00}.badi-status-stark{color:var(--dA)}
 
 footer{text-align:center;font-family:var(--mono);font-size:.57rem;color:var(--faint);padding:1.8rem 1rem 0;border-top:1px solid var(--brd);margin-top:2.5rem}
 @media(max-width:390px){:root{--pad:.9rem}}
@@ -1322,101 +1365,244 @@ function buildDryCard(sess,ds,id){
 let selCalDate=null;
 function renderDash(){
  const v=el('v-dash');
+ if(!v)return;
  const today=TODAY_STR;
- const todayD=TODAY;
- // find next sessions
- const upcoming=Object.entries(SCHED).filter(([d])=>d>=today).sort((a,b)=>a[0]<b[0]?-1:1).slice(0,7);
 
- // weather placeholder
- const wxHtml=`<div class="wx" id="wx-strip"><span class="wx-icon">⏳</span><div><div class="wx-main">Wird geladen…</div><div class="wx-sub">Zürich</div></div><div class="wx-right">Jetzt</div></div>`;
-
- // iCal calendar
- const firstDay=new Date(2026,5,1); // June 2026 = month index 5
- const dow=(firstDay.getDay()+6)%7; // Mon=0
+ // ── CALENDAR ──────────────────────────────────────────────
+ const firstDay=new Date(2026,5,1);
+ const dow=(firstDay.getDay()+6)%7;
  const days=['Mo','Di','Mi','Do','Fr','Sa','So'];
- let calHtml=`<div class="cal-wrap"><div class="cal-hdr"><div><div class="cal-ml">JUNI 2026</div></div><div class="cal-tl" id="cal-kick-tag"></div></div><div class="cal-grid">`;
- calHtml+=days.map(d=>`<div class="cal-dow">${d}</div>`).join('');
- // pad before
+ let calHtml=`<div class="wx" id="wx-strip" style="margin-top:1.4rem"><span class="wx-icon">⏳</span><div><div class="wx-main">Wird geladen…</div><div class="wx-sub">Zürich</div></div><div class="wx-right">Jetzt</div></div>
+<div class="cal-wrap">
+ <div class="cal-hdr"><div><div class="cal-ml">JUNI 2026</div></div><div class="cal-tl" id="cal-kick-tag">The Kick</div></div>
+ <div class="cal-grid">
+  ${days.map(d=>`<div class="cal-dow">${d}</div>`).join('')}`;
  for(let i=0;i<dow;i++)calHtml+=`<div class="cal-day"></div>`;
  for(let d=1;d<=30;d++){
   const ds=`2026-06-${String(d).padStart(2,'0')}`;
-  const ev=SCHED[ds]||[];
-  const isToday=ds===today;
-  const hasSess=ev.length>0;
+  const ev=SCHED[ds]||[];const isToday=ds===today;const hasSess=ev.length>0;
   const dots=ev.map(e=>{
    if(e.type==='swim')return e.id.startsWith('Z')?`<span class="cal-dot z1"></span>`:`<span class="cal-dot sw"></span>`;
    if(e.type==='dry'){if(e.id==='B')return`<span class="cal-dot dy2"></span>`;if(e.id==='C')return`<span class="cal-dot dy3"></span>`;return`<span class="cal-dot dy"></span>`;}
    return'';
   }).join('');
-  calHtml+=`<div class="cal-day${hasSess?' has-s':''}${isToday?' today':''}" data-date="${ds}"${hasSess?` onclick="openCalDay('${ds}')"`:''}><div class="cal-dn-w"><span class="cal-dn">${d}</span></div><div class="cal-dots">${dots}</div></div>`;
+  calHtml+=`<div class="cal-day${hasSess?' has-s':''}${isToday?' today':''}" ${hasSess?`onclick="openCalDay('${ds}')"`:''}><div class="cal-dn-w"><span class="cal-dn">${d}</span></div><div class="cal-dots">${dots}</div></div>`;
  }
  calHtml+=`</div><div class="cal-events-panel" id="cal-panel"></div></div>`;
 
- // Week sessions - horizontal strip
- const weekStart=new Date(todayD);weekStart.setDate(weekStart.getDate()-(weekStart.getDay()+6)%7);
- let weekHtml='<div class="sl">DIESE WOCHE</div>';
- // Build horizontal week strip
- weekHtml+='<div class="week-strip">';
+ // ── WEEK + WEATHER COMBINED ───────────────────────────────
+ const weekStart=new Date(TODAY);
+ weekStart.setDate(TODAY.getDate()-((TODAY.getDay()+6)%7)+(DASH_WEEK_OFFSET*7));
+ const weekEnd=new Date(weekStart);weekEnd.setDate(weekStart.getDate()+6);
+ const weekLabel=weekStart.toLocaleDateString('de-DE',{day:'numeric',month:'short'})+' – '+weekEnd.toLocaleDateString('de-DE',{day:'numeric',month:'short',year:'numeric'});
+
+ let wxCols='';
  for(let i=0;i<7;i++){
   const day=new Date(weekStart);day.setDate(weekStart.getDate()+i);
   const ds=day.toISOString().slice(0,10);
-  const ev=SCHED[ds]||[];
-  const isToday=ds===today;
-  const isPast=ds<today;
-  const wd=day.toLocaleDateString('de-DE',{weekday:'short'}).toUpperCase();
+  const isToday=ds===today;const isPast=ds<today;
+  const dow2=day.getDay();const isSun=dow2===0;
+  const wd=day.toLocaleDateString('de-DE',{weekday:'short'}).toUpperCase().slice(0,2);
   const dm=day.getDate();
-  weekHtml+=`<div class="ws-col${isToday?' ws-today':''}${isPast?' ws-past':''}">`;
-  weekHtml+=`<div class="ws-hdr"><div class="ws-dow">${wd}</div><div class="ws-d${isToday?' ws-d-today':''}">${dm}</div></div>`;
-  if(!ev.length){
-   weekHtml+=`<div class="ws-rest">—</div>`;
+  const evs=SCHED[ds]||[];
+  // Weather slot
+  const wxD=WEEK_WX[ds]||{};
+  const wxIcon=wxD.icon||'';const wxMax=wxD.max!==undefined?Math.round(wxD.max)+'°':'';
+  const wxMin=wxD.min!==undefined?Math.round(wxD.min)+'°':'';
+  const wxRain=wxD.rain||0;
+  // Session pills
+  let pills='';
+  if(isSun&&!evs.length){
+   pills=`<div class="wk-rest">Rest</div>`;
   }else{
-   ev.forEach(e=>{
+   evs.forEach(e=>{
     const logged=e.type==='swim'?S.isLogged(ds,e.id):S.isLogged(ds,'dry-'+e.id);
+    let pcls='',label='';
     if(e.type==='swim'){
-     const s=SWIM.find(x=>x.id===e.id);if(!s)return;
-     const isNext=!logged&&ds>=today;
-     weekHtml+=`<div class="ws-sess ws-sw${logged?' ws-done':''}${isNext?' ws-next':''}" onclick="openSwimSession('${s.id}','${ds}')">
-      <div class="ws-badge">${s.badge}</div>
-      <div class="ws-title">${s.title.split(' ')[0]}</div>
-      <div class="ws-km">${s.km}km</div>
-     </div>`;
+     const s=SWIM.find(x=>x.id===e.id);
+     pcls=logged?'wk-pill-done':(e.id.startsWith('Z')?'wk-pill-z1':'wk-pill-sw');
+     label=s?s.badge:'SW';
+     const cb=e.type==='swim'?`openSwimSession('${e.id}','${ds}')`:`gotoDry('${e.id}')`;
+     pills+=`<div class="wk-sess-pill ${pcls}" onclick="${cb}">${logged?'✓ ':''+(label)}</div>`;
     }else if(e.type==='dry'){
-     const sess=DRY[e.id];if(!sess)return;
-     weekHtml+=`<div class="ws-sess ws-dry${e.id.toLowerCase()}${logged?' ws-done':''}" onclick="gotoDry('${e.id}')">
-      <div class="ws-badge">DRY ${e.id}</div>
-      <div class="ws-title">${sess.title.split(' ')[0]}</div>
-      <div class="ws-km">${sess.dur}</div>
-     </div>`;
+     const sess=DRY[e.id];
+     pcls=logged?'wk-pill-done':`wk-pill-d${e.id.toLowerCase()}A`;
+     label='DRY '+e.id;
+     pills+=`<div class="wk-sess-pill ${pcls}" onclick="gotoDry('${e.id}')">${logged?'✓ ':''}${label}</div>`;
     }
    });
   }
-  weekHtml+=`</div>`;
+  wxCols+=`<div class="wk-col${isToday?' wk-today':''}${isPast?' wk-past':''}">
+   <div class="wk-col-dow">${wd}</div>
+   <div class="wk-col-d">${dm}</div>
+   ${wxIcon?`<div class="wk-wx-icon">${wxIcon}</div>`:'<div class="wk-wx-icon" style="height:.92rem"></div>'}
+   <div class="wk-wx-temp"><span>${wxMax}</span>${wxMin?' '+wxMin:''}</div>
+   <div class="wk-wx-rain"><div class="wk-wx-rain-fill" style="width:${wxRain}%"></div></div>
+   <div class="wk-sess-wrap">${pills}</div>
+  </div>`;
  }
- weekHtml+='</div>';
- // Upcoming detail cards
- weekHtml+='<div class="sl" style="margin-top:1.2rem">ANSTEHEND</div>';
- const next3=Object.entries(SCHED).filter(([d])=>d>=today).sort((a,b)=>a[0]<b[0]?-1:1).slice(0,3);
- next3.forEach(([ds,evs])=>{
-  const d=new Date(ds);
-  const dn=d.toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long'});
-  const isToday=ds===today;
-  weekHtml+=`<div style="margin-bottom:.25rem"><div class="week-day-hdr${isToday?' today':''}"><span>${dn}</span>${isToday?'<span class="today-tag">HEUTE</span>':''}</div></div>`;
-  evs.forEach(e=>{
-   const logged=e.type==='swim'?S.isLogged(ds,e.id):S.isLogged(ds,'dry-'+e.id);
-   if(e.type==='swim'){const s=SWIM.find(x=>x.id===e.id);if(s)weekHtml+=`<div class="card card-${s.z1?'z1':'swim'} ${logged?'logged':''}" style="margin-bottom:.4rem"><div class="card-head" onclick="openSwimSession('${s.id}','${ds}')"><div class="done-dot"></div><div class="card-title"><span class="t">${s.title}</span><span class="s">${s.km} km</span></div><span class="badge ${s.bc}">${s.badge}</span><span class="chev">›</span></div></div>`;}
-   else if(e.type==='dry'){const sess=DRY[e.id];if(sess)weekHtml+=buildDryCard(sess,ds,e.id).replace('card-body','card-body" style="display:none');}
-  });
- });
 
- // Badi compact
- const badiHtml=`<div class="sl">BADI STATUS</div><div class="badi-stat-grid" id="dash-badi-cards"><div class="loading">Verbinde…</div></div><div class="badi-ts" id="badi-ts-dash">Live · alle 10 Min aktualisiert</div>`;
+ const weekHtml=`<div class="sl">DIESE WOCHE</div>
+<div style="background:var(--surf);border:1.5px solid var(--brd);border-radius:var(--r2);padding:.85rem">
+ <div class="wk-nav">
+  <button class="wk-nav-btn" onclick="DASH_WEEK_OFFSET--;renderDash()">←</button>
+  <span class="wk-nav-title">${weekLabel}</span>
+  <button class="wk-nav-btn" onclick="DASH_WEEK_OFFSET++;renderDash()">→</button>
+ </div>
+ <div class="wk-combined">${wxCols}</div>
+</div>`;
 
- v.innerHTML=wxHtml+calHtml+badiHtml+weekHtml;
- loadWeather(document.getElementById('wx-strip'));
- renderBadiCards('#dash-badi-cards');
- // kick focus tag
- const kt=el('cal-kick-tag');if(kt)kt.textContent='The Kick';
+ // ── BADI STATUS ───────────────────────────────────────────
+ const BADI_4=[
+  {key:'city',  uid:'SSD-4',   name:'City',  icon:'🏊',indoor:true},
+  {key:'letzigraben',uid:'LETZI-1',name:'Letzi', icon:'🌞',indoor:false},
+  {key:'utoquai',uid:'SSD-10', name:'Uto',   icon:'🌊',indoor:false},
+  {key:'letten',uid:'flb6939', name:'Letten',icon:'🏞️',indoor:false,isLetten:true}
+ ];
+ const badiCardsHtml=`<div class="sl">BADI STATUS</div>
+<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:.55rem;margin-bottom:.6rem" id="dash-badi-4">
+ ${BADI_4.map(t=>buildBadiCard(t)).join('')}
+</div>
+<div style="font-family:var(--mono);font-size:.55rem;color:var(--faint);text-align:center;margin-bottom:1rem" id="badi-ts-dash">Live · Crowdmonitor</div>`;
+
+ v.innerHTML=calHtml+weekHtml+badiCardsHtml;
+ loadWeatherWeek();
+ refreshBadiCards();
 }
+
+function buildBadiCard(t){
+ const live=BADI_STATE?.live?.[t.key];
+ const letten=LETTEN_DATA||{};
+ if(t.isLetten){
+  const wtemp=letten.temp!==undefined?letten.temp.toFixed(1)+'°C':'—';
+  const flow=letten.flow!==undefined?letten.flow.toFixed(1)+' m³/s':'—';
+  const speed=letten.speed!==undefined?letten.speed.toFixed(2)+' m/s':'—';
+  const pace=letten.speed!==undefined?formatLettenPace(letten.speed):'—';
+  const statusC=letten.speed===undefined?'bst-x':letten.speed<0.5?'badi-status-ruhig':letten.speed<1.2?'badi-status-moderat':'badi-status-stark';
+  const statusT=letten.speed===undefined?'—':letten.speed<0.5?'🟢 ruhig':letten.speed<1.2?'🟡 moderat':'🔴 stark';
+  return`<div class="badi-card" onclick="switchTab('badi')">
+   <div class="badi-card-name">${t.icon} ${t.name}</div>
+   <div class="badi-card-count" style="color:var(--bdi)">${wtemp}</div>
+   <div class="badi-letten-flow">Limmat · ${flow} · ${speed}</div>
+   <div class="badi-letten-pace">△ ${pace}/100m</div>
+   <div class="badi-card-status ${statusC}">${statusT} <span style="font-weight:400;color:var(--faint)">(Schätzung)</span></div>
+  </div>`;
+ }
+ if(!live)return`<div class="badi-card" onclick="switchTab('badi')">
+  <div class="badi-card-name">${t.icon} ${t.name}</div>
+  <div class="badi-card-count" style="color:var(--faint)">—</div>
+  <div class="badi-card-pct bst-x">Verbinde…</div>
+ </div>`;
+ const fill=parseInt(live.currentfill)||0;
+ const max=parseInt(live.maxspace)||100;
+ const ratio=fill/max;
+ const pct=Math.round(ratio*100);
+ const col=ratio2color(ratio);
+ const lbl=ratio2label(ratio);
+ const temp=POOL_TEMPS[t.key]?`🌡 ${POOL_TEMPS[t.key]}`:'';
+ return`<div class="badi-card" onclick="switchTab('badi')">
+  <div class="badi-card-bar" style="width:${Math.min(pct,100)}%;background:${col}"></div>
+  <div class="badi-card-name">${t.icon} ${t.name}</div>
+  <div style="display:flex;align-items:baseline;gap:.18rem">
+   <span class="badi-card-count" style="color:${col}">${fill}</span>
+   <span class="badi-card-max">/ ${max}</span>
+  </div>
+  <div class="badi-card-pct ${lbl.c}">${pct}% · ${lbl.t}</div>
+  ${temp?`<div class="badi-card-temp">🌡 <span>${POOL_TEMPS[t.key]}</span></div>`:''}
+ </div>`;
+}
+
+function formatLettenPace(speedMs){
+ // Rough estimate: add flow_speed as pace penalty upstream
+ const penaltySec=speedMs*45; // empirical: 1 m/s ≈ 45 sec/100m penalty
+ const total=Math.round(penaltySec);
+ const m=Math.floor(total/60);const s=total%60;
+ return`+${m}:${String(s).padStart(2,'0')}`;
+}
+
+// Pool temp cache (from WebSocket data)
+const POOL_TEMPS={};
+let DASH_WEEK_OFFSET=0;
+let WEEK_WX={};
+let LETTEN_DATA={};
+
+// ─── Weather loading ──────────────────────────────────────────
+async function loadWeatherWeek(){
+ try{
+  // Open-Meteo (MeteoSwiss station data, free, no key)
+  const url='https://api.open-meteo.com/v1/forecast?latitude=47.3769&longitude=8.5417'
+   +'&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunshine_duration'
+   +'&current_weather=true&timezone=Europe%2FZurich&forecast_days=14';
+  const r=await fetch(url);const d=await r.json();
+  const dates=d.daily.time;
+  WEEK_WX={};
+  dates.forEach((ds,i)=>{
+   WEEK_WX[ds]={
+    code:d.daily.weathercode[i],
+    max:d.daily.temperature_2m_max[i],
+    min:d.daily.temperature_2m_min[i],
+    rain:d.daily.precipitation_probability_max[i]||0,
+    sun:Math.round((d.daily.sunshine_duration[i]||0)/3600*10)/10,
+    icon:wmoIcon(d.daily.weathercode[i])
+   };
+  });
+  // Current weather strip
+  if(d.current_weather){
+   const c=d.current_weather;
+   const wxEl=el('wx-strip');
+   if(wxEl){const icon=wmoIcon(c.weathercode);
+    wxEl.innerHTML=`<span class="wx-icon">${icon}</span><div><div class="wx-main">${Math.round(c.temperature)}°C</div><div class="wx-sub">${wmoDesc(c.weathercode)} · ${Math.round(c.windspeed)} km/h</div></div><div class="wx-right">Zürich<br>${new Date().toLocaleTimeString('de-CH',{hour:'2-digit',minute:'2-digit'})}</div>`;
+   }
+  }
+  // Re-render week columns with weather
+  const wcEl=el('v-dash')?.querySelector('.wk-combined');
+  if(wcEl)renderDash();
+ }catch(e){console.log('Weather fail:',e.message);}
+ // Limmat data for Letten
+ loadLettenData();
+}
+
+function wmoIcon(code){
+ if(code===0)return'☀️';if(code<=2)return'🌤️';if(code===3)return'☁️';
+ if(code<=48)return'🌫️';if(code<=55)return'🌦️';if(code<=67)return'🌧️';
+ if(code<=77)return'🌨️';if(code<=82)return'🌦️';if(code<=86)return'🌨️';
+ return'⛈️';
+}
+function wmoDesc(code){
+ if(code===0)return'Klar';if(code<=2)return'Leicht bewölkt';if(code===3)return'Bewölkt';
+ if(code<=48)return'Nebel';if(code<=55)return'Nieselregen';if(code<=67)return'Regen';
+ if(code<=77)return'Schnee';if(code<=82)return'Schauer';return'Gewitter';
+}
+
+async function loadLettenData(){
+ try{
+  // BAFU hydro station 2099 = Limmat Letten via existenz.ch proxy
+  const r=await fetch('https://api.existenz.ch/apiv1/hydro/latest?parameters=flow,temperature&station=2099&app=besko-training-hub');
+  if(!r.ok)throw new Error('BAFU '+r.status);
+  const d=await r.json();
+  const payload=d.payload||[];
+  payload.forEach(p=>{
+   if(p.par==='flow'||p.par==='AbflussPneumatik')LETTEN_DATA.flow=parseFloat(p.val);
+   if(p.par==='temperature'||p.par==='Temperatur')LETTEN_DATA.temp=parseFloat(p.val);
+  });
+  // Estimate speed: Limmat at Letten cross-section ≈ 80m²
+  if(LETTEN_DATA.flow)LETTEN_DATA.speed=LETTEN_DATA.flow/80;
+  // Refresh dashboard
+  const card=el('dash-badi-4');if(card)refreshBadiCards();
+ }catch(e){console.log('Letten fail:',e.message);}
+}
+
+function refreshBadiCards(){
+ const c=el('dash-badi-4');if(!c)return;
+ const BADI_4=[
+  {key:'city',uid:'SSD-4',name:'City',icon:'🏊',indoor:true},
+  {key:'letzigraben',uid:'LETZI-1',name:'Letzi',icon:'🌞',indoor:false},
+  {key:'utoquai',uid:'SSD-10',name:'Uto',icon:'🌊',indoor:false},
+  {key:'letten',uid:'flb6939',name:'Letten',icon:'🏞️',indoor:false,isLetten:true}
+ ];
+ c.innerHTML=BADI_4.map(t=>buildBadiCard(t)).join('');
+}
+
 
 function openCalDay(ds){
  const panel=el('cal-panel');
