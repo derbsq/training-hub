@@ -31,7 +31,7 @@ img{max-width:100%;display:block}
 
 /* LAYOUT */
 .wrap{max-width:760px;margin:0 auto;padding:0 var(--pad)}
-header{padding:1.6rem var(--pad) .9rem;max-width:760px;margin:0 auto;border-bottom:2px solid var(--ink)}
+header{padding:2.2rem var(--pad) 1.4rem;max-width:760px;margin:0 auto;border-bottom:2px solid var(--ink)}
 h1{font-size:clamp(1.35rem,5vw,2.2rem);font-weight:800;letter-spacing:-.025em;line-height:1.1}
 .h1m{color:var(--muted);font-weight:600}
 
@@ -411,7 +411,7 @@ main{padding-top:.5rem}
 .wk-wx-rain{width:100%;height:2px;border-radius:1px;background:var(--brd);margin:2px 0 3px;overflow:hidden}
 .wk-wx-rain-fill{height:100%;background:#1a7fa8;border-radius:1px}
 .wk-sess-wrap{display:flex;flex-direction:column;gap:2px;width:100%;margin-top:auto}
-.wk-sess-pill{font-size:.44rem;font-weight:700;border-radius:4px;padding:2px 3px;text-align:center;line-height:1.3;cursor:pointer;transition:all .12s}
+.wk-sess-pill{font-size:.47rem;font-weight:700;border-radius:4px;padding:2px 3px;text-align:center;line-height:1.25;cursor:pointer;transition:all .12s;word-break:break-word}
 .wk-sess-pill:active{opacity:.7}
 .wk-pill-sw{background:var(--swl);color:var(--swim)}
 .wk-pill-z1{background:rgba(58,138,90,.12);color:var(--z1)}
@@ -441,7 +441,7 @@ footer{text-align:center;font-family:var(--mono);font-size:.57rem;color:var(--fa
 </head>
 <body>
 <header class="wrap">
-  <h1><strong>Bésko's</strong> <span class="h1m">Little Training Hub</span></h1><span style="font-family:var(--mono);font-size:.52rem;color:var(--faint);margin-left:.5rem">v6.3</span>
+  <h1><strong>Bésko's</strong> <span class="h1m">Little Training Hub</span></h1>
 </header>
 <nav>
   <div class="tabs">
@@ -1391,7 +1391,7 @@ function renderDash(){
 
  // ── WEEK + WEATHER COMBINED ───────────────────────────────
  const weekStart=new Date(TODAY);
- weekStart.setDate(TODAY.getDate()-((TODAY.getDay()+6)%7)+(DASH_WEEK_OFFSET*7));
+ weekStart.setDate(TODAY.getDate()-((TODAY.getDay()+6)%7)+(window.DASH_WEEK_OFFSET*7));
  const weekEnd=new Date(weekStart);weekEnd.setDate(weekStart.getDate()+6);
  const weekLabel=weekStart.toLocaleDateString('de-DE',{day:'numeric',month:'short'})+' – '+weekEnd.toLocaleDateString('de-DE',{day:'numeric',month:'short',year:'numeric'});
 
@@ -1418,13 +1418,16 @@ function renderDash(){
     const logged=e.type==='swim'?S.isLogged(ds,e.id):S.isLogged(ds,'dry-'+e.id);
     let pcls='',label='';
     if(e.type==='swim'){
+     const sw=SWIM.find(x=>x.id===e.id);
      pcls=logged?'wk-pill-done':(e.id.startsWith('Z')?'wk-pill-z1':'wk-pill-sw');
-     const cb=`openSwimSession('${e.id}','${ds}')`;
-     pills+=`<div class="wk-sess-pill ${pcls}" onclick="${cb}">${logged?'✓ Swim':'Swim'}</div>`;
+     const stitle=sw?(sw.title.length>12?sw.title.slice(0,11)+'…':sw.title):'Swim';
+     pills+=`<div class="wk-sess-pill ${pcls}" onclick="openSwimSession('${e.id}','${ds}')">${logged?'✓ ':''}${stitle}</div>`;
     }else if(e.type==='dry'){
      const sess=DRY[e.id];
+     const dr=DRY[e.id];
      pcls=logged?'wk-pill-done':`wk-pill-d${e.id.toLowerCase()}A`;
-     pills+=`<div class="wk-sess-pill ${pcls}" onclick="gotoDry('${e.id}')">${logged?'✓ Dry':'Dry'}</div>`;
+     const dtitle=dr?(dr.title.length>12?dr.title.slice(0,11)+'…':dr.title):'Dry '+e.id;
+     pills+=`<div class="wk-sess-pill ${pcls}" onclick="dashToggleDry('${e.id}','${ds}',this)">${logged?'✓ ':''}${dtitle}</div>`;
     }
    });
   }
@@ -1438,13 +1441,13 @@ function renderDash(){
   </div>`;
  }
 
- const weekHtml=`<div class="wx" id="wx-strip" style="margin-top:.9rem"><span class="wx-icon">⏳</span><div><div class="wx-main">Wird geladen…</div><div class="wx-sub">Zürich</div></div><div class="wx-right">Jetzt</div></div>
+ const weekHtml=`<div class="wx" id="wx-strip" style="margin-top:.9rem"><span class="wx-icon"></span><div><div class="wx-main">Wetter lädt…</div><div class="wx-sub">Zürich</div></div><div class="wx-right">Jetzt</div></div>
 <div class="sl">DIESE WOCHE</div>
 <div style="background:var(--surf);border:1.5px solid var(--brd);border-radius:var(--r2);padding:.85rem">
  <div class="wk-nav">
-  <button class="wk-nav-btn" onclick="DASH_WEEK_OFFSET--;renderDash()">←</button>
+  <button class="wk-nav-btn" onclick="window.DASH_WEEK_OFFSET--;renderDash()">←</button>
   <span class="wk-nav-title">${weekLabel}</span>
-  <button class="wk-nav-btn" onclick="DASH_WEEK_OFFSET++;renderDash()">→</button>
+  <button class="wk-nav-btn" onclick="window.DASH_WEEK_OFFSET++;renderDash()">→</button>
  </div>
  <div class="wk-combined">${wxCols}</div>
 </div>`;
@@ -1519,7 +1522,7 @@ function formatLettenPace(speedMs){
 
 // Pool temp cache (from WebSocket data)
 const POOL_TEMPS={};
-let DASH_WEEK_OFFSET=0;
+if(typeof DASH_WEEK_OFFSET==='undefined')window.DASH_WEEK_OFFSET=0;
 let WEEK_WX={};
 let LETTEN_DATA={};
 
@@ -1588,6 +1591,24 @@ async function loadLettenData(){
   const card=el('dash-badi-4');if(card)refreshBadiCards();
  }catch(e){console.log('Letten fail:',e.message);}
 }
+
+function dashToggleDry(id,ds,btn){
+ const key='dry-'+id;
+ const logged=S.isLogged(ds,key);
+ if(logged){const l=S.logs();if(l[ds])delete l[ds][key];S.set('hub_logs',l);}
+ else S.savelog(ds,key,'','');
+ // Toggle pill visually
+ const isNowLogged=S.isLogged(ds,key);
+ if(btn){
+  const dry=DRY[id];
+  const dtitle=dry?dry.title.split(' ')[0]:id;
+  const dlbl='Dry '+id;
+  const pcls=isNowLogged?'wk-pill-done':`wk-pill-d${id.toLowerCase()}A`;
+  btn.className=`wk-sess-pill ${pcls}`;
+  btn.innerHTML=`${isNowLogged?'✓ ':''}<span style="opacity:.7;font-size:.38rem">${dlbl}</span><br>${dtitle}`;
+ }
+}
+
 
 function refreshBadiCards(){
  const c=el('dash-badi-4');if(!c)return;
@@ -2067,6 +2088,8 @@ async function badiLoadData(){
 
 // ─── Live cards ───────────────────────────────────────────────
 function badiRenderLiveCards(){
+  // Also refresh dashboard badi cards
+  refreshBadiCards();
   const c=document.getElementById('badi-live-cards');
   if(!c)return;
   c.innerHTML=BADI_TARGETS.map(t=>{
