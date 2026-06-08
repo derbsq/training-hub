@@ -411,7 +411,7 @@ main{padding-top:.5rem}
 .wk-wx-rain{width:100%;height:2px;border-radius:1px;background:var(--brd);margin:2px 0 3px;overflow:hidden}
 .wk-wx-rain-fill{height:100%;background:#1a7fa8;border-radius:1px}
 .wk-sess-wrap{display:flex;flex-direction:row;justify-content:center;gap:2px;width:100%;margin-top:auto}
-.wk-sess-pill{font-size:.5rem;font-weight:700;border-radius:4px;padding:3px 4px;cursor:pointer;transition:all .12s;-webkit-writing-mode:vertical-rl;writing-mode:vertical-rl;transform:rotate(180deg);white-space:nowrap;max-height:78px;overflow:hidden;line-height:1.3}
+.wk-sess-pill{font-size:.5rem;font-weight:700;border-radius:4px;padding:3px 4px;cursor:pointer;transition:all .12s;-webkit-writing-mode:vertical-lr;writing-mode:vertical-lr;white-space:nowrap;max-height:78px;overflow:hidden;line-height:1.3}
 .wk-sess-pill:active{opacity:.7}
 .wk-pill-sw{background:var(--swl);color:var(--swim)}
 .wk-pill-z1{background:rgba(58,138,90,.12);color:var(--z1)}
@@ -1420,13 +1420,13 @@ function renderDash(){
     if(e.type==='swim'){
      const s=SWIM.find(x=>x.id===e.id);
      pcls=logged?'wk-pill-done':(e.id.startsWith('Z')?'wk-pill-z1':'wk-pill-sw');
-     label=s?(s.title.split(' ').slice(0,2).join(' ')):e.id;
+     label=s?(s.title.split(' ').slice(0,3).join(' ')):e.id;
      const cb=e.type==='swim'?`openSwimSession('${e.id}','${ds}')`:`dashDryModal('${e.id}','${ds}')`;
      pills+=`<div class="wk-sess-pill ${pcls}" onclick="${cb}">${logged?'✓ ':''+(label)}</div>`;
     }else if(e.type==='dry'){
      const sess=DRY[e.id];
      pcls=logged?'wk-pill-done':`wk-pill-d${e.id.toLowerCase()}A`;
-     const dryS=DRY[e.id];label=dryS?(dryS.title.split(' ').slice(0,2).join(' ')):('Dry '+e.id);
+     const dryS=DRY[e.id];label=dryS?(dryS.title.split(' ').slice(0,3).join(' ')):('Dry '+e.id);
      pills+=`<div class="wk-sess-pill ${pcls}" onclick="gotoDry('${e.id}')">${logged?'✓ ':''}${label}</div>`;
     }
    });
@@ -1491,7 +1491,7 @@ function buildBadiCard(t){
   const statusC=letten.speed===undefined?'bst-x':letten.speed<0.5?'badi-status-ruhig':letten.speed<1.2?'badi-status-moderat':'badi-status-stark';
   const statusT=letten.speed===undefined?'—':letten.speed<0.5?'🟢 ruhig':letten.speed<1.2?'🟡 moderat':'🔴 stark';
   return`<div class="badi-card" onclick="switchTab('badi')">
-   <div class="badi-card-name">${t.icon} ${t.name}</div>
+   <div class="badi-card-name">${t.name}</div>
    <div class="badi-card-count" style="color:var(--bdi)">${wtemp}</div>
    <div class="badi-letten-flow">Limmat · ${flow} · ${speed}</div>
    <div class="badi-letten-pace">△ ${pace}/100m</div>
@@ -1499,7 +1499,7 @@ function buildBadiCard(t){
   </div>`;
  }
  if(!live)return`<div class="badi-card" onclick="switchTab('badi')">
-  <div class="badi-card-name">${t.icon} ${t.name}</div>
+  <div class="badi-card-name">${t.name}</div>
   <div class="badi-card-count" style="color:var(--faint)">—</div>
   <div class="badi-card-pct bst-x">Verbinde…</div>
  </div>`;
@@ -1512,7 +1512,7 @@ function buildBadiCard(t){
  const temp=POOL_TEMPS[t.key]?`🌡 ${POOL_TEMPS[t.key]}`:'';
  return`<div class="badi-card" onclick="switchTab('badi')">
   <div class="badi-card-bar" style="width:${Math.min(pct,100)}%;background:${col}"></div>
-  <div class="badi-card-name">${t.icon} ${t.name}</div>
+  <div class="badi-card-name">${t.name}</div>
   <div style="display:flex;align-items:baseline;gap:.18rem">
    <span class="badi-card-count" style="color:${col}">${fill}</span>
    <span class="badi-card-max">/ ${max}</span>
@@ -2689,7 +2689,7 @@ function dashToggleDry(id,ds,btn){
  const now=S.isLogged(ds,key);
  if(btn){
   const dr=DRY[id];
-  const dtitle=dr?(dr.title.split(' ').slice(0,2).join(' ')):('Dry '+id);
+  const dtitle=dr?(dr.title.split(' ').slice(0,3).join(' ')):('Dry '+id);
   btn.className='wk-sess-pill '+(now?'wk-pill-done':`wk-pill-d${id.toLowerCase()}A`);
   btn.textContent=(now?'✓ ':'')+dtitle;
  }
@@ -2727,42 +2727,43 @@ function refreshBadiCards(){
 
 // ── UPDATE WEEK WEATHER COLUMNS ─────────────────────────────
 function updateWeekWxCols(){
+ // Update week column icons
  document.querySelectorAll('.wk-col[data-ds]').forEach(col=>{
   const ds=col.dataset.ds;const wx=WEEK_WX[ds];if(!wx)return;
   const icon=col.querySelector('.wk-wx-icon');
   const temp=col.querySelector('.wk-wx-temp');
   const rain=col.querySelector('.wk-wx-rain-fill');
   if(icon)icon.textContent=wx.icon;
-  if(temp)temp.innerHTML=`<span>${Math.round(wx.max)}°</span> ${Math.round(wx.min)}°`;
+  if(temp)temp.innerHTML='<span>'+Math.round(wx.max)+'°</span> '+Math.round(wx.min)+'°';
   if(rain)rain.style.width=wx.rain+'%';
  });
+ // Update weather card strip
  const tw=WEEK_WX[TODAY_STR];
- if(tw){
-  const ic=document.getElementById('wx-icon-el');
-  const mt=document.getElementById('wx-main-text');
-  const sb=document.getElementById('wx-sub-text');
-  const rt=document.getElementById('wx-right-text');
-  if(ic)ic.textContent=tw.icon;
-  if(mt)mt.textContent=Math.round(tw.max)+'°C · '+Math.round(tw.min)+'°C';
-  if(sb)sb.textContent=wmoDesc(tw.code||0);
-  if(rt)rt.innerHTML='Zürich<br>'+new Date().toLocaleTimeString('de-CH',{hour:'2-digit',minute:'2-digit'});
-  const strip=document.getElementById('wx-7day');
-  if(strip){
-   const DOW=['So','Mo','Di','Mi','Do','Fr','Sa'];
-   const days=Object.entries(WEEK_WX).filter(([d])=>d>=TODAY_STR).sort((a,b)=>a[0]<b[0]?-1:1).slice(0,7);
-   strip.innerHTML=days.map(([ds,wx])=>{
-    const d=new Date(ds+'T12:00:00');const isT=ds===TODAY_STR;
-    return`<div style="background:${isT?'var(--swl)':'var(--bg)'};border-radius:6px;padding:3px 2px;text-align:center;border:1px solid ${isT?'rgba(26,74,46,.25)':'var(--brd)'}">
-     <div style="font-family:var(--mono);font-size:.44rem;color:var(--faint);text-transform:uppercase">${isT?'Heute':DOW[d.getDay()]}</div>
-     <div style="font-size:.85rem">${wx.icon||'–'}</div>
-     <div style="font-family:var(--mono);font-size:.49rem;color:var(--dA);font-weight:700">${Math.round(wx.max)}°</div>
-     <div style="font-family:var(--mono);font-size:.44rem;color:var(--faint)">${Math.round(wx.min)}°</div>
-     <div style="height:3px;border-radius:2px;background:#1a7fa8;margin:2px 0;opacity:${((wx.rain||0)/100).toFixed(2)}"></div>
-     <div style="height:3px;border-radius:2px;background:#c49a00;opacity:${Math.min(1,(wx.sun||0)/8).toFixed(2)}"></div>
-    </div>`;
-   }).join('');
-  }
- }
+ if(!tw)return;
+ // Use querySelector as fallback since IDs may not exist after re-render
+ const setEl=(id,val,html)=>{const e=document.getElementById(id);if(e){if(html)e.innerHTML=val;else e.textContent=val;}};
+ setEl('wx-icon-el',tw.icon,false);
+ setEl('wx-main-text',Math.round(tw.max)+'°C',false);
+ setEl('wx-sub-text',wmoDesc(tw.code||0)+' · '+Math.round(tw.min)+'–'+Math.round(tw.max)+'°',false);
+ setEl('wx-right-text','Zürich<br>'+new Date().toLocaleTimeString('de-CH',{hour:'2-digit',minute:'2-digit'}),true);
+ // Build 7-day strip
+ const strip=document.getElementById('wx-7day');
+ if(!strip)return;
+ const DOW=['So','Mo','Di','Mi','Do','Fr','Sa'];
+ const days=Object.entries(WEEK_WX).filter(([d])=>d>=TODAY_STR).sort((a,b)=>a[0]<b[0]?-1:1).slice(0,7);
+ strip.innerHTML=days.map(([ds,wx])=>{
+  const d=new Date(ds+'T12:00:00');const isT=ds===TODAY_STR;
+  const rainPct=Math.round(wx.rain||0);
+  const sunOp=Math.min(1,(wx.sun||0)/8).toFixed(2);
+  return '<div style="background:'+(isT?'var(--swl)':'var(--bg)')+';border-radius:6px;padding:4px 2px;text-align:center;border:1px solid '+(isT?'rgba(26,74,46,.25)':'var(--brd)')+'">'+
+   '<div style="font-family:var(--mono);font-size:.44rem;color:var(--faint);text-transform:uppercase">'+(isT?'Heute':DOW[d.getDay()])+'</div>'+
+   '<div style="font-size:.88rem">'+(wx.icon||'–')+'</div>'+
+   '<div style="font-family:var(--mono);font-size:.5rem;color:var(--dA);font-weight:700">'+Math.round(wx.max)+'°</div>'+
+   '<div style="font-family:var(--mono);font-size:.44rem;color:var(--faint)">'+Math.round(wx.min)+'°</div>'+
+   '<div style="height:3px;border-radius:2px;background:#1a7fa8;margin:2px 0;opacity:'+(rainPct/100).toFixed(2)+'"></div>'+
+   '<div style="height:3px;border-radius:2px;background:#c49a00;opacity:'+sunOp+'"></div>'+
+  '</div>';
+ }).join('');
 }
 </script>
 </body>
