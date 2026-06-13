@@ -75,6 +75,7 @@ main{padding-top:.5rem}
 .cal-day.today .cal-dn-w{background:var(--dA);color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center}
 .cal-dn{font-family:var(--mono);font-size:.63rem;color:var(--faint)}
 .cal-day.has-s .cal-dn{color:var(--ink);font-weight:700}
+.cal-day.today .cal-dn{color:#fff}
 .cal-dn-w{display:flex;align-items:center;justify-content:center;width:20px;height:20px}
 .cal-dots{display:flex;gap:2px;margin-top:2px;flex-wrap:wrap;justify-content:center;max-width:30px}
 .cal-dot{width:5px;height:5px;border-radius:50%}
@@ -91,6 +92,8 @@ main{padding-top:.5rem}
 .cal-ev-item{display:flex;align-items:center;gap:.55rem;padding:.38rem 0;border-bottom:1px solid var(--brd)}
 .cal-ev-item:last-child{border-bottom:none}
 .cal-ev-badge{font-family:var(--mono);font-size:.57rem;padding:.15rem .42rem;border-radius:4px;flex-shrink:0;white-space:nowrap}
+.cal-ev-badge.sw{background:rgba(26,69,96,.12);color:var(--bdi)}
+.cal-ev-badge.dry{background:rgba(45,122,58,.1);color:var(--ok)}
 .cal-ev-text{flex:1;min-width:0;font-size:.8rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .cal-ev-sub{font-family:var(--mono);font-size:.6rem;color:var(--muted)}
 .cal-ev-goto{font-family:var(--mono);font-size:.57rem;color:var(--swim);border-bottom:1px dotted;flex-shrink:0}
@@ -1647,10 +1650,10 @@ function openCalDay(ds){
  ev.forEach(e=>{
   if(e.type==='swim'){
    const s=SWIM.find(x=>x.id===e.id);if(!s)return;
-   html+=`<div class="cal-ev-item"><span class="cal-ev-badge bsw">${s.badge}</span><div><div class="cal-ev-text">${s.title}</div><div class="cal-ev-sub">${s.km} km</div></div><span class="cal-ev-goto" onclick="openSwimSession('${s.id}','${ds}')">→ Öffnen</span></div>`;
+   html+=`<div class="cal-ev-item"><span class="cal-ev-badge sw">Swim</span><div style="cursor:pointer;flex:1;min-width:0" onclick="openSwimSession('${s.id}','${ds}')"><div class="cal-ev-text">${s.title}</div><div class="cal-ev-sub">${s.km} km</div></div></div>`;
   }else if(e.type==='dry'){
    const sess=DRY[e.id];if(!sess)return;
-   html+=`<div class="cal-ev-item"><span class="cal-ev-badge bd${e.id.toLowerCase()}A">${e.id === 'A' ? 'DRYLAND A' : e.id === 'B' ? 'DRYLAND B' : 'DRYLAND C'}</span><div><div class="cal-ev-text">${sess.title}</div><div class="cal-ev-sub">${sess.dur}</div></div><span class="cal-ev-goto" onclick="gotoDry('${e.id}')">→ Öffnen</span></div>`;
+   html+=`<div class="cal-ev-item"><span class="cal-ev-badge dry">Dry</span><div style="cursor:pointer;flex:1;min-width:0" onclick="dashDryModal('${e.id}','${ds}')"><div class="cal-ev-text">${sess.title}</div><div class="cal-ev-sub">${sess.dur}</div></div></div>`;
   }
  });
  panel.innerHTML=html;
