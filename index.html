@@ -400,21 +400,21 @@ main{padding-top:.5rem}
 .wk-nav-btn:active{background:var(--surf2)}
 .wk-combined{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
 .wk-col{display:flex;flex-direction:column;align-items:center;background:var(--surf);border-radius:8px;padding:.35rem .18rem .45rem;min-height:90px;cursor:default}
-.wk-col.wk-today{background:var(--swl);outline:1.5px solid rgba(26,74,46,.25)}
+.wk-col.wk-today{background:rgba(139,58,26,.06);outline:1.5px solid rgba(139,58,26,.2)}
 .wk-col.wk-past{opacity:.6}
 .wk-col-dow{font-family:var(--mono);font-size:.46rem;letter-spacing:.04em;text-transform:uppercase;color:var(--faint);margin-bottom:1px}
 .wk-col-d{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:.65rem;font-weight:700;color:var(--muted);margin-bottom:2px}
-.wk-col.wk-today .wk-col-d{background:var(--swim);color:#fff}
-.wk-wx-icon{font-size:.92rem;line-height:1;margin-bottom:1px}
-.wk-wx-temp{font-family:var(--mono);font-size:.52rem;color:var(--muted);white-space:nowrap}
+.wk-col.wk-today .wk-col-d{background:var(--dA);color:#fff}
+.wk-wx-icon{font-size:.92rem;line-height:1;margin-bottom:1px;min-height:.92rem}
+.wk-wx-temp{font-family:var(--mono);font-size:.52rem;color:var(--muted);white-space:nowrap;min-height:.65rem}
 .wk-wx-temp span{color:var(--dA)}
 .wk-wx-rain{width:100%;height:2px;border-radius:1px;background:var(--brd);margin:2px 0 3px;overflow:hidden}
 .wk-wx-rain-fill{height:100%;background:#1a7fa8;border-radius:1px}
-.wk-sess-wrap{display:flex;flex-direction:row;justify-content:center;gap:2px;width:100%;margin-top:auto}
-.wk-sess-pill{font-size:.5rem;font-weight:700;border-radius:4px;padding:3px 4px;cursor:pointer;transition:all .12s;-webkit-writing-mode:vertical-lr;writing-mode:vertical-lr;white-space:nowrap;max-height:78px;overflow:hidden;line-height:1.3}
+.wk-sess-wrap{display:flex;flex-direction:row;justify-content:center;gap:2px;width:100%;margin-top:4px;align-items:stretch}
+.wk-sess-pill{font-size:.5rem;font-weight:700;border-radius:4px;padding:3px 4px;cursor:pointer;transition:all .12s;-webkit-writing-mode:vertical-lr;writing-mode:vertical-lr;white-space:nowrap;overflow:hidden;line-height:1.3}
 .wk-sess-pill:active{opacity:.7}
-.wk-pill-sw{background:var(--swl);color:var(--swim)}
-.wk-pill-z1{background:rgba(58,138,90,.12);color:var(--z1)}
+.wk-pill-sw{background:rgba(26,69,96,.12);color:var(--bdi)}
+.wk-pill-dry{background:rgba(45,122,58,.1);color:var(--ok)}
 .wk-pill-dA{background:var(--dAl);color:var(--dA)}
 .wk-pill-dB{background:var(--dBl);color:var(--dB)}
 .wk-pill-dC{background:var(--dCl);color:var(--dC)}
@@ -1420,22 +1420,21 @@ function renderDash(){
     let pcls='',label='';
     if(e.type==='swim'){
      const s=SWIM.find(x=>x.id===e.id);
-     pcls=logged?'wk-pill-done':(e.id.startsWith('Z')?'wk-pill-z1':'wk-pill-sw');
-     label=s?(s.title.split(' ').slice(0,3).join(' ')):e.id;
-     const cb=e.type==='swim'?`openSwimSession('${e.id}','${ds}')`:`dashDryModal('${e.id}','${ds}')`;
-     pills+=`<div class="wk-sess-pill ${pcls}" onclick="${cb}">${logged?'✓ ':''+(label)}</div>`;
+     pcls=logged?'wk-pill-done':'wk-pill-sw';
+     label=s?s.title:e.id;
+     pills+=`<div class="wk-sess-pill ${pcls}" onclick="openSwimSession('${e.id}','${ds}')">${logged?'✓ ':''}${label}</div>`;
     }else if(e.type==='dry'){
      const sess=DRY[e.id];
-     pcls=logged?'wk-pill-done':`wk-pill-d${e.id.toLowerCase()}A`;
-     const dryS=DRY[e.id];label=dryS?(dryS.title.split(' ').slice(0,3).join(' ')):('Dry '+e.id);
-     pills+=`<div class="wk-sess-pill ${pcls}" onclick="gotoDry('${e.id}')">${logged?'✓ ':''}${label}</div>`;
+     pcls=logged?'wk-pill-done':'wk-pill-dry';
+     label=sess?sess.title:('Dry '+e.id);
+     pills+=`<div class="wk-sess-pill ${pcls}" onclick="dashDryModal('${e.id}','${ds}')">${logged?'✓ ':''}${label}</div>`;
     }
    });
   }
   wxCols+=`<div class="wk-col${isToday?' wk-today':''}${isPast?' wk-past':''}" data-ds="${ds}">
    <div class="wk-col-dow">${wd}</div>
    <div class="wk-col-d">${dm}</div>
-   ${wxIcon?`<div class="wk-wx-icon">${wxIcon}</div>`:'<div class="wk-wx-icon" style="height:.92rem"></div>'}
+   <div class="wk-wx-icon">${wxIcon}</div>
    <div class="wk-wx-temp"><span>${wxMax}</span>${wxMin?' '+wxMin:''}</div>
    <div class="wk-wx-rain"><div class="wk-wx-rain-fill" style="width:${wxRain}%"></div></div>
    <div class="wk-sess-wrap">${pills}</div>
@@ -1479,6 +1478,7 @@ function renderDash(){
  v.innerHTML=calHtml+weekHtml+badiCardsHtml;
  loadWeatherWeek();
  refreshBadiCards();
+ setTimeout(normalizeWeekPills,0);
 }
 
 function buildBadiCard(t){
@@ -2698,6 +2698,13 @@ function dashDryModal(id,ds){
 }
 
 // ── DASH DRY TOGGLE ─────────────────────────────────────────
+function normalizeWeekPills(){
+ const pills=document.querySelectorAll('.wk-sess-pill');
+ let max=0;
+ pills.forEach(p=>{max=Math.max(max,p.scrollHeight);});
+ pills.forEach(p=>{p.style.height=max+'px';});
+}
+
 function dashToggleDry(id,ds,btn){
  const key='dry-'+id;
  const was=S.isLogged(ds,key);
@@ -2706,8 +2713,8 @@ function dashToggleDry(id,ds,btn){
  const now=S.isLogged(ds,key);
  if(btn){
   const dr=DRY[id];
-  const dtitle=dr?(dr.title.split(' ').slice(0,3).join(' ')):('Dry '+id);
-  btn.className='wk-sess-pill '+(now?'wk-pill-done':`wk-pill-d${id.toLowerCase()}A`);
+  const dtitle=dr?dr.title:('Dry '+id);
+  btn.className='wk-sess-pill '+(now?'wk-pill-done':'wk-pill-dry');
   btn.textContent=(now?'✓ ':'')+dtitle;
  }
 }
