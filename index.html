@@ -72,7 +72,7 @@ main{padding-top:.5rem}
 .cal-day{display:flex;flex-direction:column;align-items:center;padding:3px 1px 5px;border-radius:7px;cursor:default;min-height:40px;transition:background .1s;position:relative}
 .cal-day.has-s{cursor:pointer}
 .cal-day.has-s:active{background:var(--surf2)}
-.cal-day.today .cal-dn-w{background:var(--swim);color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center}
+.cal-day.today .cal-dn-w{background:var(--dA);color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center}
 .cal-dn{font-family:var(--mono);font-size:.63rem;color:var(--faint)}
 .cal-day.has-s .cal-dn{color:var(--ink);font-weight:700}
 .cal-dn-w{display:flex;align-items:center;justify-content:center;width:20px;height:20px}
@@ -1364,6 +1364,7 @@ function buildDryCard(sess,ds,id){
 // ─── DASHBOARD ───────────────────────────────────────────────
 let selCalDate=null;
 function renderDash(){
+ selCalDate=null;
  const v=el('v-dash');
  if(!v)return;
  const today=TODAY_STR;
@@ -1431,7 +1432,7 @@ function renderDash(){
     }
    });
   }
-  wxCols+=`<div class="wk-col${isToday?' wk-today':''}${isPast?' wk-past':''}">
+  wxCols+=`<div class="wk-col${isToday?' wk-today':''}${isPast?' wk-past':''}" data-ds="${ds}">
    <div class="wk-col-dow">${wd}</div>
    <div class="wk-col-d">${dm}</div>
    ${wxIcon?`<div class="wk-wx-icon">${wxIcon}</div>`:'<div class="wk-wx-icon" style="height:.92rem"></div>'}
@@ -1570,9 +1571,9 @@ async function loadWeatherWeek(){
     wxEl.innerHTML=`<span class="wx-icon">${icon}</span><div><div class="wx-main">${Math.round(c.temperature)}°C</div><div class="wx-sub">${wmoDesc(c.weathercode)} · ${Math.round(c.windspeed)} km/h</div></div><div class="wx-right">Zürich<br>${new Date().toLocaleTimeString('de-CH',{hour:'2-digit',minute:'2-digit'})}</div>`;
    }
   }
-  // Re-render week columns with weather
+  // Update week columns with weather (targeted, preserves open calendar panel)
   const wcEl=el('v-dash')?.querySelector('.wk-combined');
-  if(wcEl)renderDash();
+  if(wcEl)updateWeekWxCols();
  }catch(e){console.log('Weather fail:',e.message);}
  // Limmat data for Letten
  loadLettenData();
