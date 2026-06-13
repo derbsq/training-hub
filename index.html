@@ -1609,6 +1609,19 @@ async function loadLettenData(){
  }catch(e){console.log('Letten fail:',e.message);}
 }
 
+async function loadPoolTemps(){
+ try{
+  const r=await fetch('https://raw.githubusercontent.com/derbsq/Badi-Tracker/main/data/temperatures.json?nc='+Date.now());
+  if(!r.ok)return;
+  const d=await r.json();
+  if(d.city?.temp!=null)POOL_TEMPS.city=d.city.temp+'°C';
+  if(d.letzigraben?.temp!=null)POOL_TEMPS.letzigraben=d.letzigraben.temp+'°C';
+  if(d.utoquai?.temp!=null)POOL_TEMPS.utoquai=d.utoquai.temp+'°C';
+  if(d.letten?.water_temp!=null&&!LETTEN_DATA.temp)LETTEN_DATA.temp=d.letten.water_temp;
+  refreshBadiCards();
+ }catch(e){console.log('Pool temps fail:',e.message);}
+}
+
 function refreshBadiCards(){
  const c=el('dash-badi-4');if(!c)return;
  const BADI_4=[
@@ -2031,6 +2044,7 @@ function badiConnectWS(){
         if(e)BADI_STATE.live[t.key]=e;
       });
       badiRenderLiveCards();
+      refreshBadiCards();
       if(statusEl){
         const now=new Date();
         statusEl.textContent='🟢 Live · '+now.toLocaleTimeString('de-CH',{hour:'2-digit',minute:'2-digit'});
@@ -2636,6 +2650,8 @@ document.addEventListener('DOMContentLoaded',()=>{
  document.head.appendChild(s);
  // Init dash
  renderDash();
+ badiConnectWS();
+ loadPoolTemps();
  // Pre-load CSS
  const c=S.css();
  setTimeout(()=>{
