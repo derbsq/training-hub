@@ -1914,7 +1914,7 @@ const SCHOOL_HOLS = [['2026-04-20','2026-05-02'],['2026-07-13','2026-08-23'],
 let BADI_STATE = {
   live:{}, history:[], bahnen:null, vario:null,
   selBad: localStorage.getItem('badi:bad')||'city',
-  selView: localStorage.getItem('badi:view')||'heatmap',
+  selView: (['heatmap','tagesverlauf','wochentag'].includes(localStorage.getItem('badi:view')))?localStorage.getItem('badi:view'):'heatmap',
   selMonth: localStorage.getItem('badi:month')||'all',
   oracleDay: 0,
   ws: null, wsTimer: null,
