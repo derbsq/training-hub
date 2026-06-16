@@ -2702,11 +2702,11 @@ function dashDryModal(id,ds){
  const logged=S.isLogged(ds,'dry-'+id);
  let mo=document.getElementById('dash-dry-modal');
  if(!mo){mo=document.createElement('div');mo.id='dash-dry-modal';
-  mo.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;overflow-y:auto;padding:1rem';
+  mo.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;overflow-y:auto;display:flex;padding:1rem';
   document.body.appendChild(mo);}
  const colMap={A:'var(--dA)',B:'var(--dB)',C:'var(--dC)'};
  const col=colMap[id]||'var(--muted)';
- mo.innerHTML=`<div style="max-width:720px;margin:0 auto;background:var(--bg);border-radius:var(--r2);padding:1.2rem;min-height:50vh">
+ mo.innerHTML=`<div style="max-width:720px;width:100%;margin:auto;background:var(--bg);border-radius:var(--r2);padding:1.2rem">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
    <span style="font-family:var(--mono);font-size:.62rem;font-weight:700;color:${col};border:1.5px solid ${col};padding:.15rem .5rem;border-radius:999px">DRYLAND ${id}</span>
    <button onclick="document.getElementById('dash-dry-modal').remove()" style="font-family:var(--mono);font-size:.7rem;color:var(--muted);padding:.3rem .7rem;border:1.5px solid var(--brd);border-radius:999px;cursor:pointer">✕ Schließen</button>
