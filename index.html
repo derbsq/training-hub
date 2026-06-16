@@ -1566,8 +1566,11 @@ async function loadLettenData(){
   });
   // Estimate speed: Limmat at Letten cross-section ≈ 80m²
   if(LETTEN_DATA.flow)LETTEN_DATA.speed=LETTEN_DATA.flow/80;
-  // Refresh dashboard
+  // Sync live Letten temp into POOL_TEMPS so Badi tab shows same value as Dashboard
+  if(LETTEN_DATA.temp!=null)POOL_TEMPS.letten=LETTEN_DATA.temp.toFixed(1)+'°C';
+  // Refresh dashboard and Badi live cards if visible
   const card=el('dash-badi-4');if(card)refreshBadiCards();
+  if(el('badi-live-cards'))badiRenderLiveCards();
  }catch(e){console.log('Letten fail:',e.message);}
 }
 
@@ -1579,7 +1582,11 @@ async function loadPoolTemps(){
   if(d.city?.temp!=null)POOL_TEMPS.city=d.city.temp+'°C';
   if(d.letzigraben?.temp!=null)POOL_TEMPS.letzigraben=d.letzigraben.temp+'°C';
   if(d.utoquai?.temp!=null)POOL_TEMPS.utoquai=d.utoquai.temp+'°C';
-  if(d.letten?.water_temp!=null){POOL_TEMPS.letten=d.letten.water_temp+'°C';if(!LETTEN_DATA.temp)LETTEN_DATA.temp=d.letten.water_temp;}
+  if(d.heuried?.temp!=null)POOL_TEMPS.heuried=d.heuried.temp+'°C';
+  if(d.letten?.water_temp!=null){
+    if(!LETTEN_DATA.temp)LETTEN_DATA.temp=d.letten.water_temp;
+    if(!POOL_TEMPS.letten)POOL_TEMPS.letten=d.letten.water_temp.toFixed(1)+'°C';
+  }
   refreshBadiCards();
  }catch(e){console.log('Pool temps fail:',e.message);}
 }
@@ -1966,11 +1973,11 @@ const BADI_WS_URL = 'wss://badi-public.crowdmonitor.ch:9591/api';
 const BADI_CSV_URL = 'https://raw.githubusercontent.com/derbsq/Badi-Tracker/main/data/auslastung.csv';
 const BADI_BASE = 'https://raw.githubusercontent.com/derbsq/Badi-Tracker/main/data/';
 const BADI_TARGETS = [
-  {key:'city',     uid:'SSD-4',   label:'Hallenbad City',     short:'City',   match:['city'],            indoor:true,  lanes:true,  temp:'🌡 28°C',        src:'https://www.hallenbad-city.ch'},
-  {key:'letzigraben',uid:'LETZI-1',label:'Freibad Letzigraben',short:'Letzi', match:['letzigraben'],     indoor:false, lanes:false, temp:'🌡 saisonal',    src:'https://www.zueriwiki.ch/wiki/Freibad_Letzigraben'},
-  {key:'utoquai',  uid:'SSD-10',  label:'Seebad Utoquai',     short:'Uto',    match:['utoquai'],         indoor:false, lanes:false, temp:'🌡 Seewasser',   src:'https://www.seebad-utoquai.ch'},
-  {key:'letten',   uid:'flb6939', label:'Ob. Letten',         short:'Letten', match:['letten','flb6939'],indoor:false, lanes:false, temp:'🌡 Limmat',      src:'https://www.oberletten.ch'},
-  {key:'heuried',  uid:'fb012',   label:'Freibad Heuried',    short:'Heuried', match:['heuried'],         indoor:false, lanes:false, temp:'🌡 saisonal',   src:null}
+  {key:'city',     uid:'SSD-4',   label:'Hallenbad City',     short:'City',   match:['city'],            indoor:true,  lanes:true,  temp:'28°C',           src:'https://www.hallenbad-city.ch'},
+  {key:'letzigraben',uid:'LETZI-1',label:'Freibad Letzigraben',short:'Letzi', match:['letzigraben'],     indoor:false, lanes:false, temp:'saisonal',       src:'https://www.zueriwiki.ch/wiki/Freibad_Letzigraben'},
+  {key:'utoquai',  uid:'SSD-10',  label:'Seebad Utoquai',     short:'Uto',    match:['utoquai'],         indoor:false, lanes:false, temp:'Seewasser',      src:'https://www.seebad-utoquai.ch'},
+  {key:'letten',   uid:'flb6939', label:'Ob. Letten',         short:'Letten', match:['letten','flb6939'],indoor:false, lanes:false, temp:'Limmat',         src:'https://www.oberletten.ch'},
+  {key:'heuried',  uid:'fb012',   label:'Freibad Heuried',    short:'Heuried', match:['heuried'],         indoor:false, lanes:false, temp:'20–26°C',        src:null}
 ];
 const HOLIDAYS_2026 = {
   '2026-01-01':'Neujahr','2026-01-02':'Berchtoldstag','2026-04-03':'Karfreitag',
@@ -2091,7 +2098,7 @@ function badiRenderLiveCards(){
     const tempVal=liveTemp||t.temp;
     const tempHtml=liveTemp&&t.src
       ?`<a href="${t.src}" target="_blank" rel="noopener" style="font-family:var(--mono);font-size:.58rem;color:var(--faint);text-decoration:none;margin-top:4px;display:block">🌡 ${liveTemp}</a>`
-      :`<div style="font-family:var(--mono);font-size:.58rem;color:var(--faint);margin-top:4px">${tempVal}</div>`;
+      :`<div style="font-family:var(--mono);font-size:.58rem;color:var(--faint);margin-top:4px">🌡 ${tempVal}</div>`;
     if(!e)return`<div class="badi-cell"><div class="badi-cell-status-bar" style="width:0%;background:var(--faint)"></div><div class="badi-cell-name">${t.short||t.label}</div><div style="font-size:2rem;font-weight:600;color:var(--muted);line-height:1.1">—</div>${tempHtml}</div>`;
     const fill=parseInt(e.currentfill)||0;
     const max=parseInt(e.maxspace)||100;
@@ -2429,7 +2436,7 @@ function renderBadi(){
   const selM=BADI_STATE.selMonth||curM;
   v.innerHTML=`
 <div class="sl first">AKTUELLE BELEGUNG <span id="badi-ws-status" style="color:var(--faint);font-size:.55rem;margin-left:.5rem">Verbinde…</span></div>
-<div class="badi-stat-grid" id="badi-live-cards">${BADI_TARGETS.map(t=>`<div class="badi-cell"><div class="badi-cell-status-bar" style="width:0%;background:var(--faint)"></div><div class="badi-cell-name">${t.short||t.label}</div><div style="font-size:2rem;font-weight:600;color:var(--muted);line-height:1.1">—</div><div style="font-family:var(--mono);font-size:.58rem;color:var(--faint);margin-top:4px">${t.temp}</div></div>`).join('')}</div>
+<div class="badi-stat-grid" id="badi-live-cards">${BADI_TARGETS.map(t=>`<div class="badi-cell"><div class="badi-cell-status-bar" style="width:0%;background:var(--faint)"></div><div class="badi-cell-name">${t.short||t.label}</div><div style="font-size:2rem;font-weight:600;color:var(--muted);line-height:1.1">—</div><div style="font-family:var(--mono);font-size:.58rem;color:var(--faint);margin-top:4px">🌡 ${t.temp}</div></div>`).join('')}</div>
 
 <div class="sl">VERLAUF</div>
 <div class="hm-wrap">
