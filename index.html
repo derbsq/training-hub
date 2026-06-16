@@ -37,7 +37,7 @@ h1{font-size:clamp(1.35rem,5vw,2.2rem);font-weight:800;letter-spacing:-.025em;li
 
 /* NAV TABS */
 nav{position:sticky;top:0;z-index:50;background:rgba(244,241,235,.97);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1.5px solid var(--brd);text-align:center;overflow-x:auto}
-.tabs{display:inline-flex;gap:.2rem;padding:.45rem .65rem;scrollbar-width:none}
+.tabs{display:inline-flex;gap:.2rem;padding:.6rem .85rem;scrollbar-width:none}
 .tabs::-webkit-scrollbar{display:none}
 .tab{flex:0 0 auto;font-family:var(--mono);font-size:.63rem;letter-spacing:.05em;color:var(--muted);border:1.5px solid transparent;border-radius:999px;padding:.38rem .8rem;white-space:nowrap;transition:all .12s}
 .tab.on{color:var(--bg);font-weight:700}
@@ -299,10 +299,10 @@ main{padding-top:.5rem}
 .sav.show{display:block}
 
 /* SUBTABS */
-.subtabs{display:flex;gap:.2rem;overflow-x:auto;scrollbar-width:none;margin-bottom:1.2rem}
+.subtabs{display:flex;gap:.3rem;overflow-x:auto;scrollbar-width:none;margin-bottom:1.4rem;padding:.55rem 0;justify-content:center;flex-wrap:wrap}
 .subtabs::-webkit-scrollbar{display:none}
 .stab{flex:0 0 auto;font-family:var(--mono);font-size:.64rem;letter-spacing:.04em;color:var(--muted);border:1.5px solid var(--brd);border-radius:999px;padding:.35rem .75rem;white-space:nowrap;transition:all .12s}
-.stab.on{border-color:transparent;color:var(--bg);font-weight:700}
+.stab.on{border-color:transparent;color:var(--bg);font-weight:700;background:var(--muted)}
 .stab.sa.on{background:var(--dA)}.stab.sb.on{background:var(--dB)}.stab.sc.on{background:var(--dC)}
 .stab.sm.on{background:var(--mob)}.stab.sbw.on{background:var(--bth)}
 .subview{display:none}.subview.on{display:block}
@@ -328,6 +328,9 @@ main{padding-top:.5rem}
 .mth-ex-why{font-size:.79rem;color:var(--ink);margin-bottom:.3rem;line-height:1.55}
 .mth-ex-mech{font-size:.74rem;color:var(--muted);font-style:italic;padding-left:.78rem;border-left:2px solid var(--brd);line-height:1.5}
 .mth-ex-yt{display:inline-flex;align-items:center;gap:.28rem;font-family:var(--mono);font-size:.59rem;color:#c00;padding:.16rem .44rem;border:1px solid rgba(204,0,0,.3);border-radius:4px;margin-top:.3rem}
+.mth-group-card{margin-bottom:.5rem;border-radius:var(--r2);border:1px solid var(--brd);overflow:hidden}
+.mth-group-card>summary::-webkit-details-marker{display:none}
+.mth-group-card>summary::after{content:none}
 
 
 /* HEATMAP */
@@ -1681,7 +1684,8 @@ function renderSwim(){
   'WOCHE 5':['W5S1','W5S2']
  };
 
- let sessHtml='<div class="sl">SESSIONS</div>';
+ const sessMonth=new Date().toLocaleDateString('de-DE',{month:'long',year:'numeric'}).toUpperCase();
+ let sessHtml=`<div class="sl first">SESSIONS · ${sessMonth}</div>`;
  Object.entries(weeks).forEach(([wn,ids])=>{
   const sessions=ids.map(id=>SWIM.find(s=>s.id===id)).filter(Boolean);
   sessHtml+=`<div class="wk-swim-group"><div class="wk-swim-label">${wn}</div><div class="wk-swim-row">`;
@@ -1728,7 +1732,7 @@ function renderSwim(){
   <button class="stab" onclick="showSwimSub('sw-gen',this)">Generator</button>
   <button class="stab" onclick="showSwimSub('sw-pdf',this)">PDF Import</button>
  </div>
- <div class="subview on" id="sw-sessions">${pacingHtml}${sessHtml}</div>
+ <div class="subview on" id="sw-sessions">${sessHtml}${pacingHtml}</div>
  <div class="subview" id="sw-css">${cssCalcHtml}</div>
  <div class="subview" id="sw-gen">${genHtml}</div>
  <div class="subview" id="sw-pdf">${pdfHtml}</div>`;
@@ -1950,11 +1954,11 @@ const BADI_WS_URL = 'wss://badi-public.crowdmonitor.ch:9591/api';
 const BADI_CSV_URL = 'https://raw.githubusercontent.com/derbsq/Badi-Tracker/main/data/auslastung.csv';
 const BADI_BASE = 'https://raw.githubusercontent.com/derbsq/Badi-Tracker/main/data/';
 const BADI_TARGETS = [
-  {key:'city',     uid:'SSD-4',   label:'Hallenbad City',     match:['city'],        indoor:true,  lanes:true,  temp:'🌡 28°C · 32°C · 29°C'},
-  {key:'letzigraben',uid:'LETZI-1',label:'Freibad Letzigraben',match:['letzigraben'],indoor:false, lanes:false, temp:'🌡 saisonal ~20–25°C'},
-  {key:'utoquai',  uid:'SSD-10',  label:'Seebad Utoquai',     match:['utoquai'],     indoor:false, lanes:false, temp:'🌡 Seewasser saisonal'},
-  {key:'letten',   uid:'flb6939', label:'Ob. Letten',         match:['letten','flb6939'],indoor:false,lanes:false,temp:'🌡 Limmat saisonal'},
-  {key:'heuried',  uid:'fb012',   label:'Freibad Heuried',    match:['heuried'],     indoor:false, lanes:false, temp:'🌡 saisonal'}
+  {key:'city',     uid:'SSD-4',   label:'Hallenbad City',     short:'City',   match:['city'],            indoor:true,  lanes:true,  temp:'🌡 28°C · 32°C · 29°C'},
+  {key:'letzigraben',uid:'LETZI-1',label:'Freibad Letzigraben',short:'Letzi', match:['letzigraben'],     indoor:false, lanes:false, temp:'🌡 saisonal ~20–25°C'},
+  {key:'utoquai',  uid:'SSD-10',  label:'Seebad Utoquai',     short:'Uto',    match:['utoquai'],         indoor:false, lanes:false, temp:'🌡 Seewasser saisonal'},
+  {key:'letten',   uid:'flb6939', label:'Ob. Letten',         short:'Letten', match:['letten','flb6939'],indoor:false, lanes:false, temp:'🌡 Limmat saisonal'},
+  {key:'heuried',  uid:'fb012',   label:'Freibad Heuried',    short:'Hüried', match:['heuried'],         indoor:false, lanes:false, temp:'🌡 saisonal'}
 ];
 const HOLIDAYS_2026 = {
   '2026-01-01':'Neujahr','2026-01-02':'Berchtoldstag','2026-04-03':'Karfreitag',
@@ -1968,7 +1972,7 @@ const SCHOOL_HOLS = [['2026-04-20','2026-05-02'],['2026-07-13','2026-08-23'],
 let BADI_STATE = {
   live:{}, history:[], bahnen:null, vario:null,
   selBad: localStorage.getItem('badi:bad')||'city',
-  selView: (['heatmap','tagesverlauf','wochentag'].includes(localStorage.getItem('badi:view')))?localStorage.getItem('badi:view'):'heatmap',
+  selView: (['heatmap','tagesverlauf','wochentag'].includes(localStorage.getItem('badi:view')))?localStorage.getItem('badi:view'):'tagesverlauf',
   selMonth: localStorage.getItem('badi:month')||'all',
   oracleDay: 0,
   ws: null, wsTimer: null,
@@ -2067,19 +2071,19 @@ function badiRenderLiveCards(){
   if(!c)return;
   c.innerHTML=BADI_TARGETS.map(t=>{
     const e=BADI_STATE.live[t.key];
-    if(!e)return`<div class="badi-cell"><div class="badi-cell-status-bar" style="width:0%;background:#aaa"></div><div class="badi-cell-name">${t.label}</div><div class="badi-pct" style="color:#aaa">—</div><div class="badi-status bst-x">Keine Daten</div></div>`;
+    if(!e)return`<div class="badi-cell"><div class="badi-cell-status-bar" style="width:0%;background:var(--faint)"></div><div class="badi-cell-name">${t.short||t.label}</div><div style="font-size:2rem;font-weight:600;color:var(--muted);line-height:1.1">—</div><div class="card-temp" style="font-size:.6rem;margin-top:2px;color:var(--faint)">${t.temp}</div></div>`;
     const fill=parseInt(e.currentfill)||0;
     const max=parseInt(e.maxspace)||100;
     const ratio=fill/max;
     const pct=Math.round(ratio*100);
     const col=ratio2color(ratio);
     const lbl=ratio2label(ratio);
-    return`<div class="badi-cell" style="cursor:pointer" onclick="badiSelBad('${t.key}')">
+    return`<div class="badi-cell" style="cursor:pointer;background:${col}18;border:1px solid ${col}55" onclick="badiSelBad('${t.key}')">
       <div class="badi-cell-status-bar" style="width:${Math.min(pct,100)}%;background:${col}"></div>
-      <div class="badi-cell-name">${t.label}</div>
-      <div class="badi-pct" style="color:${col}">${pct}%</div>
-      <div class="badi-status ${lbl.c}">${lbl.t}</div>
-      <div style="font-family:var(--mono);font-size:.52rem;color:var(--faint);margin-top:.18rem">${fill}/${max} Pers.</div>
+      <div class="badi-cell-name">${t.short||t.label}</div>
+      <div style="font-size:2rem;font-weight:600;line-height:1.1;color:${col}">${fill}</div>
+      <div style="font-family:var(--mono);font-size:.58rem;color:var(--muted);margin-top:2px">${pct}% · ${lbl.t}</div>
+      <div class="card-temp" style="font-size:.6rem;margin-top:3px;color:var(--faint)">${t.temp}</div>
     </div>`;
   }).join('');
   // Update dashboard compact cards too
@@ -2097,7 +2101,7 @@ function badiRenderDashCards(){
     const lbl=ratio!==null?ratio2label(ratio):{t:'—',c:'bst-x'};
     return`<div class="badi-cell">
       <div class="badi-cell-status-bar" style="width:${pct!==null?Math.min(pct,100):0}%;background:${col}"></div>
-      <div class="badi-cell-name" style="font-size:.7rem">${t.label.replace('Freibad ','').replace('Hallenbad ','').replace('Seebad ','')}</div>
+      <div class="badi-cell-name" style="font-size:.7rem">${t.short||t.label}</div>
       <div class="badi-pct" style="color:${col};font-size:1rem">${pct!==null?pct+'%':'—'}</div>
       <div class="badi-status ${lbl.c}">${lbl.t}</div>
     </div>`;
@@ -2268,50 +2272,146 @@ function badiRenderWochentag(){
 function badiRenderLanes(){
   const wrap=document.getElementById('badi-lanes-wrap');
   if(!wrap)return;
+  const DAY_KEYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const DAY_DE=['So','Mo','Di','Mi','Do','Fr','Sa'];
   const now=new Date();
-  const h=now.getHours();const m=String(now.getMinutes()).padStart(2,'0');
-  const timeLbl=`${h}:${m}`;
-  function renderLaneGrid(data,id,title,total){
-    if(!data)return'';
-    const hours=Object.keys(data).sort();
-    const curH=hours.find(hh=>parseInt(hh)===h)||hours[hours.length-1];
-    const slots=data[curH]||{};
-    const lanes=Array.from({length:total},(_,i)=>slots[String(i+1)]||{n:0,max:1,names:[]});
-    const grid=lanes.map((lane,i)=>{
-      const r=lane.max>0?(lane.n/lane.max):0;
-      const col=ratio2color(r);
-      const pct=Math.round(r*100);
-      return`<div style="border:1.5px solid var(--brd);border-radius:7px;padding:.45rem .55rem;background:var(--bg);cursor:default;position:relative"
-        title="Bahn ${i+1}: ${lane.n}/${lane.max} Pers.\n${(lane.names||[]).join(', ')||'Frei'}">
-        <div style="position:absolute;bottom:0;left:0;right:0;height:3px;background:${col};border-radius:0 0 5px 5px;width:${pct}%"></div>
-        <div style="font-family:var(--mono);font-size:.52rem;color:var(--muted)">Bahn ${i+1}</div>
-        <div style="font-family:var(--mono);font-size:.8rem;font-weight:700;color:${col}">${pct}%</div>
-        <div style="font-family:var(--mono);font-size:.5rem;color:var(--faint)">${lane.n}/${lane.max}</div>
-      </div>`;
-    }).join('');
-    return`<div style="margin-bottom:.85rem"><div style="font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.45rem;display:flex;justify-content:space-between"><span>${title}</span><span>Stand: ${timeLbl}</span></div><div style="display:grid;grid-template-columns:repeat(${total},1fr);gap:.3rem">${grid}</div></div>`;
+  const nowSlot=`${String(now.getHours()).padStart(2,'0')}:${now.getMinutes()<30?'00':'30'}`;
+  function renderLaneTable(src,title,totalLanes){
+    if(!src?.schedule)return'';
+    const today=new Date();
+    const days=[];
+    for(let i=0;i<7;i++){const d=new Date(today);d.setDate(today.getDate()+i);days.push(d);}
+    const slots=Object.keys(src.schedule.Monday||{}).sort();
+    let html=`<div style="margin-bottom:1rem">
+<div style="font-family:var(--mono);font-size:.56rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem">${title}</div>
+<div style="overflow-x:auto;-webkit-overflow-scrolling:touch">
+<table style="border-collapse:collapse;font-size:10px;width:100%;font-variant-numeric:tabular-nums">
+<thead><tr><th style="padding:3px 5px;text-align:left;color:var(--faint);font-family:var(--mono);font-weight:500;position:sticky;left:0;background:var(--bg)">Zeit</th>`;
+    days.forEach(d=>{
+      const isTod=d.toDateString()===today.toDateString();
+      const ds=d.toLocaleDateString('de-CH',{day:'2-digit',month:'2-digit'});
+      html+=`<th style="padding:3px 5px;text-align:center;color:${isTod?'var(--bdi)':'var(--faint)'};font-family:var(--mono);font-weight:${isTod?700:400}">${DAY_DE[d.getDay()]}<br><span style="font-size:9px;opacity:.7">${ds}</span></th>`;
+    });
+    html+=`</tr></thead><tbody>`;
+    slots.forEach(slot=>{
+      const isNow=slot===nowSlot;
+      html+=`<tr style="${isNow?'outline:1.5px solid var(--bdi);outline-offset:-1px;':''}">`;
+      html+=`<td style="padding:3px 5px;color:var(--faint);font-family:var(--mono);white-space:nowrap;position:sticky;left:0;background:var(--bg);font-weight:${isNow?700:400}">${slot}</td>`;
+      days.forEach(d=>{
+        const dk=DAY_KEYS[d.getDay()];
+        const entry=src.schedule?.[dk]?.[slot];
+        if(!entry){html+=`<td style="padding:3px 5px;text-align:center;color:var(--faint)">—</td>`;return;}
+        const pub=entry.public_lanes;
+        const tot=entry.total_lanes||totalLanes;
+        const r=pub/tot;
+        const col=r>=0.8?'var(--ok)':r>=0.5?'#d4a017':'var(--err)';
+        html+=`<td style="padding:3px 5px;text-align:center;font-weight:600;color:${col}" title="${JSON.stringify(entry.occupants||{})}">${pub}/${tot}</td>`;
+      });
+      html+=`</tr>`;
+    });
+    html+=`</tbody></table></div></div>`;
+    return html;
   }
-  wrap.innerHTML=renderLaneGrid(BADI_STATE.bahnen,'bahnen','Schwimmerbecken (6 Bahnen)',6)+
-                 renderLaneGrid(BADI_STATE.vario,'vario','Variobecken (4 Bahnen)',4);
+  wrap.innerHTML=renderLaneTable(BADI_STATE.bahnen,'Schwimmerbecken (6 Bahnen)',6)+
+                 renderLaneTable(BADI_STATE.vario,'Variobecken (4 Bahnen)',4);
+}
+
+// ─── Forecast (kNN) ───────────────────────────────────────────
+function badiForecast(){
+  const canvas=document.getElementById('badi-fc-canvas');
+  if(!canvas)return;
+  const data=BADI_STATE.history;
+  if(!data||data.length===0)return;
+  const DAY_KEYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const offset=parseInt(document.getElementById('badi-fc-day')?.value||'0');
+  const now=new Date();
+  const target=new Date(now);target.setDate(now.getDate()+offset);
+  const todayStr=target.toLocaleDateString('sv');
+  const todayKey=DAY_KEYS[target.getDay()];
+  const isHoliday=isBadiHoliday(todayStr);
+  const isSchool=isSchoolHol(todayStr);
+  const isWeekend=target.getDay()===0||target.getDay()===6;
+  const t=BADI_TARGETS.find(t=>t.key===BADI_STATE.selBad)||BADI_TARGETS[0];
+  const uid=t.uid;
+  const isOutdoor=uid!=='SSD-4';
+  // Weights
+  const W_WD=isOutdoor?0.38:0.48,W_HOL=0.22,W_SCH=0.14,W_TEMP=isOutdoor?0.16:0.06,W_RAIN=isOutdoor?0.10:0.04;
+  // Group history by day
+  const allDays={};
+  data.filter(r=>r.uid===uid).forEach(r=>{
+    const d=r.timestamp_local?.slice(0,10);if(!d)return;
+    if(!allDays[d])allDays[d]={weekday:r.weekday,holiday:r.is_holiday==='True',school:r.is_school_holiday==='True',hours:{}};
+    const h=parseInt(r.hour);const ratio=parseFloat(r.fill_ratio);
+    if(!isNaN(h)&&!isNaN(ratio)){if(!allDays[d].hours[h])allDays[d].hours[h]=[];allDays[d].hours[h].push(ratio);}
+  });
+  // kNN scoring
+  const scored=Object.entries(allDays).map(([date,day])=>{
+    const s_wd=isHoliday?(day.holiday||day.weekday==='Sunday'?1.0:0.2):(day.weekday===todayKey?1.0:(['Saturday','Sunday'].includes(day.weekday)===isWeekend?0.4:0.1));
+    const s_hol=(day.holiday===isHoliday)?1.0:0.2;
+    const s_sch=(day.school===isSchool)?1.0:0.3;
+    const daysDiff=Math.max(0,(new Date(todayStr)-new Date(date))/86400000);
+    const recency=Math.exp(-daysDiff*0.023);
+    const similarity=W_WD*s_wd+W_HOL*s_hol+W_SCH*s_sch+W_TEMP*0.5+W_RAIN*0.5;
+    return{date,day,score:0.70*similarity+0.30*recency};
+  }).filter(d=>d.date!==todayStr).sort((a,b)=>b.score-a.score).slice(0,20);
+  // Predict per hour
+  const hours=Array.from({length:16},(_,i)=>i+6);
+  const maxSpace=parseInt(data.find(r=>r.uid===uid)?.maxspace)||220;
+  const predPersons=hours.map(h=>{
+    let wSum=0,wVal=0,n=0;
+    scored.forEach(item=>{const vals=item.day.hours[h];if(!vals||!vals.length)return;const mean=vals.reduce((s,v)=>s+v,0)/vals.length;wSum+=item.score;wVal+=item.score*mean;n++;});
+    if(n===0)return null;
+    return Math.round((wVal/wSum)*maxSpace);
+  });
+  // Actual today
+  const actualByHour={};
+  data.filter(r=>r.uid===uid&&r.timestamp_local?.slice(0,10)===todayStr).forEach(r=>{
+    const h=parseInt(r.hour);if(!actualByHour[h])actualByHour[h]=[];actualByHour[h].push(parseFloat(r.fill_ratio));
+  });
+  const actualPersons=hours.map(h=>{
+    const vals=actualByHour[h];if(!vals)return null;
+    return Math.round(vals.reduce((s,v)=>s+v,0)/vals.length*maxSpace);
+  });
+  const curH=offset===0?now.getHours():-1;
+  if(BADI_STATE.charts.fc)BADI_STATE.charts.fc.destroy();
+  BADI_STATE.charts.fc=new Chart(canvas,{
+    data:{
+      labels:hours.map(h=>h+':00'),
+      datasets:[
+        {type:'bar',label:'Prognose',data:predPersons,backgroundColor:hours.map((h,i)=>predPersons[i]===null?'transparent':ratio2color(predPersons[i]/maxSpace)+(h<=curH?'55':'99')),borderRadius:4,order:2},
+        {type:'line',label:'Tatsächlich',data:actualPersons,borderColor:'#4a9eff',backgroundColor:'rgba(74,158,255,.12)',pointRadius:4,borderWidth:2,tension:.3,fill:false,order:1}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:true,labels:{font:{size:10,family:'DM Mono'},color:'var(--ink)'}},tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${c.raw!==null?c.raw+' P':'—'}`}}},
+      scales:{x:{ticks:{color:'var(--muted)',font:{size:9,family:'DM Mono'}},grid:{display:false}},y:{min:0,suggestedMax:maxSpace,ticks:{color:'var(--muted)',font:{size:9,family:'DM Mono'},callback:v=>v+' P'},grid:{color:'rgba(128,128,128,.08)'}}}
+    }
+  });
+  const dayLbl=offset===-1?'Gestern':offset===1?'Morgen':'Heute';
+  const info=document.getElementById('badi-fc-info');
+  if(info)info.textContent=`${scored.length} Referenztage · ${t.short||t.label} · ${dayLbl}${isHoliday?' · Feiertag':''}${isSchool?' · Schulferien':''}`;
 }
 
 function renderBadi(){
   const v=el('v-badi');
-  const img=BESM_IMG;
+  const curM=new Date().toLocaleDateString('sv').slice(5,7);
+  const monthOpts=[['all','Alle'],['05','Mai'],['06','Jun'],['07','Jul'],['08','Aug'],['09','Sep'],['10','Okt']];
+  const selM=BADI_STATE.selMonth||curM;
   v.innerHTML=`
 <div class="sl first">AKTUELLE BELEGUNG <span id="badi-ws-status" style="color:var(--faint);font-size:.55rem;margin-left:.5rem">Verbinde…</span></div>
-<div class="badi-stat-grid" id="badi-live-cards">${BADI_TARGETS.map(t=>`<div class="badi-cell"><div class="badi-cell-status-bar" style="width:0%"></div><div class="badi-cell-name">${t.label}</div><div class="badi-pct" style="color:#aaa">—</div><div class="badi-status bst-x">—</div></div>`).join('')}</div>
+<div class="badi-stat-grid" id="badi-live-cards">${BADI_TARGETS.map(t=>`<div class="badi-cell"><div class="badi-cell-status-bar" style="width:0%;background:var(--faint)"></div><div class="badi-cell-name">${t.short||t.label}</div><div style="font-size:2rem;font-weight:600;color:var(--muted);line-height:1.1">—</div><div style="font-size:.6rem;color:var(--faint);margin-top:2px">${t.temp}</div></div>`).join('')}</div>
 
 <div class="sl">VERLAUF</div>
 <div class="hm-wrap">
- <div style="display:flex;gap:.25rem;flex-wrap:wrap;margin-bottom:.5rem">
-  ${BADI_TARGETS.map(t=>`<button class="badi-pool-btn hm-pill${t.key===BADI_STATE.selBad?' on':''}" data-bad="${t.key}" onclick="badiSelBad('${t.key}')">${t.label.replace('Hallenbad ','').replace('Freibad ','').replace('Seebad ','').replace('Flussbad ','')}</button>`).join('')}
+ <div style="display:flex;gap:.25rem;flex-wrap:wrap;align-items:center;margin-bottom:.5rem">
+  ${BADI_TARGETS.map(t=>`<button class="badi-pool-btn hm-pill${t.key===BADI_STATE.selBad?' on':''}" data-bad="${t.key}" onclick="badiSelBad('${t.key}')">${t.short||t.label}</button>`).join('')}
  </div>
- <div style="display:flex;gap:.2rem;flex-wrap:wrap;margin-bottom:.6rem">
-  ${[['heatmap','Heatmap'],['tagesverlauf','Tagesverlauf'],['wochentag','Mittel/Wochentag']].map(([v,l])=>`<button class="badi-view-btn hm-pill${BADI_STATE.selView===v?' on':''}" data-view="${v}" onclick="badiSelView('${v}')">${l}</button>`).join('')}
- </div>
- <div style="display:flex;gap:.2rem;flex-wrap:wrap;margin-bottom:.55rem">
-  ${[['all','Alle'],['06','Jun'],['07','Jul'],['08','Aug'],['09','Sep']].map(([m,l])=>`<button class="badi-month-btn hm-pill${BADI_STATE.selMonth===m?' on':''}" data-month="${m}" onclick="badiSelMonth('${m}')">${l}</button>`).join('')}
+ <div style="display:flex;gap:.2rem;flex-wrap:wrap;align-items:center;margin-bottom:.6rem">
+  ${[['tagesverlauf','Tagesverlauf'],['heatmap','Heatmap'],['wochentag','Mittel/Wochentag']].map(([vv,l])=>`<button class="badi-view-btn hm-pill${BADI_STATE.selView===vv?' on':''}" data-view="${vv}" onclick="badiSelView('${vv}')">${l}</button>`).join('')}
+  <select id="badi-month-select" style="margin-left:.3rem;background:var(--bg);border:1.5px solid var(--brd);border-radius:999px;font-family:var(--mono);font-size:.6rem;color:var(--muted);padding:.18rem .55rem;cursor:pointer" onchange="badiSelMonth(this.value)">
+   ${monthOpts.map(([mv,ml])=>`<option value="${mv}"${selM===mv?' selected':''}>${ml}</option>`).join('')}
+  </select>
  </div>
  <div style="overflow-x:auto">
   <canvas id="badi-chart-canvas"></canvas>
@@ -2320,21 +2420,50 @@ function renderBadi(){
  <div id="badi-hist-status" style="font-family:var(--mono);font-size:.58rem;color:var(--faint);margin-top:.2rem">Lade…</div>
 </div>
 
-<div id="badi-lanes-section">
- <div class="sl">BAHNENBELEGUNG HALLENBAD CITY</div>
- <div class="hm-wrap" id="badi-lanes-wrap">
-  <div class="loading">Lade Bahnen-Daten…</div>
+<details id="badi-forecast-details" style="margin-top:1rem">
+ <summary style="font-family:var(--mono);font-size:.7rem;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;padding:.55rem 0;border-top:1px solid var(--brd)">
+  <span>📊 Forecast</span><span style="font-size:.6rem;color:var(--faint);font-style:italic">The Funky Badi Fortune Teller</span><span style="font-size:.6rem">▸</span>
+ </summary>
+ <div style="padding:.65rem 0 .35rem">
+  <div style="display:flex;gap:.2rem;flex-wrap:wrap;align-items:center;margin-bottom:.45rem">
+   ${BADI_TARGETS.map(t=>`<button class="badi-fc-bad hm-pill${t.key===BADI_STATE.selBad?' on':''}" data-bad="${t.key}" onclick="badiFcBad('${t.key}')">${t.short||t.label}</button>`).join('')}
+   <select id="badi-fc-day" style="margin-left:.3rem;background:var(--bg);border:1.5px solid var(--brd);border-radius:999px;font-family:var(--mono);font-size:.6rem;color:var(--muted);padding:.18rem .55rem;cursor:pointer" onchange="badiForecast()">
+    <option value="-1">Gestern</option><option value="0" selected>Heute</option><option value="1">Morgen</option>
+   </select>
+  </div>
+  <div id="badi-fc-info" style="font-family:var(--mono);font-size:.58rem;color:var(--faint);margin-bottom:.4rem"></div>
+  <div style="position:relative;height:220px"><canvas id="badi-fc-canvas"></canvas></div>
  </div>
-</div>
+</details>
 
-<div style="font-family:var(--mono);font-size:.58rem;color:var(--faint);text-align:center;padding:.6rem 0">
+<details id="badi-lanes-details" style="margin-top:.5rem">
+ <summary style="font-family:var(--mono);font-size:.7rem;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;padding:.55rem 0;border-top:1px solid var(--brd)">
+  <span>Bahnenbelegung Hallenbad City</span><span style="font-size:.6rem">▸</span>
+ </summary>
+ <div id="badi-lanes-wrap" style="margin-top:.55rem">
+  <div style="font-family:var(--mono);font-size:.65rem;color:var(--faint)">Lade Bahnen-Daten…</div>
+ </div>
+</details>
+
+<div style="font-family:var(--mono);font-size:.58rem;color:var(--faint);text-align:center;padding:.8rem 0 .2rem">
  Live via Crowdmonitor-WebSocket · Historische Daten alle 10 Min · <a href="https://derbsq.github.io/Badi-Tracker/" target="_blank" style="color:var(--bdi)">→ Vollständiger Tracker</a>
 </div>`;
 
-  BADI_STATE.selView='heatmap';
-  document.querySelectorAll('.badi-view-btn').forEach(b=>b.classList.toggle('on',b.dataset.view==='heatmap'));
+  if(!['heatmap','tagesverlauf','wochentag'].includes(BADI_STATE.selView))BADI_STATE.selView='tagesverlauf';
+  document.querySelectorAll('.badi-view-btn').forEach(b=>b.classList.toggle('on',b.dataset.view===BADI_STATE.selView));
+  BADI_STATE.selMonth=selM;
+  const fcDet=document.getElementById('badi-forecast-details');
+  if(fcDet)fcDet.addEventListener('toggle',()=>{if(fcDet.open&&BADI_STATE.history.length>0)badiForecast();});
   badiConnectWS();
-  badiLoadData().then(()=>badiRenderCurrentView());
+  badiLoadData().then(()=>{badiRenderCurrentView();});
+}
+
+function badiFcBad(key){
+  BADI_STATE.selBad=key;
+  localStorage.setItem('badi:bad',key);
+  document.querySelectorAll('.badi-pool-btn,.badi-fc-bad').forEach(b=>b.classList.toggle('on',b.dataset.bad===key));
+  badiRenderCurrentView();
+  badiForecast();
 }
 
 // ─── METHOD VIEW ─────────────────────────────────────────────
@@ -2387,40 +2516,71 @@ function buildMethodSci(){
  </div>`;
 }
 
+function buildLibGroup(title,groups){
+ return groups.map(g=>`<details class="mth-group-card" open>
+  <summary style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;list-style:none;padding:.55rem .75rem;background:var(--surf);border-radius:var(--r2);margin-bottom:.2rem">
+   <span style="font-family:var(--mono);font-size:.65rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)">${g.name}</span>
+   <span style="font-size:.58rem;color:var(--faint)">${g.exs.length} Übungen</span>
+  </summary>
+  <div style="border:1px solid var(--brd);border-radius:0 0 var(--r2) var(--r2);border-top:none;padding:.45rem .65rem">
+   ${g.exs.map(e=>`<div class="mth-ex">
+    <div class="mth-ex-top"><span class="mth-ex-name">${e.n}</span><span class="mth-ex-mus">${e.mus}</span></div>
+    <div class="mth-ex-why">💡 ${e.why}</div>
+    ${e.cue?`<div class="mth-ex-why" style="opacity:.75">→ ${e.cue}</div>`:''}
+    ${e.yt?`<a href="${e.yt}" target="_blank" rel="noopener" class="mth-ex-yt">▶ Technik ansehen</a>`:''}
+   </div>`).join('')}
+  </div>
+ </details>`).join('');
+}
+
 function buildLibBW(){
- const exs=[
-  {n:'Pull-Ups',yt:'https://www.youtube.com/results?search_query=pull+ups+technique+lat+activation',mus:'Lat · Teres · Bizeps · Rhomboiden',why:'Wichtigste Dryland-Übung für Schwimmer. Exakter Pull-Mechanismus wie Catch → Follow-through.',yt:'https://www.youtube.com/results?search_query=pull+up+technique'},
-  {n:'Inverted Rows',yt:'https://www.youtube.com/results?search_query=inverted+rows+technique+bodyweight',mus:'Rhomboiden · Bizeps · Rücken',why:'Horizontale Zuglinie — ergänzt vertikale Pull-Ups. Ideal bei Verletzungen oder als Aufbau.',yt:''},
-  {n:'Explosive Band Pulldowns',yt:'https://www.youtube.com/results?search_query=band+lat+pulldown+explosive',mus:'Lat · Teres',why:'Imitiert Catch-Phase explosiv. Neuronale Aktivierung für Wasserübertragung.',yt:''},
-  {n:'Band Hip Hinge',yt:'https://www.youtube.com/results?search_query=band+hip+hinge+posterior+chain',mus:'Glutes · Hamstrings · Erector Spinae',why:'Hintere Kette für Kick-Power. Ohne gute Hüftstabilität kein effizienter Kick.',yt:''},
-  {n:'Dead Bug',yt:'https://www.youtube.com/results?search_query=dead+bug+exercise+core+anti+extension',mus:'Transversus Abdominis',why:'Anti-Extension Core. Schützt Lendenwirbelsäule, schult Koordination.',yt:'https://www.youtube.com/results?search_query=dead+bug+exercise'},
-  {n:'Hollow Hold',yt:'https://www.youtube.com/results?search_query=hollow+body+hold+core',mus:'Anterior Core',why:'Schwimmer-spezifische Core-Position. Exakt die Position im Wasser.',yt:'https://www.youtube.com/results?search_query=hollow+body+hold'},
-  {n:'Pallof Press',mus:'Obliques · Core',why:'Anti-Rotation. Verhindert Rotation des Rumpfs — essentiell für geradliniges Schwimmen.',yt:''},
-  {n:'Single-Leg Band RDL',yt:'https://www.youtube.com/results?search_query=single+leg+romanian+deadlift+band',mus:'Glutes · Hamstrings',why:'Unilateral — deckt Schwächen auf. Stabilität für Flip-Turn und Kick.',yt:''},
-  {n:'Broad Jumps',yt:'https://www.youtube.com/results?search_query=broad+jump+plyometric+technique',mus:'Gesamte Unterkörperkraft',why:'Explosive Kraft für Abstoß. Neuronale Power-Übertragung.',yt:''},
-  {n:'Scapular Pull-Ups',yt:'https://www.youtube.com/results?search_query=scapular+pull+ups+activation',mus:'Serratus Anterior · Trapez',why:'Schulterblatt-Kontrolle. Schwimmer brauchen aktive Protraktion und Depression.',yt:''}
+ const groups=[
+  {name:'Rücken & Zug',exs:[
+   {n:'Pull-Ups',mus:'Lat · Teres · Bizeps · Rhomboiden',why:'Wichtigste Dryland-Übung. Exakter Pull-Mechanismus wie Catch → Follow-through.',cue:'2–3 Reps unter Max. 1s hoch / 2s runter. Scapula aktiv durch die Bewegung.',yt:'https://www.youtube.com/results?search_query=pull+up+technique+lat+activation'},
+   {n:'Inverted Rows',mus:'Rhomboiden · Bizeps · Trapez',why:'Horizontale Zuglinie — ergänzt Pull-Ups. Schultergürtel-Stabilität für Zugphase.',cue:'Körper gerade wie ein Brett. Schulterblätter zusammen und nach unten.',yt:'https://www.youtube.com/results?search_query=inverted+rows+technique+bodyweight'},
+   {n:'Explosive Band Pulldowns',mus:'Lat · Teres',why:'Imitiert Catch-Phase. Neuronale Aktivierung für Wasserübertragung — Speed matters.',cue:'Band von oben. Maximale Explosivität rein, kontrolliert zurück.',yt:'https://www.youtube.com/results?search_query=band+lat+pulldown+explosive'},
+   {n:'Scapular Pull-Ups',mus:'Serratus Anterior · Trapez',why:'Schulterblatt-Kontrolle. Schwimmer brauchen aktive Depression und Protraktion — ohne das: Impingement.',cue:'Hängen. Nur Schulterblätter nach unten ziehen — Arme bleiben gestreckt.',yt:'https://www.youtube.com/results?search_query=scapular+pull+ups+activation'}
+  ]},
+  {name:'Core & Rumpfstabilität',exs:[
+   {n:'Hollow Hold',mus:'Anterior Core',why:'Genau die Körperposition im Wasser. Kein starker Core → kein Energietransfer vom Zug in den Kick.',cue:'Unterer Rücken flach. Arme & Beine gestreckt. Nur so weit runter wie Rücken flach bleibt.',yt:'https://www.youtube.com/results?search_query=hollow+body+hold+core'},
+   {n:'Dead Bug',mus:'Transversus Abdominis · Core',why:'Anti-Extension. Lendenwirbelsäule schützen und Koordination schulen — essentiell für Lage im Wasser.',cue:'Arm und gegenüberliegendes Bein gleichzeitig. Rücken IMMER unten. Atmen.',yt:'https://www.youtube.com/results?search_query=dead+bug+exercise+core'},
+   {n:'Pallof Press',mus:'Obliques · Transversus',why:'Anti-Rotation. Verhindert ungewollte Rumpfrotation — gerader Vortrieb im Wasser.',cue:'Band auf Brusthöhe. Arme strecken → halten → zurück. Hüfte stabil.',yt:'https://www.youtube.com/results?search_query=pallof+press+anti+rotation'}
+  ]},
+  {name:'Hintere Kette & Beine',exs:[
+   {n:'Single-Leg Band RDL',mus:'Glutes · Hamstrings',why:'Unilateral deckt Schwächen auf. Stabilität für Flip-Turn und Kick — beide Beine müssen gleichstark sein.',cue:'Band unter Fuß. Standbein leicht gebeugt. Hüfte zurück, Oberkörper parallel. Langsam zurück.',yt:'https://www.youtube.com/results?search_query=single+leg+rdl+band+technique'},
+   {n:'Band Hip Hinge',mus:'Glutes · Hamstrings · Erector Spinae',why:'Aktiviert hintere Kette für Kick-Power. Schwimmer vernachlässigen oft Hüftextension.',cue:'Band um Hüfte. Aktiv nach vorne schießen. Glutes am Ende fest zusammenpressen.',yt:'https://www.youtube.com/results?search_query=band+hip+hinge+posterior+chain'},
+   {n:'Broad Jumps',mus:'Gesamte Unterkörperkraft',why:'Explosive Abstoßkraft direkt übertragbar auf Starttauchgang und Wende.',cue:'Arme als Schwungmasse nutzen. Weit und explosiv. Weiche Landung.',yt:'https://www.youtube.com/results?search_query=broad+jump+plyometric+technique'}
+  ]}
  ];
  return`<div class="sl first">BODYWEIGHT / OUTDOOR LIBRARY</div>
- <div class="info-box">Ausrüstung: Resistance Bands · Klimmzugstange · Calisthenics Park. Ideal: Outdoor Ghetto Gym.</div>
- ${exs.map(e=>`<div class="mth-ex"><div class="mth-ex-top"><span class="mth-ex-name">${e.n}</span><span class="mth-ex-mus">${e.mus}</span></div><div class="mth-ex-why">${e.why}</div>${e.yt?`<a href="${e.yt}" target="_blank" class="mth-ex-yt">▶ Technik ansehen</a>`:''}</div>`).join('')}`;
+ <div class="info-box" style="margin-bottom:.75rem">Ausrüstung: Resistance Bands · Klimmzugstange · Calisthenics Park</div>
+ ${buildLibGroup('bw',groups)}`;
 }
 
 function buildLibGym(){
- const exs=[
-  {n:'Trap Bar Deadlift',mus:'Hintere Kette · Rücken · Core',why:'Schwerste bilaterale Kraftübung. Sicherer als Langhantel-Deadlift für Rücken. Maximale Kraftentwicklung hintere Kette.',yt:'https://www.youtube.com/results?search_query=trap+bar+deadlift+technique'},
-  {n:'Barbell Row',yt:'https://www.youtube.com/results?search_query=barbell+row+technique+back',mus:'Lat · Rhomboiden · Bizeps · Rücken',why:'Horizontal ziehen mit maximaler Last. Ergänzt Pull-Ups vertikal. Schultergürtel-Stabilität.',yt:''},
-  {n:'Goblet Squat / Back Squat',mus:'Quad · Glutes · Core',why:'Beinarbeit für Sprungkraft und Abstoß. Goblet = Technik. Back Squat = Last.',yt:''},
-  {n:'KB Swings',mus:'Glutes · Hintere Kette · Core',why:'Explosivste Hüft-Übung. Direkte Übertragung auf Kick-Power und Abstoß.',yt:'https://www.youtube.com/results?search_query=kettlebell+swing+technique'},
-  {n:'Landmine Rotation',mus:'Obliques · Core · Schultern',why:'Gewichtete Rotation. Direkte Übertragung auf Rollbewegung im Crawl.',yt:''},
-  {n:'Medball Slam',mus:'Core · Schultern · Rücken',why:'Explosive Flexion. Power-Output des gesamten Körpers. Aggressiverer Catch.',yt:''},
-  {n:'Cable Pallof Press',mus:'Anti-Rotation Core',why:'Gleichmäßiger Widerstand als Band. Mehr Kontrolle über Intensität.',yt:''},
-  {n:'Weighted Pull-Ups',mus:'Lat · Teres · Bizeps',why:'Wenn Körpergewicht nicht mehr reicht. Progressive Überlastung für Pull-Kraft.',yt:''},
-  {n:'Box Jumps',mus:'Gesamte Unterkörperkraft',why:'Plyometrie mit sicherer Landung. Reaktivkraft und Abstoß-Power.',yt:''},
-  {n:'Stir the Pot (Ball)',mus:'Core · Schultern',why:'Instabile Oberfläche erhöht Core-Aktivierung vs. Boden-Version.',yt:''}
+ const groups=[
+  {name:'Rücken & Zug',exs:[
+   {n:'Weighted Pull-Ups',mus:'Lat · Teres · Bizeps',why:'Progressive Überlastung wenn Körpergewicht nicht mehr reicht. Einzige Übung die wirklich Pull-Kraft aufbaut.',cue:'Gewichtsweste oder Gürtel. Gleiche Technik wie BW. Keine Kippbewegung.',yt:'https://www.youtube.com/results?search_query=weighted+pull+ups+technique'},
+   {n:'Barbell Row',mus:'Lat · Rhomboiden · Bizeps · Trapez',why:'Horizontale Maximallast. Ergänzt Pull-Ups vertikal. Symmetrischer Schultergürtel ist Verletzungsschutz.',cue:'Hüftscharnier. Stange zum Bauchnabel. Schulterblätter zusammen — kontrolliert senken.',yt:'https://www.youtube.com/results?search_query=barbell+row+technique+back'}
+  ]},
+  {name:'Hintere Kette & Power',exs:[
+   {n:'Trap Bar Deadlift',mus:'Hintere Kette · Rücken · Core',why:'Maximale bilaterale Kraftentwicklung. Sicherer als Konventional — Rücken bleibt aufrechter. Direkte Übertragung auf Abstoßkraft.',cue:'Neutral greifen, Hüfte runter, Brust hoch. Aus den Beinen drücken + Hüfte nach vorne.',yt:'https://www.youtube.com/results?search_query=trap+bar+deadlift+technique'},
+   {n:'KB Swings',mus:'Glutes · Hintere Kette · Core',why:'Explosivste Hüft-Übung. Reaktivkraft direkt übertragbar auf Kick-Initiierung und Startsprung.',cue:'Hinge, nicht Squat. Hüfte schießt nach vorne — kein Arm-Schwingen. Glutes am Top.',yt:'https://www.youtube.com/results?search_query=kettlebell+swing+technique'},
+   {n:'Goblet Squat / Back Squat',mus:'Quad · Glutes · Core',why:'Beingrundkraft für Abstoß und Wende. Goblet = Technik und Mobilität. Back Squat = maximale Last.',cue:'Goblet: KB vor Brust. Knie außen. Tief sitzen. Rücken aufrecht.',yt:'https://www.youtube.com/results?search_query=goblet+squat+technique'}
+  ]},
+  {name:'Core & Rotation',exs:[
+   {n:'Landmine Rotation',mus:'Obliques · Core · Schultern',why:'Gewichtete Rotation. Körperrotation im Crawl kommt aus dem Rumpf — hier wird sie trainiert.',cue:'Stange mit beiden Händen. Rotation aus der Hüfte — nicht die Schultern.',yt:'https://www.youtube.com/results?search_query=landmine+rotation+core+technique'},
+   {n:'Cable Pallof Press',mus:'Anti-Rotation Core',why:'Kabel = gleichmäßiger Widerstand. Mehr Kontrolle als Band, bessere Progression.',cue:'Schulter weg vom Kabel. Arme strecken → 2s halten. Hüfte quad.',yt:'https://www.youtube.com/results?search_query=cable+pallof+press+technique'},
+   {n:'Stir the Pot (Ball)',mus:'Core · Schultern',why:'Instabile Oberfläche aktiviert tiefen Core massiv. Schulterstabilität unter Last.',cue:'Unterarme auf Ball, Körper gerade. Kleine Kreise mit dem Ball — Hüfte bleibt unten.',yt:'https://www.youtube.com/results?search_query=stir+the+pot+exercise+stability+ball'},
+   {n:'Medball Slam',mus:'Core · Schultern · Rücken',why:'Explosiv-Flexion des gesamten Körpers. Aggressiverer Catch, mehr Power im Zug.',cue:'Weit über Kopf strecken → explosiv runter schlagen. Maximale Intensität.',yt:'https://www.youtube.com/results?search_query=medicine+ball+slam+technique'}
+  ]},
+  {name:'Power & Plyometrik',exs:[
+   {n:'Box Jumps',mus:'Gesamte Unterkörperkraft',why:'Reaktivkraft und Abstoß-Power. Box = sicheres Landen wichtiger als Höhe. Nicht auf Beton springen.',cue:'Voller Arm-Einsatz. Explosiv. Weich landen, nicht stehen bleiben.',yt:'https://www.youtube.com/results?search_query=box+jump+technique+plyometric'}
+  ]}
  ];
  return`<div class="sl first">GYM LIBRARY · SPORTZENTRUM JOSEF</div>
- <div class="info-box">Ausrüstung: Langhantel · Kurzhanteln · Kettlebells · Medicinball · Cables · Plyoboxen</div>
- ${exs.map(e=>`<div class="mth-ex"><div class="mth-ex-top"><span class="mth-ex-name">${e.n}</span><span class="mth-ex-mus">${e.mus}</span></div><div class="mth-ex-why">${e.why}</div>${e.yt?`<a href="${e.yt}" target="_blank" class="mth-ex-yt">▶ Technik ansehen</a>`:''}</div>`).join('')}`;
+ <div class="info-box" style="margin-bottom:.75rem">Ausrüstung: Langhantel · Kurzhanteln · Kettlebells · Medicinball · Cables · Plyoboxen</div>
+ ${buildLibGroup('gym',groups)}`;
 }
 
 // ─── LOG VIEW ────────────────────────────────────────────────
