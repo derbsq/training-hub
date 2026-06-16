@@ -1839,8 +1839,8 @@ function openSwimSession(id,ds){
  const s=SWIM.find(x=>x.id===id);if(!s)return;
  const logged=ds?S.isLogged(ds,s.id):false;
  // Create modal overlay for session detail
- let mo=el('sess-modal');if(!mo){mo=document.createElement('div');mo.id='sess-modal';mo.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:90;overflow-y:auto;padding:1rem';document.body.appendChild(mo);}
- mo.innerHTML=`<div style="max-width:720px;margin:0 auto;background:var(--bg);border-radius:var(--r2);padding:1rem">
+ let mo=el('sess-modal');if(!mo){mo=document.createElement('div');mo.id='sess-modal';mo.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:90;overflow-y:auto;display:flex;padding:1rem';document.body.appendChild(mo);}
+ mo.innerHTML=`<div style="max-width:720px;width:100%;margin:auto;background:var(--bg);border-radius:var(--r2);padding:1rem">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
    <span class="badge ${s.bc}">${s.badge}</span>
    <button onclick="el('sess-modal').remove()" style="font-family:var(--mono);font-size:.7rem;color:var(--muted);padding:.3rem .6rem;border:1.5px solid var(--brd);border-radius:999px">✕ Schließen</button>
