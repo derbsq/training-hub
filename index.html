@@ -16,7 +16,7 @@
   --dA:#8b3a1a;--dAl:#f5ede8;--dB:#1a3060;--dBl:#e8edf5;--dC:#5a1a6e;--dCl:#f0e8f5;
   --mob:#5a1a6e;--mobl:#f0e8f5;--bth:#1a3060;--bthl:#e8edf5;
   --bdi:#1a4560;--bdil:#e8f0f5;
-  --badi-tab:#c8a000;--swim-tab:#1a4d8f;--mth-tab:#6b3fa0;
+  --badi-tab:#c8a000;--swim-tab:#1a4d8f;--mth-tab:#6b3fa0;--coach-tab:#1a7a6a;
   --ok:#2d7a3a;--okl:rgba(45,122,58,.08);--okb:rgba(45,122,58,.22);
   --next:#2c5282;--nextl:#ebf0fb;--z1:#3a8a5a;
   --gym:#7a4a00;--gyml:#f5efe0;
@@ -48,6 +48,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(244,241,235,.97);backdrop-f
 .tab[data-tab=dry].on{background:var(--dA)}
 .tab[data-tab=method].on{background:var(--mth-tab)}
 .tab[data-tab=log].on{background:var(--ink)}
+.tab[data-tab=coach].on{background:var(--coach-tab)}
 main{padding-top:.5rem}
 .view{display:none;animation:vu .16s ease}.view.on{display:block}
 @keyframes vu{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
@@ -442,6 +443,7 @@ footer{text-align:center;font-family:var(--mono);font-size:.57rem;color:var(--fa
     <button class="tab" data-tab="dry">Dryland</button>
     <button class="tab" data-tab="method">Method</button>
     <button class="tab" data-tab="log">Verlauf</button>
+    <button class="tab" data-tab="coach">Coach</button>
   </div>
 </nav>
 <div class="modal-overlay hidden" id="api-modal">
@@ -462,6 +464,7 @@ footer{text-align:center;font-family:var(--mono);font-size:.57rem;color:var(--fa
   <section class="view" data-view="dry"  id="v-dry"></section>
   <section class="view" data-view="method" id="v-method"></section>
   <section class="view" data-view="log"  id="v-log"></section>
+  <section class="view" data-view="coach" id="v-coach"></section>
 </main>
 <footer>Bésko's Little Training Hub · v6.3 · 07.06.2026 · Daten lokal</footer>
 <script>
@@ -2658,11 +2661,98 @@ function renderLog(){
  v.innerHTML=`<div class="sl first">TRAININGSLOG</div>`+entries.map(e=>`<div class="hist-e"><div class="he-hd"><span class="he-t">${e.label}</span><span class="he-d">${fmtDateFull(e.date)}</span></div>${e.data.notes?`<div class="he-s">${e.data.notes}</div>`:''}</div>`).join('');
 }
 
+// ─── COACH TAB ───────────────────────────────────────────────
+const COACH_RAW='https://raw.githubusercontent.com/derbsq/training-data/main/data/coach/';
+const COACH_RATINGS={
+ gut:'var(--ok)',verbessert:'var(--ok)',erholt:'var(--ok)','im-plan':'var(--ok)',
+ ok:'#c8a000',stabil:'#c8a000',ausreichend:'#c8a000','über-plan':'var(--swim-tab)',
+ schwach:'#c0392b',verschlechtert:'#c0392b',untererholt:'#c0392b','unter-plan':'#c0392b',
+};
+
+async function renderCoach(){
+ const v=el('v-coach');
+ v.innerHTML=`<div style="padding:.5rem 0;color:var(--muted);font-family:var(--mono);font-size:.72rem">Lade Wochenbericht…</div>`;
+ let report=null;
+ try{const r=await fetch(COACH_RAW+'latest.json');if(r.ok)report=await r.json();}catch(e){}
+ if(!report){
+  v.innerHTML=`<div class="empty" style="padding:2rem 0;text-align:center">
+   <div style="font-weight:700;margin-bottom:.3rem">Noch kein Wochenbericht</div>
+   <div style="font-family:var(--mono);font-size:.7rem;color:var(--muted)">Wird jeden Montag um 07:00 UTC generiert.</div>
+  </div>`;
+  return;
+ }
+ // List historical reports for navigation
+ let histHtml='';
+ try{
+  const lr=await fetch('https://api.github.com/repos/derbsq/training-data/contents/data/coach');
+  if(lr.ok){
+   const files=await lr.json();
+   const past=files.filter(f=>f.name!=='latest.json'&&f.name.endsWith('.json')&&f.name!==report.week+'.json').sort((a,b)=>b.name.localeCompare(a.name)).slice(0,8);
+   if(past.length)histHtml=`<div style="margin-top:1.2rem;border-top:1px solid var(--brd);padding-top:.75rem">
+    <div style="font-family:var(--mono);font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-bottom:.5rem">Frühere Berichte</div>
+    <div style="display:flex;flex-wrap:wrap;gap:.35rem">${past.map(f=>`<button onclick="loadCoachWeek('${f.name.replace('.json','')}')" style="font-family:var(--mono);font-size:.65rem;color:var(--muted);border:1px solid var(--brd);border-radius:999px;padding:.15rem .55rem;cursor:pointer;background:none">${f.name.replace('.json','')}</button>`).join('')}</div>
+   </div>`;
+  }
+ }catch(e){}
+ v.innerHTML=buildCoachHtml(report)+histHtml;
+}
+
+async function loadCoachWeek(week){
+ const v=el('v-coach');
+ v.innerHTML=`<div style="padding:.5rem 0;color:var(--muted);font-family:var(--mono);font-size:.72rem">Lade ${week}…</div>`;
+ try{
+  const r=await fetch(COACH_RAW+week+'.json');
+  if(!r.ok)throw new Error();
+  v.innerHTML=buildCoachHtml(await r.json());
+ }catch(e){v.innerHTML=`<div style="color:#c0392b;font-family:var(--mono);font-size:.72rem">Bericht nicht gefunden.</div>`;}
+}
+
+function buildCoachHtml(report){
+ const SECTIONS=[
+  {key:'compliance',       label:'Compliance',       sub:'Plan vs. Realität'},
+  {key:'stroke_efficiency',label:'Schlageffizienz',  sub:'SWOLF & Drift'},
+  {key:'recovery',         label:'Erholung',         sub:'HRV · Schlaf · Body Battery'},
+  {key:'pace_vs_css',      label:'Pace vs. CSS',     sub:'Intensität & Zonen'},
+ ];
+ const fmtDate=s=>{try{return new Date(s).toLocaleDateString('de-CH',{day:'2-digit',month:'long',year:'numeric'});}catch{return s;}};
+ const pill=r=>{const c=COACH_RATINGS[r]||'var(--muted)';return`<span style="font-family:var(--mono);font-size:.6rem;font-weight:700;color:${c};border:1.5px solid ${c};padding:.1rem .45rem;border-radius:999px;text-transform:uppercase">${r}</span>`;};
+ let h=`
+ <div style="display:flex;align-items:baseline;gap:.5rem;margin-bottom:.15rem">
+  <h2 style="font-size:1rem;font-weight:800">Wochenbericht</h2>
+  <span style="font-family:var(--mono);font-size:.68rem;color:var(--coach-tab);font-weight:700">${report.week}</span>
+ </div>
+ <div style="font-family:var(--mono);font-size:.65rem;color:var(--faint);margin-bottom:1.1rem">Generiert ${fmtDate(report.generated_at)}</div>
+ <div style="background:var(--surf);border:1px solid var(--brd);border-left:3px solid var(--coach-tab);border-radius:var(--r2);padding:.8rem 1rem;margin-bottom:1rem">
+  <div style="font-family:var(--mono);font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--coach-tab);font-weight:700;margin-bottom:.35rem">Zusammenfassung</div>
+  <div style="font-size:.88rem;font-weight:600;line-height:1.5">${report.summary||''}</div>
+ </div>`;
+ SECTIONS.forEach(({key,label,sub})=>{
+  const s=report[key];if(!s)return;
+  h+=`<div style="background:var(--surf);border:1px solid var(--brd);border-radius:var(--r2);margin-bottom:.65rem;overflow:hidden;border-top:2px solid var(--coach-tab)">
+   <div style="padding:.5rem .8rem .4rem;border-bottom:1px solid var(--brd);display:flex;align-items:center;justify-content:space-between;gap:.5rem">
+    <div>
+     <span style="font-family:var(--mono);font-size:.61rem;letter-spacing:.1em;text-transform:uppercase;color:var(--coach-tab);font-weight:700">${label}</span>
+     <span style="font-family:var(--mono);font-size:.57rem;color:var(--faint);margin-left:.4rem">${sub}</span>
+    </div>
+    ${pill(s.rating||'')}
+   </div>
+   <div style="padding:.65rem .8rem;font-size:.82rem;line-height:1.6">${s.text||''}</div>
+  </div>`;
+ });
+ if(report.focus_next_week){
+  h+=`<div style="background:rgba(26,122,106,.08);border:1.5px solid rgba(26,122,106,.3);border-radius:var(--r2);padding:.75rem 1rem;margin-top:.3rem">
+   <div style="font-family:var(--mono);font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--coach-tab);font-weight:700;margin-bottom:.3rem">Fokus nächste Woche</div>
+   <div style="font-size:.85rem;font-weight:600;line-height:1.5">${report.focus_next_week}</div>
+  </div>`;
+ }
+ return h;
+}
+
 // ─── NAVIGATION ──────────────────────────────────────────────
 function switchTab(tab){
  document.querySelectorAll('.tab').forEach(t=>{t.classList.toggle('on',t.dataset.tab===tab);});
  document.querySelectorAll('.view').forEach(v=>{v.classList.toggle('on',v.dataset.view===tab);});
- const renders={dash:renderDash,badi:renderBadi,swim:renderSwim,dry:renderDry,method:renderMethod,log:renderLog};
+ const renders={dash:renderDash,badi:renderBadi,swim:renderSwim,dry:renderDry,method:renderMethod,log:renderLog,coach:renderCoach};
  if(renders[tab])renders[tab]();
  window.scrollTo(0,0);
 }
