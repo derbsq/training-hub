@@ -16,6 +16,7 @@
   --dA:#8b3a1a;--dAl:#f5ede8;--dB:#1a3060;--dBl:#e8edf5;--dC:#5a1a6e;--dCl:#f0e8f5;
   --mob:#5a1a6e;--mobl:#f0e8f5;--bth:#1a3060;--bthl:#e8edf5;
   --bdi:#1a4560;--bdil:#e8f0f5;
+  --badi-tab:#c8a000;--mth-tab:#6b3fa0;
   --ok:#2d7a3a;--okl:rgba(45,122,58,.08);--okb:rgba(45,122,58,.22);
   --next:#2c5282;--nextl:#ebf0fb;--z1:#3a8a5a;
   --gym:#7a4a00;--gyml:#f5efe0;
@@ -42,10 +43,10 @@ nav{position:sticky;top:0;z-index:50;background:rgba(244,241,235,.97);backdrop-f
 .tab{flex:0 0 auto;font-family:var(--mono);font-size:.63rem;letter-spacing:.05em;color:var(--muted);border:1.5px solid transparent;border-radius:999px;padding:.38rem .8rem;white-space:nowrap;transition:all .12s}
 .tab.on{color:var(--bg);font-weight:700}
 .tab[data-tab=dash].on{background:var(--ink)}
-.tab[data-tab=badi].on{background:var(--bdi)}
+.tab[data-tab=badi].on{background:var(--badi-tab)}
 .tab[data-tab=swim].on{background:var(--swim)}
 .tab[data-tab=dry].on{background:var(--dA)}
-.tab[data-tab=method].on{background:var(--dC)}
+.tab[data-tab=method].on{background:var(--mth-tab)}
 .tab[data-tab=log].on{background:var(--ink)}
 main{padding-top:.5rem}
 .view{display:none;animation:vu .16s ease}.view.on{display:block}
@@ -303,6 +304,7 @@ main{padding-top:.5rem}
 .subtabs::-webkit-scrollbar{display:none}
 .stab{flex:0 0 auto;font-family:var(--mono);font-size:.64rem;letter-spacing:.04em;color:var(--muted);border:1.5px solid var(--brd);border-radius:999px;padding:.35rem .75rem;white-space:nowrap;transition:all .12s}
 .stab.on{border-color:transparent;color:var(--bg);font-weight:700;background:var(--muted)}
+#v-method .stab.on{background:var(--mth-tab)}
 .stab.sa.on{background:var(--dA)}.stab.sb.on{background:var(--dB)}.stab.sc.on{background:var(--dC)}
 .stab.sm.on{background:var(--mob)}.stab.sbw.on{background:var(--bth)}
 .subview{display:none}.subview.on{display:block}
@@ -1909,12 +1911,18 @@ function showDrySess(id,btn){
   <div class="focus-cue card-d${id.toLowerCase()}A"><span class="cue-lbl">FOKUS</span>${sess.focus}</div>`;
 
  // Phases
+ const PH_COLORS={A:'var(--dA)',B:'var(--dB)',C:'var(--dC)',MOB:'var(--mob)',BW:'var(--bth)'};
+ const phCol=PH_COLORS[id]||'var(--muted)';
  variant.phases.forEach(ph=>{
-  h+=`<div class="phase"><div class="ph-name"><span>${ph.n}</span>${ph.dur?`<span class="ph-meta">${ph.dur}</span>`:''}</div>`;
+  h+=`<div style="background:var(--surf);border:1px solid var(--brd);border-radius:var(--r2);margin-bottom:.65rem;overflow:hidden;border-top:2px solid ${phCol}">
+   <div style="padding:.5rem .8rem;border-bottom:1px solid var(--brd);display:flex;align-items:center;justify-content:space-between">
+    <span style="font-family:var(--mono);font-size:.61rem;letter-spacing:.1em;text-transform:uppercase;color:${phCol};font-weight:700">${ph.n}</span>
+    ${ph.dur?`<span style="font-family:var(--mono);font-size:.55rem;color:var(--faint)">${ph.dur}</span>`:''}
+   </div>`;
   ph.items.forEach((ex,xi)=>{
    const key=`dry-${id}-${mode}-${ph.n}-${xi}`;
    const done=S.isdone(key);
-   h+=`<div class="ex-item ${done?'done-ex':''}" id="exitem-${key}">
+   h+=`<div class="ex-item ${done?'done-ex':''}" id="exitem-${key}" style="padding:.65rem .8rem;border-bottom:1px solid var(--brd)">
     <div class="ex-top">
      <div>
       <div class="ex-name">${ex.n}</div>
@@ -1922,7 +1930,7 @@ function showDrySess(id,btn){
      </div>
      <span class="ex-tgt v${id}">${ex.s||''}</span>
     </div>`;
-   if(ex.cue)h+=`<div class="ex-cue">${ex.cue}</div>`;
+   if(ex.cue)h+=`<div class="ex-cue">💡 ${ex.cue}</div>`;
    h+=`<div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin-top:.28rem">`;
    h+=`<button class="ex-done-btn ${done?'done':''}" onclick="toggleExDone('${key}',this,document.getElementById('exitem-${key}'))">✓</button>`;
    if(ex.held&&ex.dur){
@@ -1954,11 +1962,11 @@ const BADI_WS_URL = 'wss://badi-public.crowdmonitor.ch:9591/api';
 const BADI_CSV_URL = 'https://raw.githubusercontent.com/derbsq/Badi-Tracker/main/data/auslastung.csv';
 const BADI_BASE = 'https://raw.githubusercontent.com/derbsq/Badi-Tracker/main/data/';
 const BADI_TARGETS = [
-  {key:'city',     uid:'SSD-4',   label:'Hallenbad City',     short:'City',   match:['city'],            indoor:true,  lanes:true,  temp:'🌡 28°C · 32°C · 29°C'},
-  {key:'letzigraben',uid:'LETZI-1',label:'Freibad Letzigraben',short:'Letzi', match:['letzigraben'],     indoor:false, lanes:false, temp:'🌡 saisonal ~20–25°C'},
-  {key:'utoquai',  uid:'SSD-10',  label:'Seebad Utoquai',     short:'Uto',    match:['utoquai'],         indoor:false, lanes:false, temp:'🌡 Seewasser saisonal'},
-  {key:'letten',   uid:'flb6939', label:'Ob. Letten',         short:'Letten', match:['letten','flb6939'],indoor:false, lanes:false, temp:'🌡 Limmat saisonal'},
-  {key:'heuried',  uid:'fb012',   label:'Freibad Heuried',    short:'Hüried', match:['heuried'],         indoor:false, lanes:false, temp:'🌡 saisonal'}
+  {key:'city',     uid:'SSD-4',   label:'Hallenbad City',     short:'City',   match:['city'],            indoor:true,  lanes:true,  temp:'🌡 28°C · 32°C · 29°C', src:'https://www.hallenbad-city.ch'},
+  {key:'letzigraben',uid:'LETZI-1',label:'Freibad Letzigraben',short:'Letzi', match:['letzigraben'],     indoor:false, lanes:false, temp:'🌡 ~20–25°C', src:'https://www.badi-info.ch/bad/letzigraben'},
+  {key:'utoquai',  uid:'SSD-10',  label:'Seebad Utoquai',     short:'Uto',    match:['utoquai'],         indoor:false, lanes:false, temp:'🌡 Seewasser', src:'https://data.stadt-zuerich.ch/dataset/ugz_wassertemperaturen_seen'},
+  {key:'letten',   uid:'flb6939', label:'Ob. Letten',         short:'Letten', match:['letten','flb6939'],indoor:false, lanes:false, temp:'🌡 Limmat', src:'https://hydroproweb.zh.ch/Listen/AKT_HydroMess/Abfluss.html?stationsNr=2099'},
+  {key:'heuried',  uid:'fb012',   label:'Freibad Heuried',    short:'Heuried', match:['heuried'],         indoor:false, lanes:false, temp:'🌡 saisonal', src:'https://www.badi-info.ch/bad/heuried'}
 ];
 const HOLIDAYS_2026 = {
   '2026-01-01':'Neujahr','2026-01-02':'Berchtoldstag','2026-04-03':'Karfreitag',
@@ -1974,6 +1982,7 @@ let BADI_STATE = {
   selBad: localStorage.getItem('badi:bad')||'city',
   selView: (['heatmap','tagesverlauf','wochentag'].includes(localStorage.getItem('badi:view')))?localStorage.getItem('badi:view'):'tagesverlauf',
   selMonth: localStorage.getItem('badi:month')||'all',
+  selDate: new Date().toLocaleDateString('sv'),
   oracleDay: 0,
   ws: null, wsTimer: null,
   charts: {}
@@ -2063,6 +2072,8 @@ async function badiLoadData(){
     if(r.ok)BADI_STATE.vario=await r.json();
   }catch{}
   if(BADI_STATE.bahnen||BADI_STATE.vario)badiRenderLanes();
+  await loadPoolTemps();
+  badiRenderLiveCards();
 }
 
 // ─── Live cards ───────────────────────────────────────────────
@@ -2071,7 +2082,11 @@ function badiRenderLiveCards(){
   if(!c)return;
   c.innerHTML=BADI_TARGETS.map(t=>{
     const e=BADI_STATE.live[t.key];
-    if(!e)return`<div class="badi-cell"><div class="badi-cell-status-bar" style="width:0%;background:var(--faint)"></div><div class="badi-cell-name">${t.short||t.label}</div><div style="font-size:2rem;font-weight:600;color:var(--muted);line-height:1.1">—</div><div class="card-temp" style="font-size:.6rem;margin-top:2px;color:var(--faint)">${t.temp}</div></div>`;
+    const liveTemp=POOL_TEMPS[t.key];
+    const tempHtml=liveTemp
+      ?`<a href="${t.src}" target="_blank" rel="noopener" style="font-size:.58rem;color:var(--faint);text-decoration:none;margin-top:3px;display:block" title="Quelle">🌡 ${liveTemp}</a>`
+      :`<div style="font-size:.58rem;color:var(--faint);margin-top:3px">${t.temp}</div>`;
+    if(!e)return`<div class="badi-cell"><div class="badi-cell-status-bar" style="width:0%;background:var(--faint)"></div><div class="badi-cell-name">${t.short||t.label}</div><div style="font-size:2rem;font-weight:600;color:var(--muted);line-height:1.1">—</div>${tempHtml}</div>`;
     const fill=parseInt(e.currentfill)||0;
     const max=parseInt(e.maxspace)||100;
     const ratio=fill/max;
@@ -2083,7 +2098,7 @@ function badiRenderLiveCards(){
       <div class="badi-cell-name">${t.short||t.label}</div>
       <div style="font-size:2rem;font-weight:600;line-height:1.1;color:${col}">${fill}</div>
       <div style="font-family:var(--mono);font-size:.58rem;color:var(--muted);margin-top:2px">${pct}% · ${lbl.t}</div>
-      <div class="card-temp" style="font-size:.6rem;margin-top:3px;color:var(--faint)">${t.temp}</div>
+      ${tempHtml}
     </div>`;
   }).join('');
   // Update dashboard compact cards too
@@ -2119,6 +2134,8 @@ function badiSelView(view){
   BADI_STATE.selView=view;
   localStorage.setItem('badi:view',view);
   document.querySelectorAll('.badi-view-btn').forEach(b=>b.classList.toggle('on',b.dataset.view===view));
+  const dp=document.getElementById('badi-date-picker');
+  if(dp)dp.style.display=view==='tagesverlauf'?'inline-block':'none';
   badiRenderCurrentView();
 }
 
@@ -2151,92 +2168,91 @@ function badiRenderCurrentView(){
 function badiRenderHeatmap(){
   const canvas=document.getElementById('badi-chart-canvas');
   if(!canvas)return;
+  if(BADI_STATE.charts.main)BADI_STATE.charts.main.destroy();
   const data=badiFilteredData();
   const DAY_MAP={Monday:0,Tuesday:1,Wednesday:2,Thursday:3,Friday:4,Saturday:5,Sunday:6};
-  const DAY_LABELS=['Mo','Di','Mi','Do','Fr','Sa','So'];
-  const HOURS=Array.from({length:16},(_,i)=>i+6);
   const buckets={};
   data.forEach(r=>{
-    const d=DAY_MAP[r.weekday];
-    const h=parseInt(r.hour);
-    const ratio=parseFloat(r.fill_ratio);
+    const d=DAY_MAP[r.weekday];const h=parseInt(r.hour);const ratio=parseFloat(r.fill_ratio);
     if(d===undefined||isNaN(h)||isNaN(ratio))return;
-    const k=d+'_'+h;
-    if(!buckets[k]){buckets[k]={sum:0,count:0};}
+    const k=d+'_'+h;if(!buckets[k])buckets[k]={sum:0,count:0};
     buckets[k].sum+=ratio;buckets[k].count++;
   });
-  // Draw on canvas
-  const W=canvas.parentElement.offsetWidth-32||300;
-  const CELL_W=Math.max((W-30)/HOURS.length,16);
-  const CELL_H=22;
-  canvas.width=W;
-  canvas.height=DAY_LABELS.length*CELL_H+28;
-  const ctx=canvas.getContext('2d');
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  // Today highlight
-  const todayDow=(new Date().getDay()+6)%7;
-  // Draw cells
-  DAY_LABELS.forEach((dl,di)=>{
-    ctx.fillStyle=di===todayDow?'rgba(26,74,46,.08)':'transparent';
-    ctx.fillRect(30,di*CELL_H,W-30,CELL_H);
-    ctx.fillStyle=di===todayDow?'#1a4a2e':'#aaa49d';
-    ctx.font=(di===todayDow?'bold ':'')+`10px DM Mono,monospace`;
-    ctx.fillText(dl,2,di*CELL_H+CELL_H-5);
-    HOURS.forEach((h,hi)=>{
-      const b=buckets[di+'_'+h];
-      const ratio=b?b.sum/b.count:null;
-      ctx.fillStyle=ratio!==null?ratio2color(ratio):'#ede9e0';
-      ctx.fillRect(30+hi*CELL_W,di*CELL_H+1,CELL_W-1,CELL_H-2);
-      if(b&&b.count>0){
-        ctx.fillStyle='rgba(255,255,255,.7)';
-        ctx.font='8px DM Mono,monospace';
-        ctx.fillText(Math.round(ratio*100)+'%',30+hi*CELL_W+2,di*CELL_H+CELL_H-5);
+  const matrixData=[];
+  for(let d=0;d<7;d++)for(let h=6;h<=21;h++){
+    const b=buckets[d+'_'+h];
+    matrixData.push({x:h,y:d,v:b?b.sum/b.count:null});
+  }
+  canvas.style.height='220px';canvas.height=220;
+  BADI_STATE.charts.main=new Chart(canvas,{
+    type:'matrix',
+    data:{datasets:[{label:'Auslastung',data:matrixData,
+      backgroundColor:c=>{const v=c.raw?.v;if(v===null||v===undefined)return'rgba(150,150,150,0.06)';return ratio2color(v)+'cc';},
+      borderColor:'rgba(0,0,0,0.06)',borderWidth:1,
+      width:c=>{const a=c.chart.chartArea;return a?(a.width-2)/16-1:18;},
+      height:c=>{const a=c.chart.chartArea;return a?(a.height-2)/7-1:26;}
+    }]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{title:()=>'',label:c=>`${['Mo','Di','Mi','Do','Fr','Sa','So'][c.raw.y]} ${c.raw.x}:00 · ${c.raw.v===null?'—':Math.round(c.raw.v*100)+'%'}`}}},
+      scales:{
+        x:{type:'linear',min:5.5,max:21.5,ticks:{stepSize:1,callback:v=>Number.isInteger(v)?v+':00':'',color:'rgba(170,164,157,.8)',font:{size:9,family:'DM Mono'}},grid:{display:false}},
+        y:{type:'linear',min:-0.5,max:6.5,reverse:true,ticks:{stepSize:1,callback:v=>['Mo','Di','Mi','Do','Fr','Sa','So'][Math.round(v)]??'',color:'rgba(170,164,157,.8)',font:{size:10,family:'DM Mono'}},grid:{display:false}}
       }
-    });
+    }
   });
-  // Hour labels
-  ctx.fillStyle='#aaa49d';ctx.font='9px DM Mono,monospace';
-  HOURS.forEach((h,hi)=>{if(h%2===0)ctx.fillText(h+'h',30+hi*CELL_W,DAY_LABELS.length*CELL_H+14);});
-  // Info
   const info=document.getElementById('badi-chart-info');
-  if(info)info.textContent=data.length>0?`${data.length} Datenpunkte · ${BADI_TARGETS.find(t=>t.key===BADI_STATE.selBad)?.label||''}`:'Noch keine historischen Daten für diese Ansicht.';
+  if(info)info.textContent=data.length>0?`${data.length} Datenpunkte · ${BADI_TARGETS.find(t=>t.key===BADI_STATE.selBad)?.short||''}`:'Noch keine Daten.';
 }
 
 // ─── Tagesverlauf ─────────────────────────────────────────────
 function badiRenderTagesverlauf(){
   const canvas=document.getElementById('badi-chart-canvas');
   if(!canvas)return;
-  const data=badiFilteredData();
-  const t=BADI_TARGETS.find(t=>t.key===BADI_STATE.selBad)||BADI_TARGETS[0];
-  const todayDow=new Date().getDay();// 0=So,1=Mo...
-  const DAY_MAP_BACK={0:'Sunday',1:'Monday',2:'Tuesday',3:'Wednesday',4:'Thursday',5:'Friday',6:'Saturday'};
-  const selectedDay=DAY_MAP_BACK[todayDow];
-  const HOURS=Array.from({length:16},(_,i)=>i+6);
-  const byHour={};
-  data.filter(r=>r.weekday===selectedDay).forEach(r=>{
-    const h=parseInt(r.hour);const ratio=parseFloat(r.fill_ratio);
-    if(isNaN(h)||isNaN(ratio))return;
-    if(!byHour[h])byHour[h]=[];
-    byHour[h].push(ratio);
-  });
-  const avgs=HOURS.map(h=>{
-    const v=byHour[h];
-    return v&&v.length>0?Math.round((v.reduce((s,x)=>s+x,0)/v.length)*100):null;
-  });
-  // Chart
   if(BADI_STATE.charts.main)BADI_STATE.charts.main.destroy();
-  canvas.height=180;
-  BADI_STATE.charts.main=new Chart(canvas,{
-    type:'bar',
-    data:{
-      labels:HOURS.map(h=>h+'h'),
-      datasets:[{label:'Ø Belegung %',data:avgs,backgroundColor:avgs.map(v=>v!==null?ratio2color(v/100)+'bb':'#ede9e0'),borderRadius:4}]
-    },
-    options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.y!==null?c.parsed.y+'%':'–'}}},scales:{y:{max:100,ticks:{font:{family:'DM Mono'},callback:v=>v+'%'}}}}
-  });
+  const t=BADI_TARGETS.find(t=>t.key===BADI_STATE.selBad)||BADI_TARGETS[0];
+  const selDate=BADI_STATE.selDate||new Date().toLocaleDateString('sv');
+  const dp=document.getElementById('badi-date-picker');
+  if(dp)dp.value=selDate;
+  const allData=BADI_STATE.history.filter(r=>r.uid===t.uid);
+  const dayData=allData.filter(r=>(r.timestamp_local||'').slice(0,10)===selDate);
   const info=document.getElementById('badi-chart-info');
-  const DAY_DE=['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
-  if(info)info.textContent=`Ø für ${DAY_DE[todayDow]} · ${t.label}`;
+  if(dayData.length>0){
+    const sorted=dayData.slice().sort((a,b)=>(a.timestamp_local||'').localeCompare(b.timestamp_local||''));
+    const maxSpace=parseInt(sorted[0]?.maxspace)||220;
+    const points=sorted.map(r=>({x:r.timestamp_local.slice(11,16),y:parseInt(r.currentfill)||Math.round(parseFloat(r.fill_ratio)*maxSpace)}));
+    const labels=points.map(p=>p.x);
+    const vals=points.map(p=>p.y);
+    canvas.height=200;
+    BADI_STATE.charts.main=new Chart(canvas,{
+      type:'line',
+      data:{labels,datasets:[{label:'Personen',data:vals,borderColor:'#4a9eff',backgroundColor:'rgba(74,158,255,.15)',pointRadius:3,borderWidth:2,tension:.3,fill:true}]},
+      options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.raw} P (${Math.round(c.raw/maxSpace*100)}%)`}}},
+        scales:{x:{ticks:{color:'var(--muted)',font:{size:9,family:'DM Mono'},maxRotation:0,autoSkip:true,maxTicksLimit:10}},y:{min:0,suggestedMax:maxSpace,ticks:{callback:v=>v+' P',color:'var(--muted)',font:{size:9,family:'DM Mono'}}}}}
+    });
+    if(info)info.textContent=`${points.length} Messpunkte · ${t.short||t.label} · ${new Date(selDate+'T12:00:00').toLocaleDateString('de-CH',{day:'2-digit',month:'long'})}`;
+  } else {
+    const DAY_MAP_BACK={0:'Sunday',1:'Monday',2:'Tuesday',3:'Wednesday',4:'Thursday',5:'Friday',6:'Saturday'};
+    const dow=new Date(selDate+'T12:00:00').getDay();
+    const selectedDay=DAY_MAP_BACK[dow];
+    const HOURS=Array.from({length:16},(_,i)=>i+6);
+    const byHour={};
+    allData.filter(r=>r.weekday===selectedDay).forEach(r=>{
+      const h=parseInt(r.hour);const ratio=parseFloat(r.fill_ratio);
+      if(isNaN(h)||isNaN(ratio))return;
+      if(!byHour[h])byHour[h]=[];byHour[h].push(ratio);
+    });
+    const maxSpace=parseInt(allData[0]?.maxspace)||220;
+    const avgs=HOURS.map(h=>{const v=byHour[h];return v?.length?Math.round((v.reduce((s,x)=>s+x,0)/v.length)*maxSpace):null;});
+    canvas.height=200;
+    BADI_STATE.charts.main=new Chart(canvas,{
+      type:'bar',
+      data:{labels:HOURS.map(h=>h+'h'),datasets:[{label:'Ø Personen',data:avgs,backgroundColor:avgs.map(v=>v!==null?ratio2color(v/maxSpace)+'bb':'transparent'),borderRadius:4}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.raw!==null?c.raw+' P':'–'}}},scales:{y:{min:0,suggestedMax:maxSpace,ticks:{callback:v=>v+' P',color:'var(--muted)',font:{size:9}}}}}
+    });
+    const DAY_DE=['So','Mo','Di','Mi','Do','Fr','Sa'];
+    if(info)info.textContent=`Noch keine Daten für ${selDate} — Wochentag-Ø (${DAY_DE[dow]})`;
+  }
 }
 
 // ─── Mittel pro Wochentag ─────────────────────────────────────
@@ -2270,50 +2286,53 @@ function badiRenderWochentag(){
 
 // ─── Bahnenbelegung ───────────────────────────────────────────
 function badiRenderLanes(){
-  const wrap=document.getElementById('badi-lanes-wrap');
-  if(!wrap)return;
   const DAY_KEYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
   const DAY_DE=['So','Mo','Di','Mi','Do','Fr','Sa'];
   const now=new Date();
   const nowSlot=`${String(now.getHours()).padStart(2,'0')}:${now.getMinutes()<30?'00':'30'}`;
-  function renderLaneTable(src,title,totalLanes){
-    if(!src?.schedule)return'';
+  function renderLaneGrid(src,totalLanes,targetId){
+    const wrap=document.getElementById(targetId);
+    if(!wrap)return;
+    if(!src?.schedule){wrap.innerHTML=`<div style="font-family:var(--mono);font-size:.65rem;color:var(--faint);padding:.5rem 0">Keine Daten verfügbar</div>`;return;}
     const today=new Date();
     const days=[];
     for(let i=0;i<7;i++){const d=new Date(today);d.setDate(today.getDate()+i);days.push(d);}
-    const slots=Object.keys(src.schedule.Monday||{}).sort();
-    let html=`<div style="margin-bottom:1rem">
-<div style="font-family:var(--mono);font-size:.56rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem">${title}</div>
-<div style="overflow-x:auto;-webkit-overflow-scrolling:touch">
-<table style="border-collapse:collapse;font-size:10px;width:100%;font-variant-numeric:tabular-nums">
-<thead><tr><th style="padding:3px 5px;text-align:left;color:var(--faint);font-family:var(--mono);font-weight:500;position:sticky;left:0;background:var(--bg)">Zeit</th>`;
+    const slots=Object.keys(src.schedule.Monday||src.schedule[Object.keys(src.schedule)[0]]||{}).sort();
+    // Grid: rows=slots, cols=days; cells are colored blocks
+    const COL_W=42;const ROW_H=26;
+    let html=`<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:.35rem">
+<div style="display:grid;grid-template-columns:40px ${days.map(()=>COL_W+'px').join(' ')};gap:2px;min-width:${40+days.length*(COL_W+2)}px">`;
+    // Header row
+    html+=`<div style="font-size:0"></div>`;
     days.forEach(d=>{
       const isTod=d.toDateString()===today.toDateString();
-      const ds=d.toLocaleDateString('de-CH',{day:'2-digit',month:'2-digit'});
-      html+=`<th style="padding:3px 5px;text-align:center;color:${isTod?'var(--bdi)':'var(--faint)'};font-family:var(--mono);font-weight:${isTod?700:400}">${DAY_DE[d.getDay()]}<br><span style="font-size:9px;opacity:.7">${ds}</span></th>`;
+      html+=`<div style="font-family:var(--mono);font-size:.55rem;text-align:center;color:${isTod?'var(--swim)':'var(--faint)'};font-weight:${isTod?700:400};padding:1px 0">${DAY_DE[d.getDay()]}<br><span style="font-size:.48rem;opacity:.75">${d.toLocaleDateString('de-CH',{day:'2-digit',month:'2-digit'})}</span></div>`;
     });
-    html+=`</tr></thead><tbody>`;
+    // Slot rows
     slots.forEach(slot=>{
       const isNow=slot===nowSlot;
-      html+=`<tr style="${isNow?'outline:1.5px solid var(--bdi);outline-offset:-1px;':''}">`;
-      html+=`<td style="padding:3px 5px;color:var(--faint);font-family:var(--mono);white-space:nowrap;position:sticky;left:0;background:var(--bg);font-weight:${isNow?700:400}">${slot}</td>`;
+      html+=`<div style="font-family:var(--mono);font-size:.52rem;color:${isNow?'var(--swim)':'var(--faint)'};font-weight:${isNow?700:400};display:flex;align-items:center;white-space:nowrap">${slot}</div>`;
       days.forEach(d=>{
         const dk=DAY_KEYS[d.getDay()];
         const entry=src.schedule?.[dk]?.[slot];
-        if(!entry){html+=`<td style="padding:3px 5px;text-align:center;color:var(--faint)">—</td>`;return;}
-        const pub=entry.public_lanes;
-        const tot=entry.total_lanes||totalLanes;
+        if(!entry){
+          html+=`<div style="height:${ROW_H}px;background:rgba(200,200,200,.06);border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:.5rem;color:var(--faint)">—</div>`;
+          return;
+        }
+        const pub=entry.public_lanes??totalLanes;
+        const tot=entry.total_lanes??totalLanes;
         const r=pub/tot;
-        const col=r>=0.8?'var(--ok)':r>=0.5?'#d4a017':'var(--err)';
-        html+=`<td style="padding:3px 5px;text-align:center;font-weight:600;color:${col}" title="${JSON.stringify(entry.occupants||{})}">${pub}/${tot}</td>`;
+        const bg=r>=0.9?'rgba(45,122,58,.75)':r>=0.65?'rgba(212,160,23,.65)':r>=0.4?'rgba(196,92,42,.65)':'rgba(160,32,32,.65)';
+        const occ=entry.occupants?Object.entries(entry.occupants).map(([k,v])=>`${k}: ${v}`).join(', '):'';
+        const tip=occ?`Belegt von: ${occ}`:`${pub}/${tot} öffentl. Bahnen`;
+        html+=`<div style="height:${ROW_H}px;background:${bg};border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:.6rem;font-weight:700;color:#fff;cursor:default;${isNow?'outline:2px solid var(--swim);outline-offset:-1px;':''}" title="${tip}">${pub}/${tot}</div>`;
       });
-      html+=`</tr>`;
     });
-    html+=`</tbody></table></div></div>`;
-    return html;
+    html+=`</div></div>`;
+    wrap.innerHTML=html;
   }
-  wrap.innerHTML=renderLaneTable(BADI_STATE.bahnen,'Schwimmerbecken (6 Bahnen)',6)+
-                 renderLaneTable(BADI_STATE.vario,'Variobecken (4 Bahnen)',4);
+  renderLaneGrid(BADI_STATE.bahnen,6,'badi-lanes-schwimmer-wrap');
+  renderLaneGrid(BADI_STATE.vario,4,'badi-lanes-vario-wrap');
 }
 
 // ─── Forecast (kNN) ───────────────────────────────────────────
@@ -2353,7 +2372,7 @@ function badiForecast(){
     const recency=Math.exp(-daysDiff*0.023);
     const similarity=W_WD*s_wd+W_HOL*s_hol+W_SCH*s_sch+W_TEMP*0.5+W_RAIN*0.5;
     return{date,day,score:0.70*similarity+0.30*recency};
-  }).filter(d=>d.date!==todayStr).sort((a,b)=>b.score-a.score).slice(0,20);
+  }).filter(d=>d.date!==todayStr).sort((a,b)=>b.score-a.score).slice(0,60);
   // Predict per hour
   const hours=Array.from({length:16},(_,i)=>i+6);
   const maxSpace=parseInt(data.find(r=>r.uid===uid)?.maxspace)||220;
@@ -2409,7 +2428,8 @@ function renderBadi(){
  </div>
  <div style="display:flex;gap:.2rem;flex-wrap:wrap;align-items:center;margin-bottom:.6rem">
   ${[['tagesverlauf','Tagesverlauf'],['heatmap','Heatmap'],['wochentag','Mittel/Wochentag']].map(([vv,l])=>`<button class="badi-view-btn hm-pill${BADI_STATE.selView===vv?' on':''}" data-view="${vv}" onclick="badiSelView('${vv}')">${l}</button>`).join('')}
-  <select id="badi-month-select" style="margin-left:.3rem;background:var(--bg);border:1.5px solid var(--brd);border-radius:999px;font-family:var(--mono);font-size:.6rem;color:var(--muted);padding:.18rem .55rem;cursor:pointer" onchange="badiSelMonth(this.value)">
+  <input type="date" id="badi-date-picker" value="${BADI_STATE.selDate}" style="display:${BADI_STATE.selView==='tagesverlauf'?'inline-block':'none'};background:var(--bg);border:1.5px solid var(--brd);border-radius:999px;font-family:var(--mono);font-size:.6rem;color:var(--muted);padding:.18rem .55rem;cursor:pointer" onchange="BADI_STATE.selDate=this.value;badiRenderCurrentView()">
+  <select id="badi-month-select" style="background:var(--bg);border:1.5px solid var(--brd);border-radius:999px;font-family:var(--mono);font-size:.6rem;color:var(--muted);padding:.18rem .55rem;cursor:pointer" onchange="badiSelMonth(this.value)">
    ${monthOpts.map(([mv,ml])=>`<option value="${mv}"${selM===mv?' selected':''}>${ml}</option>`).join('')}
   </select>
  </div>
@@ -2420,28 +2440,35 @@ function renderBadi(){
  <div id="badi-hist-status" style="font-family:var(--mono);font-size:.58rem;color:var(--faint);margin-top:.2rem">Lade…</div>
 </div>
 
-<details id="badi-forecast-details" style="margin-top:1rem">
+<div class="hm-wrap" style="margin-top:1rem;background:linear-gradient(135deg,#0d0d1a,#1a0a2e,#0d1a1a);border:1px solid #3a1f6e;border-radius:12px;padding:1.2rem;text-align:center">
+ <div style="font-family:var(--mono);font-size:.55rem;color:#6a4a9a;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.1rem">Forecast</div>
+ <div style="font-size:.95rem;font-weight:700;color:#c9a0ff;letter-spacing:.03em;margin-bottom:.05rem">Bésmeralda's Kleine Kristallkugel</div>
+ <div style="font-size:.68rem;color:#7a5aaa;font-style:italic;margin-bottom:.75rem">The Funky Badi Fortune Teller</div>
+ <img src="${BESM_IMG}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;margin-bottom:.75rem;box-shadow:0 0 28px rgba(140,80,255,.5)">
+ <div style="display:flex;gap:.2rem;flex-wrap:wrap;justify-content:center;margin-bottom:.4rem">
+  ${BADI_TARGETS.map(t=>`<button class="badi-fc-bad hm-pill${t.key===BADI_STATE.selBad?' on':''}" data-bad="${t.key}" onclick="badiFcBad('${t.key}')" style="border-color:#3a1f6e;color:#9a7acc;background:rgba(58,31,110,.22)">${t.short||t.label}</button>`).join('')}
+  <select id="badi-fc-day" style="background:#1a0a2e;border:1.5px solid #3a1f6e;border-radius:999px;font-family:var(--mono);font-size:.6rem;color:#9a7acc;padding:.18rem .55rem;cursor:pointer" onchange="badiForecast()">
+   <option value="-1">Gestern</option><option value="0" selected>Heute</option><option value="1">Morgen</option>
+  </select>
+ </div>
+ <div id="badi-fc-info" style="font-family:var(--mono);font-size:.56rem;color:#6a4a9a;margin-bottom:.5rem"></div>
+ <div style="position:relative;height:220px"><canvas id="badi-fc-canvas"></canvas></div>
+</div>
+
+<details id="badi-lanes-schwimmer" style="margin-top:.5rem">
  <summary style="font-family:var(--mono);font-size:.7rem;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;padding:.55rem 0;border-top:1px solid var(--brd)">
-  <span>📊 Forecast</span><span style="font-size:.6rem;color:var(--faint);font-style:italic">The Funky Badi Fortune Teller</span><span style="font-size:.6rem">▸</span>
+  <span>🏊 Schwimmerbecken · 6 Bahnen</span><span style="font-size:.6rem">▸</span>
  </summary>
- <div style="padding:.65rem 0 .35rem">
-  <div style="display:flex;gap:.2rem;flex-wrap:wrap;align-items:center;margin-bottom:.45rem">
-   ${BADI_TARGETS.map(t=>`<button class="badi-fc-bad hm-pill${t.key===BADI_STATE.selBad?' on':''}" data-bad="${t.key}" onclick="badiFcBad('${t.key}')">${t.short||t.label}</button>`).join('')}
-   <select id="badi-fc-day" style="margin-left:.3rem;background:var(--bg);border:1.5px solid var(--brd);border-radius:999px;font-family:var(--mono);font-size:.6rem;color:var(--muted);padding:.18rem .55rem;cursor:pointer" onchange="badiForecast()">
-    <option value="-1">Gestern</option><option value="0" selected>Heute</option><option value="1">Morgen</option>
-   </select>
-  </div>
-  <div id="badi-fc-info" style="font-family:var(--mono);font-size:.58rem;color:var(--faint);margin-bottom:.4rem"></div>
-  <div style="position:relative;height:220px"><canvas id="badi-fc-canvas"></canvas></div>
+ <div id="badi-lanes-schwimmer-wrap" style="margin-top:.4rem">
+  <div style="font-family:var(--mono);font-size:.65rem;color:var(--faint)">Lade…</div>
  </div>
 </details>
-
-<details id="badi-lanes-details" style="margin-top:.5rem">
+<details id="badi-lanes-vario" style="margin-top:.3rem">
  <summary style="font-family:var(--mono);font-size:.7rem;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;padding:.55rem 0;border-top:1px solid var(--brd)">
-  <span>Bahnenbelegung Hallenbad City</span><span style="font-size:.6rem">▸</span>
+  <span>🔀 Variobecken · 4 Bahnen</span><span style="font-size:.6rem">▸</span>
  </summary>
- <div id="badi-lanes-wrap" style="margin-top:.55rem">
-  <div style="font-family:var(--mono);font-size:.65rem;color:var(--faint)">Lade Bahnen-Daten…</div>
+ <div id="badi-lanes-vario-wrap" style="margin-top:.4rem">
+  <div style="font-family:var(--mono);font-size:.65rem;color:var(--faint)">Lade…</div>
  </div>
 </details>
 
@@ -2452,10 +2479,8 @@ function renderBadi(){
   if(!['heatmap','tagesverlauf','wochentag'].includes(BADI_STATE.selView))BADI_STATE.selView='tagesverlauf';
   document.querySelectorAll('.badi-view-btn').forEach(b=>b.classList.toggle('on',b.dataset.view===BADI_STATE.selView));
   BADI_STATE.selMonth=selM;
-  const fcDet=document.getElementById('badi-forecast-details');
-  if(fcDet)fcDet.addEventListener('toggle',()=>{if(fcDet.open&&BADI_STATE.history.length>0)badiForecast();});
   badiConnectWS();
-  badiLoadData().then(()=>{badiRenderCurrentView();});
+  badiLoadData().then(()=>{badiRenderCurrentView();badiForecast();});
 }
 
 function badiFcBad(key){
@@ -2614,9 +2639,12 @@ function toggleCard(card){card.classList.toggle('open');}
 document.addEventListener('DOMContentLoaded',()=>{
  // Tab clicks
  document.querySelectorAll('.tab').forEach(t=>{t.addEventListener('click',()=>switchTab(t.dataset.tab));});
- // Load Chart.js
+ // Load Chart.js + matrix plugin
  const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js';
- s.onload=()=>{if(el('badi-hm-canvas'))loadBadiData();};
+ s.onload=()=>{
+   const m=document.createElement('script');m.src='https://cdn.jsdelivr.net/npm/chartjs-chart-matrix@2.0.1/dist/chartjs-chart-matrix.min.js';
+   document.head.appendChild(m);
+ };
  document.head.appendChild(s);
  // Init dash
  renderDash();
