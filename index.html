@@ -1441,28 +1441,23 @@ function renderDash(){
   wxCols+=`<div class="wk-col${isToday?' wk-today':''}${isPast?' wk-past':''}" data-ds="${ds}">
    <div class="wk-col-dow">${wd}</div>
    <div class="wk-col-d">${dm}</div>
+   <div class="wk-wx-icon">${wxIcon}</div>
+   <div class="wk-wx-temp"><span>${wxMax}</span>${wxMin?' '+wxMin:''}</div>
    <div class="wk-wx-rain"><div class="wk-wx-rain-fill" style="width:${wxRain}%"></div></div>
    <div class="wk-sess-wrap">${pills}</div>
   </div>`;
  }
 
- const weekHtml=`<div class="sl">DIESE WOCHE</div>
-<a href="https://www.meteoswiss.admin.ch/local-forecasts/regional-weather/8004.html" target="_blank" rel="noopener" id="wx-card" style="background:var(--surf);border:1.5px solid var(--brd);border-radius:var(--r2);padding:.75rem .85rem;margin-bottom:.6rem;display:block;text-decoration:none;cursor:pointer">
- <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.55rem">
-  <div style="display:flex;align-items:center;gap:.5rem">
-   <span style="font-size:1.4rem;line-height:1" id="wx-icon-el">—</span>
-   <div>
-    <div style="font-family:var(--mono);font-size:1rem;font-weight:700" id="wx-main-text">Wetter lädt…</div>
-    <div style="font-family:var(--mono);font-size:.6rem;color:var(--muted)" id="wx-sub-text">Zürich 8004</div>
-   </div>
-  </div>
-  <div style="text-align:right">
-   <div style="font-family:var(--mono);font-size:.58rem;color:var(--faint)" id="wx-right-text">Jetzt</div>
-   <div style="font-family:var(--mono);font-size:.62rem;color:#1a7fa8;margin-top:3px;font-weight:500" id="wx-precip-text"></div>
-  </div>
+ const wxTodayHtml=`<a href="https://www.meteoswiss.admin.ch/home/measurement-and-forecasting-systems/atmosphere/precipitation-measurement/rain-radars.html" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:.75rem;background:var(--surf);border:1.5px solid var(--brd);border-radius:var(--r2);padding:.65rem .85rem;margin-bottom:.9rem;text-decoration:none;cursor:pointer">
+ <span style="font-size:1.5rem;line-height:1" id="wx-icon-el">—</span>
+ <div style="flex:1;min-width:0">
+  <div style="font-family:var(--mono);font-size:.95rem;font-weight:700" id="wx-main-text">—°C</div>
+  <div style="font-family:var(--mono);font-size:.6rem;color:var(--muted)" id="wx-sub-text">Zürich · lädt…</div>
  </div>
- <div id="wx-7day" style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px"></div>
-</a>
+ <div style="font-family:var(--mono);font-size:.65rem;color:#1a7fa8;font-weight:500;text-align:right" id="wx-precip-text"></div>
+</a>`;
+
+ const weekHtml=`${wxTodayHtml}<div class="sl">DIESE WOCHE</div>
 <div style="background:var(--surf);border:1.5px solid var(--brd);border-radius:var(--r2);padding:.85rem">
  <div class="wk-nav">
   <button class="wk-nav-btn" onclick="DASH_WEEK_OFFSET--;renderDash()">←</button>
@@ -2762,30 +2757,34 @@ function refreshBadiCards(){
 
 // ── UPDATE WEEK WEATHER COLUMNS ─────────────────────────────
 function updateWeekWxCols(){
- // Update rain bars in week columns
+ // Update icon, temp, rain bar in each week column
  document.querySelectorAll('.wk-col[data-ds]').forEach(col=>{
   const ds=col.dataset.ds;const wx=WEEK_WX[ds];if(!wx)return;
+  const icon=col.querySelector('.wk-wx-icon');
+  const temp=col.querySelector('.wk-wx-temp');
   const rain=col.querySelector('.wk-wx-rain-fill');
+  if(icon)icon.textContent=wx.icon;
+  if(temp)temp.innerHTML='<span>'+Math.round(wx.max)+'°</span> '+Math.round(wx.min)+'°';
   if(rain)rain.style.width=(wx.rain||0)+'%';
  });
- // Update wx-card
+ // Update today weather strip
  const tw=WEEK_WX[TODAY_STR];
  if(!tw)return;
- const setEl=(id,val,html)=>{const e=document.getElementById(id);if(e){if(html)e.innerHTML=val;else e.textContent=val;}};
- setEl('wx-icon-el',tw.icon,false);
- setEl('wx-main-text',Math.round(tw.max)+'°C',false);
- setEl('wx-sub-text',wmoDesc(tw.code||0)+' · '+Math.round(tw.min)+'–'+Math.round(tw.max)+'°',false);
- setEl('wx-right-text',new Date().toLocaleTimeString('de-CH',{hour:'2-digit',minute:'2-digit'}),false);
- // Precipitation text: probability + peak hour
+ const setEl=(id,val)=>{const e=document.getElementById(id);if(e)e.textContent=val;};
+ setEl('wx-icon-el',tw.icon);
+ setEl('wx-main-text',Math.round(tw.max)+'°C');
+ setEl('wx-sub-text','Zürich · '+wmoDesc(tw.code||0));
+ // Precipitation: probability + peak hour
  const rain=tw.rain||0;
  let precipText='';
  if(rain>=70)precipText=rain+'% Regen';
- else if(rain>=30)precipText=rain+'% Regenrisiko';
+ else if(rain>=40)precipText=rain+'% Regenrisiko';
+ else if(rain>=10)precipText=rain+'%';
  if(rain>=20&&WX_HOURLY_PRECIP.length){
   const peak=WX_HOURLY_PRECIP.filter(h=>h.prob>=30).reduce((a,b)=>b.prob>a.prob?b:a,{prob:0,hour:null});
   if(peak.hour!==null)precipText+=(precipText?' · ':'')+'Peak ~'+peak.hour+'h';
  }
- setEl('wx-precip-text',precipText,false);
+ setEl('wx-precip-text',precipText);
  // Build 7-day strip
  const strip=document.getElementById('wx-7day');
  if(!strip)return;
