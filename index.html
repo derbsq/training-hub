@@ -340,6 +340,8 @@ main{padding-top:.5rem}
 .hm-sel{display:flex;gap:.22rem;flex-wrap:wrap;margin-bottom:.6rem}
 .hm-pill{font-family:var(--mono);font-size:.6rem;padding:.18rem .56rem;border-radius:999px;border:1.5px solid var(--brd);color:var(--muted);cursor:pointer;transition:all .11s}
 .hm-pill.on{background:var(--bdi);color:#fff;border-color:var(--bdi)}
+#v-badi .hm-pill.on{background:var(--badi-tab);border-color:var(--badi-tab);color:var(--ink)}
+#v-swim .hm-pill.on{background:var(--swim);border-color:var(--swim);color:#fff}
 .hm-lbl{font-family:var(--mono);font-size:.52rem;color:var(--muted);display:flex;align-items:center;justify-content:center;padding:1px}
 .hm-cell{height:15px;border-radius:2px}
 
@@ -1575,7 +1577,7 @@ async function loadPoolTemps(){
   if(d.city?.temp!=null)POOL_TEMPS.city=d.city.temp+'°C';
   if(d.letzigraben?.temp!=null)POOL_TEMPS.letzigraben=d.letzigraben.temp+'°C';
   if(d.utoquai?.temp!=null)POOL_TEMPS.utoquai=d.utoquai.temp+'°C';
-  if(d.letten?.water_temp!=null&&!LETTEN_DATA.temp)LETTEN_DATA.temp=d.letten.water_temp;
+  if(d.letten?.water_temp!=null){POOL_TEMPS.letten=d.letten.water_temp+'°C';if(!LETTEN_DATA.temp)LETTEN_DATA.temp=d.letten.water_temp;}
   refreshBadiCards();
  }catch(e){console.log('Pool temps fail:',e.message);}
 }
@@ -1962,11 +1964,11 @@ const BADI_WS_URL = 'wss://badi-public.crowdmonitor.ch:9591/api';
 const BADI_CSV_URL = 'https://raw.githubusercontent.com/derbsq/Badi-Tracker/main/data/auslastung.csv';
 const BADI_BASE = 'https://raw.githubusercontent.com/derbsq/Badi-Tracker/main/data/';
 const BADI_TARGETS = [
-  {key:'city',     uid:'SSD-4',   label:'Hallenbad City',     short:'City',   match:['city'],            indoor:true,  lanes:true,  temp:'🌡 28°C · 32°C · 29°C', src:'https://www.hallenbad-city.ch'},
-  {key:'letzigraben',uid:'LETZI-1',label:'Freibad Letzigraben',short:'Letzi', match:['letzigraben'],     indoor:false, lanes:false, temp:'🌡 ~20–25°C', src:'https://www.badi-info.ch/bad/letzigraben'},
-  {key:'utoquai',  uid:'SSD-10',  label:'Seebad Utoquai',     short:'Uto',    match:['utoquai'],         indoor:false, lanes:false, temp:'🌡 Seewasser', src:'https://data.stadt-zuerich.ch/dataset/ugz_wassertemperaturen_seen'},
-  {key:'letten',   uid:'flb6939', label:'Ob. Letten',         short:'Letten', match:['letten','flb6939'],indoor:false, lanes:false, temp:'🌡 Limmat', src:'https://hydroproweb.zh.ch/Listen/AKT_HydroMess/Abfluss.html?stationsNr=2099'},
-  {key:'heuried',  uid:'fb012',   label:'Freibad Heuried',    short:'Heuried', match:['heuried'],         indoor:false, lanes:false, temp:'🌡 saisonal', src:'https://www.badi-info.ch/bad/heuried'}
+  {key:'city',     uid:'SSD-4',   label:'Hallenbad City',     short:'City',   match:['city'],            indoor:true,  lanes:true,  temp:'🌡 28°C',        src:'https://www.hallenbad-city.ch'},
+  {key:'letzigraben',uid:'LETZI-1',label:'Freibad Letzigraben',short:'Letzi', match:['letzigraben'],     indoor:false, lanes:false, temp:'🌡 saisonal',    src:'https://www.zueriwiki.ch/wiki/Freibad_Letzigraben'},
+  {key:'utoquai',  uid:'SSD-10',  label:'Seebad Utoquai',     short:'Uto',    match:['utoquai'],         indoor:false, lanes:false, temp:'🌡 Seewasser',   src:'https://www.seebad-utoquai.ch'},
+  {key:'letten',   uid:'flb6939', label:'Ob. Letten',         short:'Letten', match:['letten','flb6939'],indoor:false, lanes:false, temp:'🌡 Limmat',      src:'https://www.oberletten.ch'},
+  {key:'heuried',  uid:'fb012',   label:'Freibad Heuried',    short:'Heuried', match:['heuried'],         indoor:false, lanes:false, temp:'🌡 saisonal',   src:null}
 ];
 const HOLIDAYS_2026 = {
   '2026-01-01':'Neujahr','2026-01-02':'Berchtoldstag','2026-04-03':'Karfreitag',
@@ -1983,6 +1985,7 @@ let BADI_STATE = {
   selView: (['heatmap','tagesverlauf','wochentag'].includes(localStorage.getItem('badi:view')))?localStorage.getItem('badi:view'):'tagesverlauf',
   selMonth: localStorage.getItem('badi:month')||'all',
   selDate: new Date().toLocaleDateString('sv'),
+  fcOffset: 0,
   oracleDay: 0,
   ws: null, wsTimer: null,
   charts: {}
@@ -2083,9 +2086,10 @@ function badiRenderLiveCards(){
   c.innerHTML=BADI_TARGETS.map(t=>{
     const e=BADI_STATE.live[t.key];
     const liveTemp=POOL_TEMPS[t.key];
-    const tempHtml=liveTemp
-      ?`<a href="${t.src}" target="_blank" rel="noopener" style="font-size:.58rem;color:var(--faint);text-decoration:none;margin-top:3px;display:block" title="Quelle">🌡 ${liveTemp}</a>`
-      :`<div style="font-size:.58rem;color:var(--faint);margin-top:3px">${t.temp}</div>`;
+    const tempVal=liveTemp||t.temp;
+    const tempHtml=liveTemp&&t.src
+      ?`<a href="${t.src}" target="_blank" rel="noopener" style="font-family:var(--mono);font-size:.58rem;color:var(--faint);text-decoration:none;margin-top:4px;display:block">🌡 ${liveTemp}</a>`
+      :`<div style="font-family:var(--mono);font-size:.58rem;color:var(--faint);margin-top:4px">${tempVal}</div>`;
     if(!e)return`<div class="badi-cell"><div class="badi-cell-status-bar" style="width:0%;background:var(--faint)"></div><div class="badi-cell-name">${t.short||t.label}</div><div style="font-size:2rem;font-weight:600;color:var(--muted);line-height:1.1">—</div>${tempHtml}</div>`;
     const fill=parseInt(e.currentfill)||0;
     const max=parseInt(e.maxspace)||100;
@@ -2135,7 +2139,7 @@ function badiSelView(view){
   localStorage.setItem('badi:view',view);
   document.querySelectorAll('.badi-view-btn').forEach(b=>b.classList.toggle('on',b.dataset.view===view));
   const dp=document.getElementById('badi-date-picker');
-  if(dp)dp.style.display=view==='tagesverlauf'?'inline-block':'none';
+  if(dp)dp.style.display=view==='tagesverlauf'?'inline-flex':'none';
   badiRenderCurrentView();
 }
 
@@ -2222,13 +2226,17 @@ function badiRenderTagesverlauf(){
     const points=sorted.map(r=>({x:r.timestamp_local.slice(11,16),y:parseInt(r.currentfill)||Math.round(parseFloat(r.fill_ratio)*maxSpace)}));
     const labels=points.map(p=>p.x);
     const vals=points.map(p=>p.y);
+    // Pad full-day x-axis: always show 06:00–22:00
+    const allSlots=[];for(let h=6;h<=22;h++){allSlots.push(String(h).padStart(2,'0')+':00');if(h<22)allSlots.push(String(h).padStart(2,'0')+':30');}
+    const pointMap={};points.forEach(p=>pointMap[p.x]=p.y);
+    const fullVals=allSlots.map(s=>pointMap[s]??null);
     canvas.height=200;
     BADI_STATE.charts.main=new Chart(canvas,{
       type:'line',
-      data:{labels,datasets:[{label:'Personen',data:vals,borderColor:'#4a9eff',backgroundColor:'rgba(74,158,255,.15)',pointRadius:3,borderWidth:2,tension:.3,fill:true}]},
+      data:{labels:allSlots,datasets:[{label:'Personen',data:fullVals,borderColor:'#4a9eff',backgroundColor:'rgba(74,158,255,.15)',pointRadius:c=>fullVals[c.dataIndex]!==null?3:0,borderWidth:2,tension:.3,fill:true,spanGaps:false}]},
       options:{responsive:true,maintainAspectRatio:false,
-        plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.raw} P (${Math.round(c.raw/maxSpace*100)}%)`}}},
-        scales:{x:{ticks:{color:'var(--muted)',font:{size:9,family:'DM Mono'},maxRotation:0,autoSkip:true,maxTicksLimit:10}},y:{min:0,suggestedMax:maxSpace,ticks:{callback:v=>v+' P',color:'var(--muted)',font:{size:9,family:'DM Mono'}}}}}
+        plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.raw!==null?`${c.raw} P (${Math.round(c.raw/maxSpace*100)}%)`:'—'},filter:i=>i.raw!==null}},
+        scales:{x:{ticks:{color:'var(--muted)',font:{size:9,family:'DM Mono'},maxRotation:0,autoSkip:true,maxTicksLimit:9,callback:(v,i)=>allSlots[i]?.endsWith(':00')?allSlots[i]:null},grid:{display:false}},y:{min:0,suggestedMax:maxSpace,ticks:{callback:v=>v+' P',color:'var(--muted)',font:{size:9,family:'DM Mono'}}}}}
     });
     if(info)info.textContent=`${points.length} Messpunkte · ${t.short||t.label} · ${new Date(selDate+'T12:00:00').toLocaleDateString('de-CH',{day:'2-digit',month:'long'})}`;
   } else {
@@ -2342,7 +2350,7 @@ function badiForecast(){
   const data=BADI_STATE.history;
   if(!data||data.length===0)return;
   const DAY_KEYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  const offset=parseInt(document.getElementById('badi-fc-day')?.value||'0');
+  const offset=BADI_STATE.fcOffset??0;
   const now=new Date();
   const target=new Date(now);target.setDate(now.getDate()+offset);
   const todayStr=target.toLocaleDateString('sv');
@@ -2407,7 +2415,7 @@ function badiForecast(){
       scales:{x:{ticks:{color:'var(--muted)',font:{size:9,family:'DM Mono'}},grid:{display:false}},y:{min:0,suggestedMax:maxSpace,ticks:{color:'var(--muted)',font:{size:9,family:'DM Mono'},callback:v=>v+' P'},grid:{color:'rgba(128,128,128,.08)'}}}
     }
   });
-  const dayLbl=offset===-1?'Gestern':offset===1?'Morgen':'Heute';
+  const dayLbl=offset===-1?'Gestern':offset===1?'Morgen':offset===2?'Übermorgen':'Heute';
   const info=document.getElementById('badi-fc-info');
   if(info)info.textContent=`${scored.length} Referenztage · ${t.short||t.label} · ${dayLbl}${isHoliday?' · Feiertag':''}${isSchool?' · Schulferien':''}`;
 }
@@ -2419,61 +2427,60 @@ function renderBadi(){
   const selM=BADI_STATE.selMonth||curM;
   v.innerHTML=`
 <div class="sl first">AKTUELLE BELEGUNG <span id="badi-ws-status" style="color:var(--faint);font-size:.55rem;margin-left:.5rem">Verbinde…</span></div>
-<div class="badi-stat-grid" id="badi-live-cards">${BADI_TARGETS.map(t=>`<div class="badi-cell"><div class="badi-cell-status-bar" style="width:0%;background:var(--faint)"></div><div class="badi-cell-name">${t.short||t.label}</div><div style="font-size:2rem;font-weight:600;color:var(--muted);line-height:1.1">—</div><div style="font-size:.6rem;color:var(--faint);margin-top:2px">${t.temp}</div></div>`).join('')}</div>
+<div class="badi-stat-grid" id="badi-live-cards">${BADI_TARGETS.map(t=>`<div class="badi-cell"><div class="badi-cell-status-bar" style="width:0%;background:var(--faint)"></div><div class="badi-cell-name">${t.short||t.label}</div><div style="font-size:2rem;font-weight:600;color:var(--muted);line-height:1.1">—</div><div style="font-family:var(--mono);font-size:.58rem;color:var(--faint);margin-top:4px">${t.temp}</div></div>`).join('')}</div>
 
 <div class="sl">VERLAUF</div>
 <div class="hm-wrap">
- <div style="display:flex;gap:.25rem;flex-wrap:wrap;align-items:center;margin-bottom:.5rem">
+ <div style="display:flex;gap:.25rem;flex-wrap:wrap;align-items:center;justify-content:center;margin-bottom:.4rem">
   ${BADI_TARGETS.map(t=>`<button class="badi-pool-btn hm-pill${t.key===BADI_STATE.selBad?' on':''}" data-bad="${t.key}" onclick="badiSelBad('${t.key}')">${t.short||t.label}</button>`).join('')}
  </div>
- <div style="display:flex;gap:.2rem;flex-wrap:wrap;align-items:center;margin-bottom:.6rem">
+ <div style="display:flex;gap:.2rem;flex-wrap:wrap;align-items:center;justify-content:center;margin-bottom:.4rem">
   ${[['tagesverlauf','Tagesverlauf'],['heatmap','Heatmap'],['wochentag','Mittel/Wochentag']].map(([vv,l])=>`<button class="badi-view-btn hm-pill${BADI_STATE.selView===vv?' on':''}" data-view="${vv}" onclick="badiSelView('${vv}')">${l}</button>`).join('')}
-  <input type="date" id="badi-date-picker" value="${BADI_STATE.selDate}" style="display:${BADI_STATE.selView==='tagesverlauf'?'inline-block':'none'};background:var(--bg);border:1.5px solid var(--brd);border-radius:999px;font-family:var(--mono);font-size:.6rem;color:var(--muted);padding:.18rem .55rem;cursor:pointer" onchange="BADI_STATE.selDate=this.value;badiRenderCurrentView()">
+ </div>
+ <div style="display:flex;gap:.2rem;flex-wrap:wrap;align-items:center;justify-content:center;margin-bottom:.6rem">
+  <input type="date" id="badi-date-picker" value="${BADI_STATE.selDate}" style="display:${BADI_STATE.selView==='tagesverlauf'?'inline-flex':'none'};background:var(--bg);border:1.5px solid var(--brd);border-radius:999px;font-family:var(--mono);font-size:.6rem;color:var(--muted);padding:.18rem .55rem;cursor:pointer" onchange="BADI_STATE.selDate=this.value;badiRenderCurrentView()">
   <select id="badi-month-select" style="background:var(--bg);border:1.5px solid var(--brd);border-radius:999px;font-family:var(--mono);font-size:.6rem;color:var(--muted);padding:.18rem .55rem;cursor:pointer" onchange="badiSelMonth(this.value)">
    ${monthOpts.map(([mv,ml])=>`<option value="${mv}"${selM===mv?' selected':''}>${ml}</option>`).join('')}
   </select>
  </div>
- <div style="overflow-x:auto">
-  <canvas id="badi-chart-canvas"></canvas>
- </div>
- <div id="badi-chart-info" style="font-family:var(--mono);font-size:.56rem;color:var(--faint);margin-top:.4rem"></div>
- <div id="badi-hist-status" style="font-family:var(--mono);font-size:.58rem;color:var(--faint);margin-top:.2rem">Lade…</div>
+ <div><canvas id="badi-chart-canvas" style="max-height:240px"></canvas></div>
+ <div id="badi-chart-info" style="font-family:var(--mono);font-size:.56rem;color:var(--faint);margin-top:.4rem;text-align:center"></div>
+ <div id="badi-hist-status" style="font-family:var(--mono);font-size:.58rem;color:var(--faint);margin-top:.2rem;text-align:center">Lade…</div>
 </div>
 
-<div class="hm-wrap" style="margin-top:1rem;background:linear-gradient(135deg,#0d0d1a,#1a0a2e,#0d1a1a);border:1px solid #3a1f6e;border-radius:12px;padding:1.2rem;text-align:center">
- <div style="font-family:var(--mono);font-size:.55rem;color:#6a4a9a;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.1rem">Forecast</div>
- <div style="font-size:.95rem;font-weight:700;color:#c9a0ff;letter-spacing:.03em;margin-bottom:.05rem">Bésmeralda's Kleine Kristallkugel</div>
- <div style="font-size:.68rem;color:#7a5aaa;font-style:italic;margin-bottom:.75rem">The Funky Badi Fortune Teller</div>
- <img src="${BESM_IMG}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;margin-bottom:.75rem;box-shadow:0 0 28px rgba(140,80,255,.5)">
- <div style="display:flex;gap:.2rem;flex-wrap:wrap;justify-content:center;margin-bottom:.4rem">
-  ${BADI_TARGETS.map(t=>`<button class="badi-fc-bad hm-pill${t.key===BADI_STATE.selBad?' on':''}" data-bad="${t.key}" onclick="badiFcBad('${t.key}')" style="border-color:#3a1f6e;color:#9a7acc;background:rgba(58,31,110,.22)">${t.short||t.label}</button>`).join('')}
-  <select id="badi-fc-day" style="background:#1a0a2e;border:1.5px solid #3a1f6e;border-radius:999px;font-family:var(--mono);font-size:.6rem;color:#9a7acc;padding:.18rem .55rem;cursor:pointer" onchange="badiForecast()">
-   <option value="-1">Gestern</option><option value="0" selected>Heute</option><option value="1">Morgen</option>
-  </select>
+<div class="sl">FORECAST</div>
+<div class="hm-wrap" style="text-align:center">
+ <img src="${BESM_IMG}" style="width:100px;height:100px;border-radius:50%;object-fit:cover;margin-bottom:.75rem;box-shadow:0 0 22px rgba(200,160,0,.35)">
+ <div style="font-family:var(--sans);font-size:1.05rem;font-weight:800;color:var(--ink);letter-spacing:-.01em;line-height:1.1">Bésmeralda</div>
+ <div style="font-family:var(--mono);font-size:.65rem;color:var(--muted);font-style:italic;margin-bottom:.75rem">The Funky Badi Fortune Teller</div>
+ <div style="display:flex;gap:.2rem;flex-wrap:wrap;justify-content:center;margin-bottom:.3rem">
+  ${BADI_TARGETS.map(t=>`<button class="badi-fc-bad hm-pill${t.key===BADI_STATE.selBad?' on':''}" data-bad="${t.key}" onclick="badiFcBad('${t.key}')">${t.short||t.label}</button>`).join('')}
  </div>
- <div id="badi-fc-info" style="font-family:var(--mono);font-size:.56rem;color:#6a4a9a;margin-bottom:.5rem"></div>
+ <div style="display:flex;gap:.2rem;flex-wrap:wrap;justify-content:center;margin-bottom:.65rem">
+  ${[[-1,'Gestern'],[0,'Heute'],[1,'Morgen'],[2,'Übermorgen']].map(([off,lbl])=>`<button class="badi-fc-day-btn hm-pill${BADI_STATE.fcOffset===off?' on':''}" data-offset="${off}" onclick="badiFcDay(${off},this)">${lbl}</button>`).join('')}
+ </div>
  <div style="position:relative;height:220px"><canvas id="badi-fc-canvas"></canvas></div>
+ <div id="badi-fc-info" style="font-family:var(--mono);font-size:.56rem;color:var(--faint);margin-top:.4rem"></div>
+ <details style="margin-top:.5rem;text-align:left">
+  <summary style="font-family:var(--mono);font-size:.58rem;color:var(--faint);cursor:pointer;list-style:none;display:flex;align-items:center;gap:.35rem"><span>▸</span> Algorithmus</summary>
+  <div style="font-family:var(--mono);font-size:.6rem;color:var(--muted);margin-top:.45rem;line-height:1.6;padding:.55rem .7rem;background:var(--bg);border-radius:var(--r);border:1px solid var(--brd)">Gewichteter kNN: ähnliche Wochentage, Feiertage, Schulferien, Aktualität (Decay-Faktor). Bis zu 60 Referenztage. Outdoor-Pools gewichten Witterung stärker.</div>
+ </details>
 </div>
 
-<details id="badi-lanes-schwimmer" style="margin-top:.5rem">
+<details id="badi-lanes-detail" style="margin-top:.5rem">
  <summary style="font-family:var(--mono);font-size:.7rem;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;padding:.55rem 0;border-top:1px solid var(--brd)">
-  <span>🏊 Schwimmerbecken · 6 Bahnen</span><span style="font-size:.6rem">▸</span>
+  <span>Bahnenbelegung Hallenbad City</span><span style="font-size:.6rem">▸</span>
  </summary>
- <div id="badi-lanes-schwimmer-wrap" style="margin-top:.4rem">
-  <div style="font-family:var(--mono);font-size:.65rem;color:var(--faint)">Lade…</div>
- </div>
-</details>
-<details id="badi-lanes-vario" style="margin-top:.3rem">
- <summary style="font-family:var(--mono);font-size:.7rem;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;padding:.55rem 0;border-top:1px solid var(--brd)">
-  <span>🔀 Variobecken · 4 Bahnen</span><span style="font-size:.6rem">▸</span>
- </summary>
- <div id="badi-lanes-vario-wrap" style="margin-top:.4rem">
-  <div style="font-family:var(--mono);font-size:.65rem;color:var(--faint)">Lade…</div>
+ <div style="margin-top:.5rem">
+  <div style="font-family:var(--mono);font-size:.58rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:.35rem">Schwimmerbecken · 6 Bahnen</div>
+  <div id="badi-lanes-schwimmer-wrap"><div style="font-family:var(--mono);font-size:.65rem;color:var(--faint)">Lade…</div></div>
+  <div style="font-family:var(--mono);font-size:.58rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:.75rem;margin-bottom:.35rem">Variobecken · 4 Bahnen</div>
+  <div id="badi-lanes-vario-wrap"><div style="font-family:var(--mono);font-size:.65rem;color:var(--faint)">Lade…</div></div>
  </div>
 </details>
 
 <div style="font-family:var(--mono);font-size:.58rem;color:var(--faint);text-align:center;padding:.8rem 0 .2rem">
- Live via Crowdmonitor-WebSocket · Historische Daten alle 10 Min · <a href="https://derbsq.github.io/Badi-Tracker/" target="_blank" style="color:var(--bdi)">→ Vollständiger Tracker</a>
+ Live via Crowdmonitor-WebSocket · Historische Daten alle 10 Min · <a href="https://derbsq.github.io/Badi-Tracker/" target="_blank" style="color:var(--badi-tab)">Vollständiger Tracker</a>
 </div>`;
 
   if(!['heatmap','tagesverlauf','wochentag'].includes(BADI_STATE.selView))BADI_STATE.selView='tagesverlauf';
@@ -2488,6 +2495,12 @@ function badiFcBad(key){
   localStorage.setItem('badi:bad',key);
   document.querySelectorAll('.badi-pool-btn,.badi-fc-bad').forEach(b=>b.classList.toggle('on',b.dataset.bad===key));
   badiRenderCurrentView();
+  badiForecast();
+}
+
+function badiFcDay(offset,btn){
+  BADI_STATE.fcOffset=offset;
+  document.querySelectorAll('.badi-fc-day-btn').forEach(b=>b.classList.toggle('on',parseInt(b.dataset.offset)===offset));
   badiForecast();
 }
 
