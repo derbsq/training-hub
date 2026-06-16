@@ -1840,7 +1840,7 @@ function openSwimSession(id,ds){
  const logged=ds?S.isLogged(ds,s.id):false;
  // Create modal overlay for session detail
  let mo=el('sess-modal');if(!mo){mo=document.createElement('div');mo.id='sess-modal';mo.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:90;overflow-y:auto;padding:1rem';document.body.appendChild(mo);}
- mo.innerHTML=`<div style="max-width:720px;margin:0 auto;background:var(--bg);border-radius:var(--r2);padding:1rem;min-height:100vh">
+ mo.innerHTML=`<div style="max-width:720px;margin:0 auto;background:var(--bg);border-radius:var(--r2);padding:1rem">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
    <span class="badge ${s.bc}">${s.badge}</span>
    <button onclick="el('sess-modal').remove()" style="font-family:var(--mono);font-size:.7rem;color:var(--muted);padding:.3rem .6rem;border:1.5px solid var(--brd);border-radius:999px">✕ Schließen</button>
@@ -1864,10 +1864,14 @@ function buildSwimBody(s,ds){
  if(s.drills?.length)h+=`<div class="drills">${s.drills.map(d=>{const nm=typeof d==='object'?d.n:d;const url=typeof d==='object'?d.yt:null;return url?`<a href="${url}" target="_blank" rel="noopener" class="drl">▶ ${nm}</a>`:`<span class="drt">${nm}</span>`;}).join('')}</div>`;
  // Phases
  s.ph.forEach(ph=>{
-  h+=`<div class="phase"><div class="ph-name"><span>${ph.n}</span></div>`;
+  h+=`<div style="background:var(--surf);border:1px solid var(--brd);border-radius:var(--r2);margin-bottom:.65rem;overflow:hidden;border-top:2px solid var(--swim)">
+   <div style="padding:.5rem .8rem;border-bottom:1px solid var(--brd);display:flex;align-items:center;justify-content:space-between">
+    <span style="font-family:var(--mono);font-size:.61rem;letter-spacing:.1em;text-transform:uppercase;color:var(--swim);font-weight:700">${ph.n}</span>
+    ${ph.meta?`<span style="font-family:var(--mono);font-size:.55rem;color:var(--faint)">${ph.meta}</span>`:''}
+   </div>`;
   ph.items.forEach((item,i)=>{
    const[txt,note]=item.split('|');
-   h+=`<div class="item"><div class="it-t">${txt}</div>${note?`<div class="it-n">${note}</div>`:''}</div>`;
+   h+=`<div style="padding:.6rem .8rem;border-bottom:1px solid var(--brd)"><div class="it-t">${txt}</div>${note?`<div class="it-n">${note}</div>`:''}</div>`;
   });
   h+=`</div>`;
  });
