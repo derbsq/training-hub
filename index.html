@@ -1373,16 +1373,20 @@ function renderDash(){
  const today=TODAY_STR;
 
  // ── CALENDAR ──────────────────────────────────────────────
- const firstDay=new Date(2026,5,1);
+ const calYear=TODAY.getFullYear(),calMonth=TODAY.getMonth();
+ const firstDay=new Date(calYear,calMonth,1);
  const dow=(firstDay.getDay()+6)%7;
+ const daysInMonth=new Date(calYear,calMonth+1,0).getDate();
+ const MONTH_DE=['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+ const calLabel=MONTH_DE[calMonth].toUpperCase()+' '+calYear;
  const days=['Mo','Di','Mi','Do','Fr','Sa','So'];
  let calHtml=`<div class="cal-wrap" style="margin-top:1.4rem">
- <div class="cal-hdr"><div><div class="cal-ml">JUNI 2026</div></div><div class="cal-tl" id="cal-kick-tag">The Kick</div></div>
+ <div class="cal-hdr"><div><div class="cal-ml">${calLabel}</div></div><div class="cal-tl" id="cal-kick-tag">The Kick</div></div>
  <div class="cal-grid">
   ${days.map(d=>`<div class="cal-dow">${d}</div>`).join('')}`;
  for(let i=0;i<dow;i++)calHtml+=`<div class="cal-day"></div>`;
- for(let d=1;d<=30;d++){
-  const ds=`2026-06-${String(d).padStart(2,'0')}`;
+ for(let d=1;d<=daysInMonth;d++){
+  const ds=`${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
   const ev=SCHED[ds]||[];const isToday=ds===today;const hasSess=ev.length>0;
   const dots=ev.map(e=>{
    if(e.type==='swim')return e.id.startsWith('Z')?`<span class="cal-dot z1"></span>`:`<span class="cal-dot sw"></span>`;
@@ -1437,25 +1441,28 @@ function renderDash(){
   wxCols+=`<div class="wk-col${isToday?' wk-today':''}${isPast?' wk-past':''}" data-ds="${ds}">
    <div class="wk-col-dow">${wd}</div>
    <div class="wk-col-d">${dm}</div>
-   <div class="wk-wx-icon">${wxIcon}</div>
-   <div class="wk-wx-temp"><span>${wxMax}</span>${wxMin?' '+wxMin:''}</div>
    <div class="wk-wx-rain"><div class="wk-wx-rain-fill" style="width:${wxRain}%"></div></div>
    <div class="wk-sess-wrap">${pills}</div>
   </div>`;
  }
 
  const weekHtml=`<div class="sl">DIESE WOCHE</div>
-<div id="wx-card" style="background:var(--surf);border:1.5px solid var(--brd);border-radius:var(--r2);padding:.75rem .85rem;margin-bottom:.6rem">
+<a href="https://www.meteoswiss.admin.ch/local-forecasts/regional-weather/8004.html" target="_blank" rel="noopener" id="wx-card" style="background:var(--surf);border:1.5px solid var(--brd);border-radius:var(--r2);padding:.75rem .85rem;margin-bottom:.6rem;display:block;text-decoration:none;cursor:pointer">
  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.55rem">
   <div style="display:flex;align-items:center;gap:.5rem">
    <span style="font-size:1.4rem;line-height:1" id="wx-icon-el">—</span>
-   <div><div style="font-family:var(--mono);font-size:1rem;font-weight:700" id="wx-main-text">Wetter lädt…</div>
-    <div style="font-family:var(--mono);font-size:.6rem;color:var(--muted)" id="wx-sub-text">Zürich</div></div>
+   <div>
+    <div style="font-family:var(--mono);font-size:1rem;font-weight:700" id="wx-main-text">Wetter lädt…</div>
+    <div style="font-family:var(--mono);font-size:.6rem;color:var(--muted)" id="wx-sub-text">Zürich 8004</div>
+   </div>
   </div>
-  <div style="font-family:var(--mono);font-size:.58rem;color:var(--faint);text-align:right" id="wx-right-text">Jetzt</div>
+  <div style="text-align:right">
+   <div style="font-family:var(--mono);font-size:.58rem;color:var(--faint)" id="wx-right-text">Jetzt</div>
+   <div style="font-family:var(--mono);font-size:.62rem;color:#1a7fa8;margin-top:3px;font-weight:500" id="wx-precip-text"></div>
+  </div>
  </div>
  <div id="wx-7day" style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px"></div>
-</div>
+</a>
 <div style="background:var(--surf);border:1.5px solid var(--brd);border-radius:var(--r2);padding:.85rem">
  <div class="wk-nav">
   <button class="wk-nav-btn" onclick="DASH_WEEK_OFFSET--;renderDash()">←</button>
@@ -1544,14 +1551,15 @@ const BADI_DASH=[
 const POOL_TEMPS={};
 let DASH_WEEK_OFFSET=0;
 let WEEK_WX={};
+let WX_HOURLY_PRECIP=[];
 let LETTEN_DATA={};
 
 // ─── Weather loading ──────────────────────────────────────────
 async function loadWeatherWeek(){
  try{
-  // Open-Meteo (MeteoSwiss station data, free, no key)
   const url='https://api.open-meteo.com/v1/forecast?latitude=47.3769&longitude=8.5417'
    +'&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunshine_duration'
+   +'&hourly=precipitation_probability'
    +'&current_weather=true&timezone=Europe%2FZurich&forecast_days=14';
   const r=await fetch(url);const d=await r.json();
   const dates=d.daily.time;
@@ -1566,19 +1574,19 @@ async function loadWeatherWeek(){
     icon:wmoIcon(d.daily.weathercode[i])
    };
   });
-  // Current weather strip
-  if(d.current_weather){
-   const c=d.current_weather;
-   const wxEl=el('wx-strip');
-   if(wxEl){const icon=wmoIcon(c.weathercode);
-    wxEl.innerHTML=`<span class="wx-icon">${icon}</span><div><div class="wx-main">${Math.round(c.temperature)}°C</div><div class="wx-sub">${wmoDesc(c.weathercode)} · ${Math.round(c.windspeed)} km/h</div></div><div class="wx-right">Zürich<br>${new Date().toLocaleTimeString('de-CH',{hour:'2-digit',minute:'2-digit'})}</div>`;
-   }
+  // Hourly precipitation probability for today (to find peak rain hour)
+  if(d.hourly){
+   WX_HOURLY_PRECIP=[];
+   (d.hourly.time||[]).forEach((t,i)=>{
+    const ds=t.slice(0,10);const hour=parseInt(t.slice(11,13));
+    const prob=d.hourly.precipitation_probability[i]||0;
+    if(ds===TODAY_STR)WX_HOURLY_PRECIP.push({hour,prob});
+   });
   }
-  // Update week columns with weather (targeted, preserves open calendar panel)
+  // Update week columns and wx-card
   const wcEl=el('v-dash')?.querySelector('.wk-combined');
   if(wcEl)updateWeekWxCols();
  }catch(e){console.log('Weather fail:',e.message);}
- // Limmat data for Letten
  loadLettenData();
 }
 
@@ -2754,25 +2762,30 @@ function refreshBadiCards(){
 
 // ── UPDATE WEEK WEATHER COLUMNS ─────────────────────────────
 function updateWeekWxCols(){
- // Update week column icons
+ // Update rain bars in week columns
  document.querySelectorAll('.wk-col[data-ds]').forEach(col=>{
   const ds=col.dataset.ds;const wx=WEEK_WX[ds];if(!wx)return;
-  const icon=col.querySelector('.wk-wx-icon');
-  const temp=col.querySelector('.wk-wx-temp');
   const rain=col.querySelector('.wk-wx-rain-fill');
-  if(icon)icon.textContent=wx.icon;
-  if(temp)temp.innerHTML='<span>'+Math.round(wx.max)+'°</span> '+Math.round(wx.min)+'°';
-  if(rain)rain.style.width=wx.rain+'%';
+  if(rain)rain.style.width=(wx.rain||0)+'%';
  });
- // Update weather card strip
+ // Update wx-card
  const tw=WEEK_WX[TODAY_STR];
  if(!tw)return;
- // Use querySelector as fallback since IDs may not exist after re-render
  const setEl=(id,val,html)=>{const e=document.getElementById(id);if(e){if(html)e.innerHTML=val;else e.textContent=val;}};
  setEl('wx-icon-el',tw.icon,false);
  setEl('wx-main-text',Math.round(tw.max)+'°C',false);
  setEl('wx-sub-text',wmoDesc(tw.code||0)+' · '+Math.round(tw.min)+'–'+Math.round(tw.max)+'°',false);
- setEl('wx-right-text','Zürich<br>'+new Date().toLocaleTimeString('de-CH',{hour:'2-digit',minute:'2-digit'}),true);
+ setEl('wx-right-text',new Date().toLocaleTimeString('de-CH',{hour:'2-digit',minute:'2-digit'}),false);
+ // Precipitation text: probability + peak hour
+ const rain=tw.rain||0;
+ let precipText='';
+ if(rain>=70)precipText=rain+'% Regen';
+ else if(rain>=30)precipText=rain+'% Regenrisiko';
+ if(rain>=20&&WX_HOURLY_PRECIP.length){
+  const peak=WX_HOURLY_PRECIP.filter(h=>h.prob>=30).reduce((a,b)=>b.prob>a.prob?b:a,{prob:0,hour:null});
+  if(peak.hour!==null)precipText+=(precipText?' · ':'')+'Peak ~'+peak.hour+'h';
+ }
+ setEl('wx-precip-text',precipText,false);
  // Build 7-day strip
  const strip=document.getElementById('wx-7day');
  if(!strip)return;
