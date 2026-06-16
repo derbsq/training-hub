@@ -55,13 +55,6 @@ main{padding-top:.5rem}
 .sl{font-family:var(--mono);font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin:1.8rem 0 .7rem}
 .sl.first{margin-top:1.4rem}
 
-/* WEATHER STRIP */
-.wx{display:flex;align-items:center;gap:.5rem;background:var(--surf);border:1.5px solid var(--brd);border-radius:var(--r);padding:.55rem .85rem;margin-bottom:.9rem;font-family:var(--mono);font-size:.7rem}
-.wx-icon{font-size:1.3rem;flex-shrink:0}
-.wx-main{font-size:.9rem;font-weight:700;color:var(--swim)}
-.wx-sub{color:var(--muted);font-size:.62rem;margin-top:.05rem}
-.wx-right{margin-left:auto;text-align:right;font-size:.62rem;color:var(--muted)}
-
 /* ICAL CALENDAR */
 .cal-wrap{background:var(--surf);border:1.5px solid var(--brd);border-radius:var(--r2);padding:.85rem .85rem 1rem;margin-bottom:1.1rem}
 .cal-hdr{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.6rem}
@@ -408,11 +401,6 @@ main{padding-top:.5rem}
 .wk-col-dow{font-family:var(--mono);font-size:.46rem;letter-spacing:.04em;text-transform:uppercase;color:var(--faint);margin-bottom:1px}
 .wk-col-d{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:.65rem;font-weight:700;color:var(--muted);margin-bottom:2px}
 .wk-col.wk-today .wk-col-d{background:var(--dA);color:#fff}
-.wk-wx-icon{font-size:.92rem;line-height:1;margin-bottom:1px;min-height:.92rem}
-.wk-wx-temp{font-family:var(--mono);font-size:.52rem;color:var(--muted);white-space:nowrap;min-height:.65rem}
-.wk-wx-temp span{color:var(--dA)}
-.wk-wx-rain{width:100%;height:2px;border-radius:1px;background:var(--brd);margin:2px 0 3px;overflow:hidden}
-.wk-wx-rain-fill{height:100%;background:#1a7fa8;border-radius:1px}
 .wk-sess-wrap{display:flex;flex-direction:row;justify-content:center;gap:2px;width:100%;margin-top:4px;align-items:stretch}
 .wk-sess-pill{font-size:.5rem;font-weight:700;border-radius:4px;padding:3px 4px;cursor:pointer;transition:all .12s;-webkit-writing-mode:vertical-lr;writing-mode:vertical-lr;white-space:nowrap;overflow:hidden;line-height:1.3}
 .wk-sess-pill:active{opacity:.7}
@@ -1141,26 +1129,6 @@ function startTimer(key,secs,el){
  el.textContent='⏸';
 }
 
-// ─── WEATHER ─────────────────────────────────────────────────
-async function loadWeather(el){
- try{
-  const r=await fetch('https://api.open-meteo.com/v1/forecast?latitude=47.3769&longitude=8.5417&current=temperature_2m,weather_code,wind_speed_10m&hourly=temperature_2m,precipitation_probability&timezone=Europe/Zurich&forecast_days=1');
-  const d=await r.json();const c=d.current;
-  const wcode=c.weather_code;
-  let icon='🌤️',desc='Bewölkt';
-  if(wcode===0){icon='☀️';desc='Klar';}
-  else if(wcode<=3){icon='⛅';desc='Leicht bewölkt';}
-  else if(wcode<=48){icon='🌫️';desc='Nebel';}
-  else if(wcode<=55){icon='🌦️';desc='Nieselregen';}
-  else if(wcode<=65){icon='🌧️';desc='Regen';}
-  else if(wcode<=77){icon='🌨️';desc='Schnee';}
-  else if(wcode<=82){icon='🌦️';desc='Schauer';}
-  else{icon='⛈️';desc='Gewitter';}
-  const t=Math.round(c.temperature_2m);
-  const w=Math.round(c.wind_speed_10m);
-  el.innerHTML=`<span class="wx-icon">${icon}</span><div><div class="wx-main">${t}°C</div><div class="wx-sub">${desc} · ${w} km/h Wind</div></div><div class="wx-right">Zürich<br>${new Date().toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})}</div>`;
- }catch{el.innerHTML=`<span class="wx-icon">🌤️</span><div><div class="wx-main">—</div><div class="wx-sub">Wetterdaten nicht verfügbar</div></div><div class="wx-right">Zürich</div>`;}
-}
 
 // ─── BADI CARDS (compact, like original tracker) ──────────────
 let badiData={};
@@ -1412,11 +1380,6 @@ function renderDash(){
   const wd=day.toLocaleDateString('de-DE',{weekday:'short'}).toUpperCase().slice(0,2);
   const dm=day.getDate();
   const evs=SCHED[ds]||[];
-  // Weather slot
-  const wxD=WEEK_WX[ds]||{};
-  const wxIcon=wxD.icon||'';const wxMax=wxD.max!==undefined?Math.round(wxD.max)+'°':'';
-  const wxMin=wxD.min!==undefined?Math.round(wxD.min)+'°':'';
-  const wxRain=wxD.rain||0;
   // Session pills
   let pills='';
   if(isSun&&!evs.length){
@@ -1441,23 +1404,11 @@ function renderDash(){
   wxCols+=`<div class="wk-col${isToday?' wk-today':''}${isPast?' wk-past':''}" data-ds="${ds}">
    <div class="wk-col-dow">${wd}</div>
    <div class="wk-col-d">${dm}</div>
-   <div class="wk-wx-icon">${wxIcon}</div>
-   <div class="wk-wx-temp"><span>${wxMax}</span>${wxMin?' '+wxMin:''}</div>
-   <div class="wk-wx-rain"><div class="wk-wx-rain-fill" style="width:${wxRain}%"></div></div>
    <div class="wk-sess-wrap">${pills}</div>
   </div>`;
  }
 
- const wxTodayHtml=`<a href="https://www.meteoswiss.admin.ch/home/measurement-and-forecasting-systems/atmosphere/precipitation-measurement/rain-radars.html" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:.75rem;background:var(--surf);border:1.5px solid var(--brd);border-radius:var(--r2);padding:.65rem .85rem;margin-bottom:.9rem;text-decoration:none;cursor:pointer">
- <span style="font-size:1.5rem;line-height:1" id="wx-icon-el">—</span>
- <div style="flex:1;min-width:0">
-  <div style="font-family:var(--mono);font-size:.95rem;font-weight:700" id="wx-main-text">—°C</div>
-  <div style="font-family:var(--mono);font-size:.6rem;color:var(--muted)" id="wx-sub-text">Zürich · lädt…</div>
- </div>
- <div style="font-family:var(--mono);font-size:.65rem;color:#1a7fa8;font-weight:500;text-align:right" id="wx-precip-text"></div>
-</a>`;
-
- const weekHtml=`${wxTodayHtml}<div class="sl">DIESE WOCHE</div>
+ const weekHtml=`<div class="sl">DIESE WOCHE</div>
 <div style="background:var(--surf);border:1.5px solid var(--brd);border-radius:var(--r2);padding:.85rem">
  <div class="wk-nav">
   <button class="wk-nav-btn" onclick="DASH_WEEK_OFFSET--;renderDash()">←</button>
@@ -1481,7 +1432,7 @@ function renderDash(){
 <div style="font-family:var(--mono);font-size:.55rem;color:var(--faint);text-align:center;margin-bottom:1rem" id="badi-ts-dash">Live · Crowdmonitor</div>`;
 
  v.innerHTML=calHtml+weekHtml+badiCardsHtml;
- loadWeatherWeek();
+ loadLettenData();
  refreshBadiCards();
  setTimeout(normalizeWeekPills,0);
 }
@@ -1545,57 +1496,10 @@ const BADI_DASH=[
 ];
 const POOL_TEMPS={};
 let DASH_WEEK_OFFSET=0;
-let WEEK_WX={};
-let WX_HOURLY_PRECIP=[];
 let LETTEN_DATA={};
 
 // ─── Weather loading ──────────────────────────────────────────
-async function loadWeatherWeek(){
- try{
-  const url='https://api.open-meteo.com/v1/forecast?latitude=47.3769&longitude=8.5417'
-   +'&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunshine_duration'
-   +'&hourly=precipitation_probability'
-   +'&current_weather=true&timezone=Europe%2FZurich&forecast_days=14';
-  const r=await fetch(url);const d=await r.json();
-  const dates=d.daily.time;
-  WEEK_WX={};
-  dates.forEach((ds,i)=>{
-   WEEK_WX[ds]={
-    code:d.daily.weathercode[i],
-    max:d.daily.temperature_2m_max[i],
-    min:d.daily.temperature_2m_min[i],
-    rain:d.daily.precipitation_probability_max[i]||0,
-    sun:Math.round((d.daily.sunshine_duration[i]||0)/3600*10)/10,
-    icon:wmoIcon(d.daily.weathercode[i])
-   };
-  });
-  // Hourly precipitation probability for today (to find peak rain hour)
-  if(d.hourly){
-   WX_HOURLY_PRECIP=[];
-   (d.hourly.time||[]).forEach((t,i)=>{
-    const ds=t.slice(0,10);const hour=parseInt(t.slice(11,13));
-    const prob=d.hourly.precipitation_probability[i]||0;
-    if(ds===TODAY_STR)WX_HOURLY_PRECIP.push({hour,prob});
-   });
-  }
-  // Update week columns and wx-card
-  const wcEl=el('v-dash')?.querySelector('.wk-combined');
-  if(wcEl)updateWeekWxCols();
- }catch(e){console.log('Weather fail:',e.message);}
- loadLettenData();
-}
 
-function wmoIcon(code){
- if(code===0)return'☀️';if(code<=2)return'🌤️';if(code===3)return'☁️';
- if(code<=48)return'🌫️';if(code<=55)return'🌦️';if(code<=67)return'🌧️';
- if(code<=77)return'🌨️';if(code<=82)return'🌦️';if(code<=86)return'🌨️';
- return'⛈️';
-}
-function wmoDesc(code){
- if(code===0)return'Klar';if(code<=2)return'Leicht bewölkt';if(code===3)return'Bewölkt';
- if(code<=48)return'Nebel';if(code<=55)return'Nieselregen';if(code<=67)return'Regen';
- if(code<=77)return'Schnee';if(code<=82)return'Schauer';return'Gewitter';
-}
 
 async function loadLettenData(){
  try{
@@ -2755,55 +2659,6 @@ function refreshBadiCards(){
  c.innerHTML=BADI_DASH.map(t=>buildBadiCard(t)).join('');
 }
 
-// ── UPDATE WEEK WEATHER COLUMNS ─────────────────────────────
-function updateWeekWxCols(){
- // Update icon, temp, rain bar in each week column
- document.querySelectorAll('.wk-col[data-ds]').forEach(col=>{
-  const ds=col.dataset.ds;const wx=WEEK_WX[ds];if(!wx)return;
-  const icon=col.querySelector('.wk-wx-icon');
-  const temp=col.querySelector('.wk-wx-temp');
-  const rain=col.querySelector('.wk-wx-rain-fill');
-  if(icon)icon.textContent=wx.icon;
-  if(temp)temp.innerHTML='<span>'+Math.round(wx.max)+'°</span> '+Math.round(wx.min)+'°';
-  if(rain)rain.style.width=(wx.rain||0)+'%';
- });
- // Update today weather strip
- const tw=WEEK_WX[TODAY_STR];
- if(!tw)return;
- const setEl=(id,val)=>{const e=document.getElementById(id);if(e)e.textContent=val;};
- setEl('wx-icon-el',tw.icon);
- setEl('wx-main-text',Math.round(tw.max)+'°C');
- setEl('wx-sub-text','Zürich · '+wmoDesc(tw.code||0));
- // Precipitation: probability + peak hour
- const rain=tw.rain||0;
- let precipText='';
- if(rain>=70)precipText=rain+'% Regen';
- else if(rain>=40)precipText=rain+'% Regenrisiko';
- else if(rain>=10)precipText=rain+'%';
- if(rain>=20&&WX_HOURLY_PRECIP.length){
-  const peak=WX_HOURLY_PRECIP.filter(h=>h.prob>=30).reduce((a,b)=>b.prob>a.prob?b:a,{prob:0,hour:null});
-  if(peak.hour!==null)precipText+=(precipText?' · ':'')+'Peak ~'+peak.hour+'h';
- }
- setEl('wx-precip-text',precipText);
- // Build 7-day strip
- const strip=document.getElementById('wx-7day');
- if(!strip)return;
- const DOW=['So','Mo','Di','Mi','Do','Fr','Sa'];
- const days=Object.entries(WEEK_WX).filter(([d])=>d>=TODAY_STR).sort((a,b)=>a[0]<b[0]?-1:1).slice(0,7);
- strip.innerHTML=days.map(([ds,wx])=>{
-  const d=new Date(ds+'T12:00:00');const isT=ds===TODAY_STR;
-  const rainPct=Math.round(wx.rain||0);
-  const sunOp=Math.min(1,(wx.sun||0)/8).toFixed(2);
-  return '<div style="background:'+(isT?'var(--swl)':'var(--bg)')+';border-radius:6px;padding:4px 2px;text-align:center;border:1px solid '+(isT?'rgba(26,74,46,.25)':'var(--brd)')+'">'+
-   '<div style="font-family:var(--mono);font-size:.44rem;color:var(--faint);text-transform:uppercase">'+(isT?'Heute':DOW[d.getDay()])+'</div>'+
-   '<div style="font-size:.88rem">'+(wx.icon||'–')+'</div>'+
-   '<div style="font-family:var(--mono);font-size:.5rem;color:var(--dA);font-weight:700">'+Math.round(wx.max)+'°</div>'+
-   '<div style="font-family:var(--mono);font-size:.44rem;color:var(--faint)">'+Math.round(wx.min)+'°</div>'+
-   '<div style="height:3px;border-radius:2px;background:#1a7fa8;margin:2px 0;opacity:'+(rainPct/100).toFixed(2)+'"></div>'+
-   '<div style="height:3px;border-radius:2px;background:#c49a00;opacity:'+sunOp+'"></div>'+
-  '</div>';
- }).join('');
-}
 </script>
 </body>
 </html>
