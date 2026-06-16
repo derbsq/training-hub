@@ -388,6 +388,11 @@ main{padding-top:.5rem}
 .wk-col.wk-today{background:rgba(139,58,26,.06);outline:1.5px solid rgba(139,58,26,.2)}
 .wk-col.wk-past{opacity:.6}
 .wk-col-dow{font-family:var(--mono);font-size:.46rem;letter-spacing:.04em;text-transform:uppercase;color:var(--faint);margin-bottom:1px}
+.wk-wx-icon{font-size:.92rem;line-height:1;margin-bottom:1px;min-height:.92rem;text-decoration:none}
+.wk-wx-temp{font-family:var(--mono);font-size:.52rem;color:var(--muted);white-space:nowrap;min-height:.65rem}
+.wk-wx-temp span{color:var(--dA)}
+.wk-wx-rain{width:100%;height:2px;border-radius:1px;background:var(--brd);margin:2px 0 3px;overflow:hidden}
+.wk-wx-rain-fill{height:100%;background:#1a7fa8;border-radius:1px}
 .wk-col-d{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:.65rem;font-weight:700;color:var(--muted);margin-bottom:2px}
 .wk-col.wk-today .wk-col-d{background:var(--dA);color:#fff}
 .wk-sess-wrap{display:flex;flex-direction:row;justify-content:center;gap:2px;width:100%;margin-top:4px;align-items:stretch}
@@ -1390,9 +1395,20 @@ function renderDash(){
     }
    });
   }
+  const wxD=WEEK_WX[ds]||{};
+  const wxIcon=wxD.icon||'';
+  const wxMax=wxD.max!==undefined?Math.round(wxD.max)+'°':'';
+  const wxMin=wxD.min!==undefined?Math.round(wxD.min)+'°':'';
+  const wxRain=wxD.rain||0;
+  const meteoUrl='https://www.meteoswiss.admin.ch/services-and-publications/applications/precipitation.html#param=rainfall-rate&lang=de&zoom=8&centerX=2683000&centerY=1247000';
   wxCols+=`<div class="wk-col${isToday?' wk-today':''}${isPast?' wk-past':''}" data-ds="${ds}">
    <div class="wk-col-dow">${wd}</div>
    <div class="wk-col-d">${dm}</div>
+   <a href="${meteoUrl}" target="_blank" rel="noopener" style="display:contents;text-decoration:none;color:inherit">
+    <div class="wk-wx-icon">${wxIcon}</div>
+    <div class="wk-wx-temp">${wxMax?'<span>'+wxMax+'</span>'+( wxMin?' '+wxMin:''):'&nbsp;'}</div>
+   </a>
+   <div class="wk-wx-rain"><div class="wk-wx-rain-fill" style="width:${wxRain}%"></div></div>
    <div class="wk-sess-wrap">${pills}</div>
   </div>`;
  }
@@ -1421,7 +1437,7 @@ function renderDash(){
 <div style="font-family:var(--mono);font-size:.55rem;color:var(--faint);text-align:center;margin-bottom:1rem" id="badi-ts-dash">Live · Crowdmonitor</div>`;
 
  v.innerHTML=calHtml+weekHtml+badiCardsHtml;
- loadLettenData();
+ loadWeatherWeek();
  refreshBadiCards();
  setTimeout(normalizeWeekPills,0);
 }
@@ -1486,9 +1502,50 @@ const BADI_DASH=[
 const POOL_TEMPS={};
 let DASH_WEEK_OFFSET=0;
 let LETTEN_DATA={};
+let WEEK_WX={};
 
 // ─── Weather loading ──────────────────────────────────────────
 
+function wmoIcon(code){
+ if(code===0)return'☀️';if(code<=2)return'🌤️';if(code===3)return'☁️';
+ if(code<=48)return'🌫️';if(code<=55)return'🌦️';if(code<=67)return'🌧️';
+ if(code<=77)return'🌨️';if(code<=82)return'🌦️';if(code<=86)return'🌨️';
+ return'⛈️';
+}
+
+function updateWeekWxCols(){
+ document.querySelectorAll('.wk-col[data-ds]').forEach(col=>{
+  const ds=col.dataset.ds;const wx=WEEK_WX[ds];if(!wx)return;
+  const icon=col.querySelector('.wk-wx-icon');
+  const temp=col.querySelector('.wk-wx-temp');
+  const rain=col.querySelector('.wk-wx-rain-fill');
+  if(icon)icon.textContent=wx.icon;
+  if(temp)temp.innerHTML='<span>'+Math.round(wx.max)+'°</span> '+Math.round(wx.min)+'°';
+  if(rain)rain.style.width=(wx.rain||0)+'%';
+ });
+}
+
+async function loadWeatherWeek(){
+ try{
+  const url='https://api.open-meteo.com/v1/forecast?latitude=47.3769&longitude=8.5417'
+   +'&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunshine_duration'
+   +'&timezone=Europe%2FZurich&forecast_days=14';
+  const r=await fetch(url);const d=await r.json();
+  const dates=d.daily.time;
+  WEEK_WX={};
+  dates.forEach((ds,i)=>{
+   WEEK_WX[ds]={
+    code:d.daily.weathercode[i],
+    max:d.daily.temperature_2m_max[i],
+    min:d.daily.temperature_2m_min[i],
+    rain:d.daily.precipitation_probability_max[i]||0,
+    icon:wmoIcon(d.daily.weathercode[i])
+   };
+  });
+  updateWeekWxCols();
+ }catch(e){console.log('Weather fail:',e.message);}
+ loadLettenData();
+}
 
 async function loadLettenData(){
  try{
