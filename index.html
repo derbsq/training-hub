@@ -330,17 +330,6 @@ main{padding-top:.5rem}
 .mth-ex-yt{display:inline-flex;align-items:center;gap:.28rem;font-family:var(--mono);font-size:.59rem;color:#c00;padding:.16rem .44rem;border:1px solid rgba(204,0,0,.3);border-radius:4px;margin-top:.3rem}
 
 /* BADI BÉSMERALDA */
-.oracle-wrap{background:var(--surf);border:1.5px solid var(--brd);border-radius:var(--r2);padding:.85rem;margin-bottom:.85rem}
-.oracle-hdr{display:flex;align-items:flex-start;gap:.85rem;margin-bottom:.6rem}
-.oracle-img{width:72px;height:72px;border-radius:var(--r);object-fit:cover;object-position:top center;flex-shrink:0}
-.oracle-name{font-size:.86rem;font-weight:800;margin-bottom:.15rem}
-.oracle-sub{font-family:var(--mono);font-size:.61rem;color:var(--bdi);margin-bottom:.12rem}
-.oracle-desc{font-family:var(--mono);font-size:.62rem;color:var(--muted);line-height:1.45}
-.oracle-grid{display:flex;gap:.3rem;flex-wrap:wrap;margin-bottom:.55rem}
-.oracle-slot{background:var(--bg);border:1.5px solid var(--brd);border-radius:var(--r);padding:.4rem .52rem;min-width:48px;text-align:center}
-.oracle-slot.best{border-color:var(--ok);background:var(--okl)}
-.oracle-h{font-family:var(--mono);font-size:.58rem;color:var(--muted);margin-bottom:.14rem}
-.oracle-p{font-family:var(--mono);font-size:.88rem;font-weight:700}
 .oracle-tip{font-family:var(--mono);font-size:.53rem;color:var(--ok);margin-top:.12rem}
 .oracle-best{font-family:var(--mono);font-size:.68rem;color:var(--ok);padding:.44rem .65rem;background:var(--okl);border:1px solid var(--okb);border-radius:var(--r);margin-top:.4rem}
 
@@ -2252,120 +2241,6 @@ function badiRenderLanes(){
                  renderLaneGrid(BADI_STATE.vario,'vario','Variobecken (4 Bahnen)',4);
 }
 
-// ─── Oracle / Bésmeralda ──────────────────────────────────────
-function badiRenderOracle(){
-  const wrap=document.getElementById('badi-oracle-content');
-  if(!wrap)return;
-  const data=BADI_STATE.history;
-  const t=BADI_TARGETS.find(t=>t.key===BADI_STATE.selBad)||BADI_TARGETS[0];
-  const uid=t.uid;
-  const isOutdoor=uid!=='SSD-4';
-
-  const offset=BADI_STATE.oracleDay;
-  const predDate=new Date();predDate.setDate(predDate.getDate()+offset);
-  const todayStr=predDate.toISOString().slice(0,10);
-  const todayDow=predDate.getDay();
-  const DAY_EN=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  const todayKey=DAY_EN[todayDow];
-  const isWeekend=todayDow===0||todayDow===6;
-  const isHoliday=isBadiHoliday(todayStr);
-  const isSchool=isSchoolHol(todayStr);
-  const tempC=null;const rainMm=0;
-
-  const W_WEEKDAY=isOutdoor?0.38:0.48;
-  const W_HOLIDAY=0.22;const W_SCHOOL=0.14;
-  const W_TEMP=isOutdoor?0.16:0.06;const W_RAIN=isOutdoor?0.10:0.04;
-
-  const allDays={};
-  data.filter(r=>r.uid===uid).forEach(r=>{
-    const d=(r.timestamp_local||'').slice(0,10);
-    if(!d)return;
-    if(!allDays[d])allDays[d]={weekday:r.weekday,holiday:r.is_holiday==='True',school:r.is_school_holiday==='True',hours:{}};
-    const h=parseInt(r.hour);const ratio=parseFloat(r.fill_ratio);
-    if(!isNaN(h)&&!isNaN(ratio)){
-      if(!allDays[d].hours[h])allDays[d].hours[h]=[];
-      allDays[d].hours[h].push(ratio);
-    }
-  });
-
-  const scored=Object.entries(allDays).map(([date,day])=>{
-    let sw=0;
-    if(isHoliday){sw=(day.holiday||day.weekday==='Sunday')?1.0:0.2;}
-    else{sw=day.weekday===todayKey?1.0:(["Saturday","Sunday"].includes(day.weekday)===isWeekend)?0.4:0.1;}
-    const sh=(day.holiday===isHoliday)?1.0:0.2;
-    const ss=(day.school===isSchool)?1.0:0.3;
-    const similarity=W_WEEKDAY*sw+W_HOLIDAY*sh+W_SCHOOL*ss+W_TEMP*0.5+W_RAIN*0.8;
-    const daysDiff=Math.max(0,(new Date(todayStr)-new Date(date))/86400000);
-    const recency=Math.exp(-daysDiff*0.023);
-    const score=0.70*similarity+0.30*recency;
-    return{date,day,score,daysDiff};
-  }).filter(d=>d.date!==todayStr&&d.daysDiff>0).sort((a,b)=>b.score-a.score);
-
-  const top=scored.slice(0,20);
-  const HOURS=Array.from({length:16},(_,i)=>i+6);
-  const predictions=HOURS.map(h=>{
-    let wSum=0,wValSum=0,n=0;
-    top.forEach(item=>{
-      const vals=item.day.hours[h];
-      if(!vals||!vals.length)return;
-      const mean=vals.reduce((s,v)=>s+v,0)/vals.length;
-      wSum+=item.score;wValSum+=item.score*mean;n++;
-    });
-    if(n===0)return{h,pct:null};
-    let factor=1.0;
-    if(!isOutdoor&&tempC!==null){if(tempC>25)factor=0.7;else if(tempC<10)factor=0.75;}
-    return{h,pct:Math.min(100,Math.round((wValSum/wSum)*100*factor))};
-  });
-
-  const nowH=new Date().getHours();
-  const upcoming=predictions.filter(p=>p.h>=nowH&&p.h<=nowH+8);
-  const bestSlot=upcoming.reduce((b,p)=>p.pct!==null&&(b===null||p.pct<b.pct)?p:b,null);
-
-  const BARNUM=[
-    'Ich spüre, dass Sie in letzter Zeit eine große Veränderung in sich tragen. Das Wasser wird sie klären.',
-    'Die Sterne zeigen: Sie sind jemand, der mehr gibt als er nimmt — auch auf der Bahn.',
-    'Das Pendel schlägt deutlich aus: Heute ist ein Tag der Entscheidungen. Treffen Sie die richtige.',
-    'Ich sehe: Sie haben in jüngster Zeit Ihre Routine hinterfragt. Die Antwort liegt im Wasser.',
-    'Wer ruhige Bahnen sucht, soll ruhige Zeiten wählen. Die Kugel zeigt dir, wann das ist.',
-    'Die Energie des heutigen Tages ist komplex. Früh gehen ist Weisheit, nicht Schwäche.'
-  ];
-  const barnumMsg=BARNUM[Math.floor((new Date().getDate()+offset)%BARNUM.length)];
-
-  const DAY_LABEL_DE=['Heute','Morgen','Übermorgen'];
-  const dayLabel=offset<3?DAY_LABEL_DE[offset]:`In ${offset} Tagen`;
-  const DOW_DE=['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
-
-  let oracleHtml=`<div style="display:flex;gap:.3rem;margin-bottom:.65rem">
-    ${[-0,1,2].map(i=>`<button class="hm-pill${BADI_STATE.oracleDay===i?' on':''}" onclick="BADI_STATE.oracleDay=${i};badiRenderOracle()">${i===0?'Heute':i===1?'Morgen':'Übermorgen'}</button>`).join('')}
-  </div>
-  <div style="font-family:var(--mono);font-size:.67rem;color:var(--swim);margin-bottom:.65rem">
-    ${dayLabel} · ${DOW_DE[predDate.getDay()]}${isHoliday?' · 🎉 '+HOLIDAYS_2026[todayStr]:''}${isSchool?' · 🏖 Schulferien':''}
-  </div>`;
-
-  // Prediction slots
-  oracleHtml+='<div style="display:flex;gap:.28rem;flex-wrap:wrap;margin-bottom:.65rem">';
-  upcoming.slice(0,8).forEach(p=>{
-    const isBest=bestSlot&&p.h===bestSlot.h;
-    const col=p.pct!==null?ratio2color(p.pct/100):'#aaa';
-    oracleHtml+=`<div style="border:1.5px solid ${isBest?'var(--ok)':'var(--brd)'};background:${isBest?'var(--okl)':'var(--bg)'};border-radius:8px;padding:.38rem .48rem;text-align:center;min-width:44px">
-      <div style="font-family:var(--mono);font-size:.57rem;color:var(--muted)">${p.h}:00</div>
-      <div style="font-family:var(--mono);font-size:.88rem;font-weight:700;color:${col}">${p.pct!==null?p.pct+'%':'–'}</div>
-      ${isBest?'<div style="font-family:var(--mono);font-size:.5rem;color:var(--ok)">★ Best</div>':''}
-    </div>`;
-  });
-  oracleHtml+='</div>';
-
-  if(bestSlot&&bestSlot.pct!==null){
-    oracleHtml+=`<div style="background:var(--okl);border:1px solid var(--okb);border-radius:var(--r);padding:.5rem .7rem;font-family:var(--mono);font-size:.7rem;color:var(--ok);margin-bottom:.55rem">★ Bester Zeitpunkt heute: ${bestSlot.h}:00 Uhr · ca. ${bestSlot.pct}% Belegung</div>`;
-  }
-  oracleHtml+=`<div style="font-family:var(--mono);font-size:.68rem;color:var(--muted);line-height:1.55;font-style:italic;border-left:2px solid var(--brd);padding-left:.6rem;margin-top:.25rem">${barnumMsg}</div>`;
-  oracleHtml+=`<details style="margin-top:.65rem"><summary style="font-family:var(--mono);font-size:.6rem;color:var(--faint);cursor:pointer">Algorithmus</summary><div style="font-family:var(--mono);font-size:.6rem;color:var(--muted);margin-top:.4rem;line-height:1.52">kNN mit exponentieller Recency-Gewichtung.<br>Score = 0.70 × Ähnlichkeit + 0.30 × e^(−0.023 × Tage)<br>Halbwertszeit ≈ 30 Tage · Top-20 ähnlichste Tage</div></details>`;
-
-  wrap.innerHTML=oracleHtml;
-  if(top.length===0)wrap.innerHTML=`<div class="info-box">Noch zu wenig historische Daten für Vorhersagen. Bésmeralda braucht mindestens 2 Wochen.</div>`;
-}
-
-// ─── Main render ─────────────────────────────────────────────
 function renderBadi(){
   const v=el('v-badi');
   const img=BESM_IMG;
@@ -2385,8 +2260,7 @@ function renderBadi(){
   ${[['all','Alle'],['06','Jun'],['07','Jul'],['08','Aug'],['09','Sep']].map(([m,l])=>`<button class="badi-month-btn hm-pill${BADI_STATE.selMonth===m?' on':''}" data-month="${m}" onclick="badiSelMonth('${m}')">${l}</button>`).join('')}
  </div>
  <div style="overflow-x:auto">
-  <div id="badi-oracle-content" style="${BADI_STATE.selView==='oracle'?'':'display:none'}"></div>
-  <canvas id="badi-chart-canvas" style="${BADI_STATE.selView==='oracle'?'display:none':''}"></canvas>
+  <canvas id="badi-chart-canvas"></canvas>
  </div>
  <div id="badi-chart-info" style="font-family:var(--mono);font-size:.56rem;color:var(--faint);margin-top:.4rem"></div>
  <div id="badi-hist-status" style="font-family:var(--mono);font-size:.58rem;color:var(--faint);margin-top:.2rem">Lade…</div>
