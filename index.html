@@ -1589,6 +1589,14 @@ async function loadPoolTemps(){
   }
   refreshBadiCards();
  }catch(e){console.log('Pool temps fail:',e.message);}
+ // Supplemental temps from training-data (e.g. Heuried)
+ try{
+  const r2=await fetch('https://raw.githubusercontent.com/derbsq/training-data/main/data/pool_temps.json?nc='+Date.now());
+  if(r2.ok){
+   const d2=await r2.json();
+   if(d2.heuried?.temp!=null&&!POOL_TEMPS.heuried)POOL_TEMPS.heuried=d2.heuried.temp+'°C';
+  }
+ }catch{}
 }
 
 function refreshBadiCards(){
@@ -2459,9 +2467,9 @@ function renderBadi(){
 
 <div class="sl">FORECAST</div>
 <div class="hm-wrap" style="text-align:center">
- <img src="${BESM_IMG}" style="width:100px;height:100px;border-radius:50%;object-fit:cover;margin-bottom:.75rem;box-shadow:0 0 22px rgba(200,160,0,.35)">
  <div style="font-family:var(--sans);font-size:1.05rem;font-weight:800;color:var(--ink);letter-spacing:-.01em;line-height:1.1">Bésmeralda</div>
- <div style="font-family:var(--mono);font-size:.65rem;color:var(--muted);font-style:italic;margin-bottom:.75rem">The Funky Badi Fortune Teller</div>
+ <div style="font-family:var(--mono);font-size:.65rem;color:var(--muted);font-style:italic;margin-bottom:.65rem">The Funky Badi Fortune Teller</div>
+ <img src="${BESM_IMG}" style="width:100px;height:100px;border-radius:50%;object-fit:cover;margin-bottom:.65rem;box-shadow:0 0 22px rgba(200,160,0,.35)">
  <div style="display:flex;gap:.2rem;flex-wrap:wrap;justify-content:center;margin-bottom:.3rem">
   ${BADI_TARGETS.map(t=>`<button class="badi-fc-bad hm-pill${t.key===BADI_STATE.selBad?' on':''}" data-bad="${t.key}" onclick="badiFcBad('${t.key}')">${t.short||t.label}</button>`).join('')}
  </div>
