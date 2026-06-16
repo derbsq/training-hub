@@ -1679,7 +1679,16 @@ function renderSwim(){
  </div>
 </div>`;
 
- v.innerHTML=pacingHtml+cssCalcHtml+genHtml+sessHtml+pdfHtml;
+ v.innerHTML=`<div class="subtabs">
+  <button class="stab on" onclick="showSwimSub('sw-sessions',this)">Sessions</button>
+  <button class="stab" onclick="showSwimSub('sw-css',this)">CSS</button>
+  <button class="stab" onclick="showSwimSub('sw-gen',this)">Generator</button>
+  <button class="stab" onclick="showSwimSub('sw-pdf',this)">PDF Import</button>
+ </div>
+ <div class="subview on" id="sw-sessions">${pacingHtml}${sessHtml}</div>
+ <div class="subview" id="sw-css">${cssCalcHtml}</div>
+ <div class="subview" id="sw-gen">${genHtml}</div>
+ <div class="subview" id="sw-pdf">${pdfHtml}</div>`;
 
  // Restore saved values
  const c=S.css();
@@ -2088,7 +2097,6 @@ function badiRenderCurrentView(){
     case 'heatmap': badiRenderHeatmap(); break;
     case 'tagesverlauf': badiRenderTagesverlauf(); break;
     case 'wochentag': badiRenderWochentag(); break;
-    case 'oracle': badiRenderOracle(); break;
   }
 }
 
@@ -2371,7 +2379,7 @@ function renderBadi(){
   ${BADI_TARGETS.map(t=>`<button class="badi-pool-btn hm-pill${t.key===BADI_STATE.selBad?' on':''}" data-bad="${t.key}" onclick="badiSelBad('${t.key}')">${t.label.replace('Hallenbad ','').replace('Freibad ','').replace('Seebad ','').replace('Flussbad ','')}</button>`).join('')}
  </div>
  <div style="display:flex;gap:.2rem;flex-wrap:wrap;margin-bottom:.6rem">
-  ${[['heatmap','Heatmap'],['tagesverlauf','Tagesverlauf'],['wochentag','Mittel/Wochentag'],['oracle','Bésmeralda']].map(([v,l])=>`<button class="badi-view-btn hm-pill${BADI_STATE.selView===v?' on':''}" data-view="${v}" onclick="badiSelView('${v}')">${l}</button>`).join('')}
+  ${[['heatmap','Heatmap'],['tagesverlauf','Tagesverlauf'],['wochentag','Mittel/Wochentag']].map(([v,l])=>`<button class="badi-view-btn hm-pill${BADI_STATE.selView===v?' on':''}" data-view="${v}" onclick="badiSelView('${v}')">${l}</button>`).join('')}
  </div>
  <div style="display:flex;gap:.2rem;flex-wrap:wrap;margin-bottom:.55rem">
   ${[['all','Alle'],['06','Jun'],['07','Jul'],['08','Aug'],['09','Sep']].map(([m,l])=>`<button class="badi-month-btn hm-pill${BADI_STATE.selMonth===m?' on':''}" data-month="${m}" onclick="badiSelMonth('${m}')">${l}</button>`).join('')}
@@ -2391,56 +2399,14 @@ function renderBadi(){
  </div>
 </div>
 
-<div class="sl">BÉSMERALDA'S KLEINE KRISTALLKUGEL</div>
-<div class="oracle-wrap">
- <div class="oracle-hdr">
-  <img class="oracle-img" src="${img}" alt="Bésmeralda">
-  <div>
-   <div class="oracle-name">Bésmeralda The Funky Fortune Teller</div>
-   <div class="oracle-sub">Sie sieht alles. Meistens. Ungefähr.</div>
-   <div class="oracle-desc">kNN · exponentielle Recency-Gewichtung · w = 0.70 × Ähnlichkeit + 0.30 × e^(−0.023 × Tage)</div>
-  </div>
- </div>
- <div id="badi-oracle-besmeralda"><div class="loading">Kugel erwacht…</div></div>
-</div>
 <div style="font-family:var(--mono);font-size:.58rem;color:var(--faint);text-align:center;padding:.6rem 0">
  Live via Crowdmonitor-WebSocket · Historische Daten alle 10 Min · <a href="https://derbsq.github.io/Badi-Tracker/" target="_blank" style="color:var(--bdi)">→ Vollständiger Tracker</a>
 </div>`;
 
-  // Separate full oracle (Bésmeralda section)
   BADI_STATE.selView='heatmap';
   document.querySelectorAll('.badi-view-btn').forEach(b=>b.classList.toggle('on',b.dataset.view==='heatmap'));
-
   badiConnectWS();
-  badiLoadData().then(()=>{
-    badiRenderCurrentView();
-    // Also render the separate Bésmeralda section
-    const bOrac=document.getElementById('badi-oracle-besmeralda');
-    if(bOrac){
-      const savedView=BADI_STATE.selView;
-      BADI_STATE.selView='oracle';
-      const tmpWrap=document.createElement('div');
-      tmpWrap.id='badi-oracle-content';
-      const oldWrap=document.getElementById('badi-oracle-content');
-      if(oldWrap)document.body.appendChild(tmpWrap);
-      BADI_STATE.selView=savedView;
-      // Just render oracle separately
-      badiRenderOracleInto(bOrac);
-    }
-  });
-}
-
-function badiRenderOracleInto(container){
-  // Same as oracle but writes to given container
-  const tempWrap=document.getElementById('badi-oracle-content');
-  if(tempWrap)tempWrap.style.display='block';
-  BADI_STATE.selView='oracle';
-  badiRenderOracle();
-  if(container&&tempWrap){
-    container.innerHTML=tempWrap.innerHTML;
-    tempWrap.style.display='none';
-  }
-  BADI_STATE.selView='heatmap';
+  badiLoadData().then(()=>badiRenderCurrentView());
 }
 
 // ─── METHOD VIEW ─────────────────────────────────────────────
@@ -2459,6 +2425,12 @@ function renderMethod(){
 function showMSub(id,btn){
  document.querySelectorAll('#v-method .subview').forEach(s=>s.classList.remove('on'));
  document.querySelectorAll('#v-method .stab').forEach(b=>b.classList.remove('on'));
+ const s=el(id);if(s)s.classList.add('on');
+ if(btn)btn.classList.add('on');
+}
+function showSwimSub(id,btn){
+ document.querySelectorAll('#v-swim .subview').forEach(s=>s.classList.remove('on'));
+ document.querySelectorAll('#v-swim .stab').forEach(b=>b.classList.remove('on'));
  const s=el(id);if(s)s.classList.add('on');
  if(btn)btn.classList.add('on');
 }
