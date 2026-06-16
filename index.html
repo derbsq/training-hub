@@ -2244,13 +2244,13 @@ function badiRenderTagesverlauf(){
     const labels=points.map(p=>p.x);
     const vals=points.map(p=>p.y);
     // Pad full-day x-axis: always show 06:00–22:00
-    const allSlots=[];for(let h=6;h<=22;h++){allSlots.push(String(h).padStart(2,'0')+':00');if(h<22)allSlots.push(String(h).padStart(2,'0')+':30');}
-    const pointMap={};points.forEach(p=>pointMap[p.x]=p.y);
+    const allSlots=[];for(let h=6;h<=22;h++){for(let m=0;m<60;m+=10){if(h===22&&m>0)break;allSlots.push(String(h).padStart(2,'0')+':'+String(m).padStart(2,'0'));}}
+    const pointMap={};points.forEach(p=>{const[hh,mm]=p.x.split(':').map(Number);const rm=Math.round(mm/10)*10;const fh=rm===60?hh+1:hh;const fm=rm===60?0:rm;const slot=String(fh).padStart(2,'0')+':'+String(fm).padStart(2,'0');if(!pointMap[slot])pointMap[slot]=p.y;});
     const fullVals=allSlots.map(s=>pointMap[s]??null);
     canvas.height=200;
     BADI_STATE.charts.main=new Chart(canvas,{
       type:'line',
-      data:{labels:allSlots,datasets:[{label:'Personen',data:fullVals,borderColor:'#4a9eff',backgroundColor:'rgba(74,158,255,.15)',pointRadius:c=>fullVals[c.dataIndex]!==null?3:0,borderWidth:2,tension:.3,fill:true,spanGaps:false}]},
+      data:{labels:allSlots,datasets:[{label:'Personen',data:fullVals,borderColor:'#4a9eff',backgroundColor:'rgba(74,158,255,.15)',pointRadius:c=>fullVals[c.dataIndex]!==null?2:0,borderWidth:2,tension:.6,fill:true,spanGaps:true}]},
       options:{responsive:true,maintainAspectRatio:false,
         plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.raw!==null?`${c.raw} P (${Math.round(c.raw/maxSpace*100)}%)`:'—'},filter:i=>i.raw!==null}},
         scales:{x:{ticks:{color:'var(--muted)',font:{size:9,family:'DM Mono'},maxRotation:0,autoSkip:true,maxTicksLimit:9,callback:(v,i)=>allSlots[i]?.endsWith(':00')?allSlots[i]:null},grid:{display:false}},y:{min:0,suggestedMax:maxSpace,ticks:{callback:v=>v+' P',color:'var(--muted)',font:{size:9,family:'DM Mono'}}}}}
