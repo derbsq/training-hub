@@ -1586,6 +1586,7 @@ async function loadLettenData(){
   const d=await r.json();
   const payload=d.payload||[];
   payload.forEach(p=>{
+   if(p.loc!=='2099')return;
    if(p.par==='flow'||p.par==='AbflussPneumatik')LETTEN_DATA.flow=parseFloat(p.val);
    if(p.par==='temperature'||p.par==='Temperatur')LETTEN_DATA.temp=parseFloat(p.val);
   });
@@ -1610,7 +1611,7 @@ async function loadPoolTemps(){
   if(d.heuried?.temp!=null)POOL_TEMPS.heuried=d.heuried.temp+'°C';
   if(d.letten?.water_temp!=null){
     if(!LETTEN_DATA.temp)LETTEN_DATA.temp=d.letten.water_temp;
-    if(!POOL_TEMPS.letten)POOL_TEMPS.letten=d.letten.water_temp.toFixed(1)+'°C';
+    POOL_TEMPS.letten=d.letten.water_temp.toFixed(1)+'°C';
   }
   refreshBadiCards();
  }catch(e){console.log('Pool temps fail:',e.message);}
