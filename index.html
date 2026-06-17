@@ -2906,7 +2906,8 @@ function refreshBadiCards(){
   document.body.appendChild(ind);
   const svg=ind.querySelector('svg');
 
-  let x0=0,y0=0,scrollY0=0,dir=null,triggered=false;
+  const navEl=document.querySelector('nav');
+  let x0=0,y0=0,scrollY0=0,dir=null,triggered=false,onNav=false;
 
   function setPtr(topPx,opacity,transition){
     ind.style.transition=transition||'none';
@@ -2919,6 +2920,7 @@ function refreshBadiCards(){
     y0=e.touches[0].clientY;
     scrollY0=window.scrollY;
     dir=null;
+    onNav=navEl&&navEl.contains(e.target);
   },{passive:true});
 
   document.addEventListener('touchmove',e=>{
@@ -2927,7 +2929,7 @@ function refreshBadiCards(){
     if(!dir&&(Math.abs(dx)>8||Math.abs(dy)>8))
       dir=Math.abs(dx)>Math.abs(dy)?'h':'v';
 
-    if(dir==='h'){e.preventDefault();return;}
+    if(dir==='h'){if(!onNav)e.preventDefault();return;}
 
     // PTR: standalone only, from scroll top, pulling down
     if(isStandalone&&dir==='v'&&scrollY0===0&&dy>0&&!triggered){
@@ -2942,7 +2944,7 @@ function refreshBadiCards(){
     const dy=e.changedTouches[0].clientY-y0;
 
     if(dir==='h'){
-      // Swipe left → next tab, swipe right → prev tab
+      if(onNav)return; // let nav scroll natively
       if(Math.abs(dx)>=SWIPE_THRESHOLD){
         const cur=document.querySelector('.tab.on')?.dataset?.tab;
         const i=TAB_ORDER.indexOf(cur);
