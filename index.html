@@ -1580,19 +1580,26 @@ async function loadWeatherWeek(){
 
 async function loadLettenData(){
  try{
-  // BAFU hydro station 2099 = Limmat Letten via existenz.ch proxy
-  const r=await fetch('https://api.existenz.ch/apiv1/hydro/latest?parameters=flow,temperature&station=2099&app=besko-training-hub');
-  if(!r.ok)throw new Error('BAFU '+r.status);
-  const d=await r.json();
-  const payload=d.payload||[];
-  payload.forEach(p=>{
-   if(p.loc!=='2099')return;
-   if(p.par==='flow'||p.par==='AbflussPneumatik')LETTEN_DATA.flow=parseFloat(p.val);
-   if(p.par==='temperature'||p.par==='Temperatur')LETTEN_DATA.temp=parseFloat(p.val);
-  });
+  // Station 2099 = Limmat Letten flow; station 2181 = Limmat Letten temperature (separate BAFU sensors)
+  const [rFlow,rTemp]=await Promise.all([
+   fetch('https://api.existenz.ch/apiv1/hydro/latest?parameters=flow&locations=2099&app=besko-training-hub'),
+   fetch('https://api.existenz.ch/apiv1/hydro/latest?parameters=temperature&locations=2181&app=besko-training-hub'),
+  ]);
+  if(rFlow.ok){
+   const df=await rFlow.json();
+   (df.payload||[]).forEach(p=>{
+    if(p.par==='flow'||p.par==='AbflussPneumatik')LETTEN_DATA.flow=parseFloat(p.val);
+   });
+  }
+  if(rTemp.ok){
+   const dt=await rTemp.json();
+   (dt.payload||[]).forEach(p=>{
+    if(p.par==='temperature'||p.par==='Temperatur')LETTEN_DATA.temp=parseFloat(p.val);
+   });
+  }
   // Estimate speed: Limmat at Letten cross-section ≈ 80m²
   if(LETTEN_DATA.flow)LETTEN_DATA.speed=LETTEN_DATA.flow/80;
-  // Sync live Letten temp into POOL_TEMPS so Badi tab shows same value as Dashboard
+  // Sync live BAFU temp into POOL_TEMPS
   if(LETTEN_DATA.temp!=null)POOL_TEMPS.letten=LETTEN_DATA.temp.toFixed(1)+'°C';
   // Refresh dashboard and Badi live cards if visible
   const card=el('dash-badi-4');if(card)refreshBadiCards();
@@ -1611,7 +1618,7 @@ async function loadPoolTemps(){
   if(d.heuried?.temp!=null)POOL_TEMPS.heuried=d.heuried.temp+'°C';
   if(d.letten?.water_temp!=null){
     if(!LETTEN_DATA.temp)LETTEN_DATA.temp=d.letten.water_temp;
-    POOL_TEMPS.letten=d.letten.water_temp.toFixed(1)+'°C';
+    if(!POOL_TEMPS.letten)POOL_TEMPS.letten=d.letten.water_temp.toFixed(1)+'°C';
   }
   refreshBadiCards();
  }catch(e){console.log('Pool temps fail:',e.message);}
