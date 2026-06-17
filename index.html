@@ -52,16 +52,27 @@ nav{position:sticky;top:0;z-index:50;background:rgba(244,241,235,.97);backdrop-f
 main{padding-top:.5rem}
 .view{display:none;animation:vu .16s ease}.view.on{display:block}
 @keyframes vu{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
-@keyframes ptr-spin{to{transform:translateX(-50%) translateY(var(--ptr-rest)) rotate(360deg)}}
-#ptr-indicator{
-  --ptr-rest:16px;
-  position:fixed;top:env(safe-area-inset-top,0px);left:50%;
+@keyframes ptr-spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+#ptr-indicator{position:fixed;top:env(safe-area-inset-top,0px);left:50%;
   transform:translateX(-50%) translateY(-72px);
   width:40px;height:40px;background:var(--bg);border-radius:50%;
   display:flex;align-items:center;justify-content:center;
-  box-shadow:0 2px 14px rgba(0,0,0,.14);z-index:9999;pointer-events:none;
-  opacity:0;will-change:transform,opacity}
-#ptr-indicator svg{width:20px;height:20px;stroke:var(--ink);fill:none;stroke-width:2.2;stroke-linecap:round;transform-origin:center}
+  box-shadow:0 2px 14px rgba(0,0,0,.14);z-index:9999;pointer-events:none;opacity:0}
+#ptr-indicator svg{width:20px;height:20px;stroke:var(--ink);fill:none;stroke-width:2.2;stroke-linecap:round}
+#ptr-indicator.spinning svg{animation:ptr-spin .75s linear infinite}
+/* TAB SLIDING INDICATOR */
+.tabs{position:relative}
+#tab-ind{position:absolute;top:50%;border-radius:999px;pointer-events:none;z-index:0;
+  transform:translateY(-50%);transition:transform .22s cubic-bezier(.4,0,.2,1),width .22s cubic-bezier(.4,0,.2,1)}
+#tab-ind[data-tab=dash]{background:var(--ink)}
+#tab-ind[data-tab=badi]{background:var(--badi-tab)}
+#tab-ind[data-tab=swim]{background:var(--swim-tab)}
+#tab-ind[data-tab=dry]{background:var(--dA)}
+#tab-ind[data-tab=method]{background:var(--mth-tab)}
+#tab-ind[data-tab=log]{background:var(--ink)}
+#tab-ind[data-tab=coach]{background:var(--coach-tab)}
+.tab{position:relative;z-index:1}
+.tab.on{color:var(--bg);font-weight:700;background:none!important}
 
 /* SECTION LABELS */
 .sl{font-family:var(--mono);font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin:1.8rem 0 .7rem}
@@ -447,6 +458,7 @@ footer{text-align:center;font-family:var(--mono);font-size:.57rem;color:var(--fa
 </header>
 <nav>
   <div class="tabs">
+    <div id="tab-ind" data-tab="dash"></div>
     <button class="tab on" data-tab="dash">Dashboard</button>
     <button class="tab" data-tab="badi">Badi-Tracker</button>
     <button class="tab" data-tab="swim">Schwimmen</button>
@@ -2765,7 +2777,19 @@ function switchTab(tab){
  const renders={dash:renderDash,badi:renderBadi,swim:renderSwim,dry:renderDry,method:renderMethod,log:renderLog,coach:renderCoach};
  if(renders[tab])renders[tab]();
  localStorage.setItem('hub_tab',tab);
+ posTabInd(tab,true);
  window.scrollTo(0,0);
+}
+function posTabInd(tab,animate){
+ const ind=document.getElementById('tab-ind');
+ const tabEl=document.querySelector(`.tab[data-tab="${tab}"]`);
+ if(!ind||!tabEl)return;
+ const tabs=tabEl.parentElement;
+ ind.dataset.tab=tab;
+ ind.style.transition=animate?'transform .22s cubic-bezier(.4,0,.2,1),width .22s cubic-bezier(.4,0,.2,1)':'none';
+ ind.style.width=tabEl.offsetWidth+'px';
+ ind.style.height=tabEl.offsetHeight+'px';
+ ind.style.transform=`translateY(-50%) translateX(${tabEl.offsetLeft}px)`;
 }
 
 function toggleCard(card){card.classList.toggle('open');}
@@ -2788,7 +2812,9 @@ document.addEventListener('DOMContentLoaded',()=>{
  // Tab clicks
  document.querySelectorAll('.tab').forEach(t=>{t.addEventListener('click',()=>switchTab(t.dataset.tab));});
  // Restore last active tab
- switchTab(localStorage.getItem('hub_tab')||'dash');
+ const initTab=localStorage.getItem('hub_tab')||'dash';
+ switchTab(initTab);
+ requestAnimationFrame(()=>posTabInd(initTab,false));
  // Load Chart.js + matrix plugin
  const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js';
  s.onload=()=>{
@@ -2903,86 +2929,87 @@ function refreshBadiCards(){
 (function(){
   const TAB_ORDER=['dash','badi','swim','dry','method','log','coach'];
   const isStandalone=window.matchMedia('(display-mode:standalone)').matches||navigator.standalone===true;
-  const PTR_THRESHOLD=72;
-  const SWIPE_THRESHOLD=52;
+  const PTR_THRESHOLD=72, SWIPE_THRESHOLD=48;
 
-  // PTR indicator (always in DOM, hidden by default)
-  const ind=document.createElement('div');
-  ind.id='ptr-indicator';
-  ind.innerHTML='<svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>';
-  document.body.appendChild(ind);
-  const svg=ind.querySelector('svg');
+  const ptr=document.createElement('div');
+  ptr.id='ptr-indicator';
+  ptr.innerHTML='<svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>';
+  document.body.appendChild(ptr);
+  const ptrSvg=ptr.querySelector('svg');
 
   const navEl=document.querySelector('nav');
-  let x0=0,y0=0,scrollY0=0,dir=null,triggered=false,onNav=false;
+  let x0=0,y0=0,scrollY0=0,dir=null,onNav=false,ptrTriggered=false,swipeCurTab=null;
 
-  const PTR_HIDDEN='translateX(-50%) translateY(-72px)';
-  const PTR_REST ='translateX(-50%) translateY(16px)';
-  function setPtr(ty,opacity,transition){
-    ind.style.transition=transition||'none';
-    ind.style.transform=`translateX(-50%) translateY(${ty}px)`;
-    ind.style.opacity=String(opacity);
-  }
-  function hidePtr(transition){
-    ind.style.transition=transition||'transform .2s ease,opacity .15s ease';
-    ind.style.transform=PTR_HIDDEN;ind.style.opacity='0';
-  }
+  function ptrSet(ty,op,tr){ptr.style.transition=tr||'none';ptr.style.transform=`translateX(-50%) translateY(${ty}px)`;ptr.style.opacity=String(op);}
+  function ptrHide(){ptr.style.transition='transform .2s ease,opacity .15s ease';ptr.style.transform='translateX(-50%) translateY(-72px)';ptr.style.opacity='0';}
 
   document.addEventListener('touchstart',e=>{
-    x0=e.touches[0].clientX;
-    y0=e.touches[0].clientY;
-    scrollY0=window.scrollY;
-    dir=null;
+    x0=e.touches[0].clientX; y0=e.touches[0].clientY;
+    scrollY0=window.scrollY; dir=null;
     onNav=navEl&&navEl.contains(e.target);
+    swipeCurTab=document.querySelector('.tab.on')?.dataset?.tab;
   },{passive:true});
 
   document.addEventListener('touchmove',e=>{
-    const dx=e.touches[0].clientX-x0;
-    const dy=e.touches[0].clientY-y0;
-    if(!dir&&(Math.abs(dx)>8||Math.abs(dy)>8))
-      dir=Math.abs(dx)>Math.abs(dy)?'h':'v';
-
-    if(dir==='h'){if(!onNav)e.preventDefault();return;}
-
-    // PTR: standalone only, from scroll top, pulling down
-    if(isStandalone&&dir==='v'&&scrollY0===0&&dy>0&&!triggered){
-      // Asymptotic resistance: fast start, plateaus near rest position
-      const travel=-72+80*(1-Math.exp(-dy/(PTR_THRESHOLD*1.2)));
-      setPtr(travel,Math.min(dy/PTR_THRESHOLD,1));
-      svg.style.transform=`rotate(${dy*3}deg)`;
-    }
-  },{passive:false});
-
-  document.addEventListener('touchend',async e=>{
-    const dx=e.changedTouches[0].clientX-x0;
-    const dy=e.changedTouches[0].clientY-y0;
+    const dx=e.touches[0].clientX-x0, dy=e.touches[0].clientY-y0;
+    if(!dir&&(Math.abs(dx)>8||Math.abs(dy)>8)) dir=Math.abs(dx)>Math.abs(dy)?'h':'v';
 
     if(dir==='h'){
-      if(onNav)return; // let nav scroll natively
-      if(Math.abs(dx)>=SWIPE_THRESHOLD){
-        const cur=document.querySelector('.tab.on')?.dataset?.tab;
-        const i=TAB_ORDER.indexOf(cur);
-        if(dx<0&&i<TAB_ORDER.length-1)switchTab(TAB_ORDER[i+1]);
-        if(dx>0&&i>0)switchTab(TAB_ORDER[i-1]);
+      if(!onNav) e.preventDefault();
+      // Slide tab indicator with finger
+      if(!onNav&&swipeCurTab){
+        const i=TAB_ORDER.indexOf(swipeCurTab);
+        const nextTab=dx<0?TAB_ORDER[i+1]:TAB_ORDER[i-1];
+        const ti=document.getElementById('tab-ind');
+        const curEl=document.querySelector(`.tab[data-tab="${swipeCurTab}"]`);
+        const nxtEl=nextTab&&document.querySelector(`.tab[data-tab="${nextTab}"]`);
+        if(ti&&curEl&&nxtEl){
+          const p=Math.min(Math.abs(dx)/SWIPE_THRESHOLD,1);
+          const x=curEl.offsetLeft+(nxtEl.offsetLeft-curEl.offsetLeft)*p;
+          const w=curEl.offsetWidth+(nxtEl.offsetWidth-curEl.offsetWidth)*p;
+          ti.style.transition='none';
+          ti.style.transform=`translateY(-50%) translateX(${x}px)`;
+          ti.style.width=w+'px';
+          ti.dataset.tab=p>.5?nextTab:swipeCurTab;
+        }
       }
       return;
     }
 
-    // PTR release
-    if(isStandalone&&scrollY0===0&&dy>=PTR_THRESHOLD&&!triggered){
-      triggered=true;
-      // Spring snap to rest position, then spin until reload
-      ind.style.transition='transform .3s cubic-bezier(.34,1.56,.64,1),opacity .15s';
-      ind.style.transform=PTR_REST;
-      ind.style.opacity='1';
-      svg.style.transform='';
-      setTimeout(()=>{svg.style.animation='ptr-spin .75s linear infinite';},280);
+    if(isStandalone&&dir==='v'&&scrollY0===0&&dy>0&&!ptrTriggered){
+      const ty=-72+80*(1-Math.exp(-dy/(PTR_THRESHOLD*1.2)));
+      ptrSet(ty,Math.min(dy/PTR_THRESHOLD,1));
+      ptrSvg.style.transform=`rotate(${dy*3}deg)`;
+    }
+  },{passive:false});
+
+  document.addEventListener('touchend',async e=>{
+    const dx=e.changedTouches[0].clientX-x0, dy=e.changedTouches[0].clientY-y0;
+
+    if(dir==='h'){
+      if(onNav)return;
+      const i=TAB_ORDER.indexOf(swipeCurTab);
+      if(Math.abs(dx)>=SWIPE_THRESHOLD){
+        const next=dx<0?TAB_ORDER[i+1]:TAB_ORDER[i-1];
+        if(next){switchTab(next);return;}
+      }
+      posTabInd(swipeCurTab,true); // snap back
+      return;
+    }
+
+    if(isStandalone&&scrollY0===0&&dy>=PTR_THRESHOLD&&!ptrTriggered){
+      ptrTriggered=true;
+      ptr.style.transition='transform .28s cubic-bezier(.34,1.56,.64,1)';
+      ptr.style.transform='translateX(-50%) translateY(16px)';
+      ptr.style.opacity='1';
+      ptrSvg.style.transform='';
+      setTimeout(()=>ptr.classList.add('spinning'),260);
       if('caches' in window){const keys=await caches.keys();await Promise.all(keys.map(k=>caches.delete(k)));}
       if('serviceWorker' in navigator){const r=await navigator.serviceWorker.getRegistration();if(r)await r.update();}
       window.location.reload();
     } else {
-      hidePtr();
-      svg.style.transform='';
+      ptrHide();
+      ptrSvg.style.transform='';
     }
   },{passive:true});
 })();
