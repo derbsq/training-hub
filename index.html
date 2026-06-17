@@ -40,8 +40,8 @@ h1{font-size:clamp(1.35rem,5vw,2.2rem);font-weight:800;letter-spacing:-.025em;li
 nav{position:-webkit-sticky;position:sticky;top:0;z-index:50;background:rgba(244,241,235,.97);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1.5px solid var(--brd);text-align:center;overflow-x:auto}
 .tabs{display:inline-flex;gap:.2rem;padding:.6rem .85rem;scrollbar-width:none}
 .tabs::-webkit-scrollbar{display:none}
-.tab{flex:0 0 auto;font-family:var(--mono);font-size:.63rem;letter-spacing:.05em;color:var(--muted);border:1.5px solid transparent;border-radius:999px;padding:.38rem .8rem;white-space:nowrap;transition:all .12s}
-.tab.on{color:var(--bg);font-weight:700}
+.tab{flex:0 0 auto;font-family:var(--mono);font-size:.63rem;font-weight:700;letter-spacing:.05em;color:var(--muted);border:1.5px solid transparent;border-radius:999px;padding:.38rem .8rem;white-space:nowrap;transition:color .12s}
+.tab.on{color:var(--bg)}
 .tab[data-tab=dash].on{background:var(--ink)}
 .tab[data-tab=badi].on{background:var(--badi-tab)}
 .tab[data-tab=swim].on{background:var(--swim-tab)}
@@ -72,7 +72,7 @@ main{padding-top:.5rem}
 #tab-ind[data-tab=log]{background:var(--ink)}
 #tab-ind[data-tab=coach]{background:var(--coach-tab)}
 .tab{position:relative;z-index:1}
-.tab.on{color:var(--bg);font-weight:700;background:none!important}
+.tab.on{color:var(--bg);background:none!important}
 
 /* SECTION LABELS */
 .sl{font-family:var(--mono);font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin:1.8rem 0 .7rem}
