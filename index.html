@@ -2784,11 +2784,14 @@ function posTabInd(tab,animate){
  const ind=document.getElementById('tab-ind');
  const tabEl=document.querySelector(`.tab[data-tab="${tab}"]`);
  if(!ind||!tabEl)return;
+ const tabsEl=ind.parentElement;
+ const tabR=tabEl.getBoundingClientRect();
+ const tabsR=tabsEl.getBoundingClientRect();
  ind.dataset.tab=tab;
  ind.style.transition=animate?'transform .22s cubic-bezier(.4,0,.2,1),width .22s cubic-bezier(.4,0,.2,1)':'none';
- ind.style.width=tabEl.offsetWidth+'px';
- ind.style.height=tabEl.offsetHeight+'px';
- ind.style.top=tabEl.offsetTop+'px';
+ ind.style.width=tabR.width+'px';
+ ind.style.height=tabR.height+'px';
+ ind.style.top=(tabR.top-tabsR.top)+'px';
  ind.style.transform=`translateX(${tabEl.offsetLeft}px)`;
  const navEl=tabEl.closest('nav');
  if(navEl){
