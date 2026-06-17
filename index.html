@@ -2757,6 +2757,7 @@ function switchTab(tab){
  document.querySelectorAll('.view').forEach(v=>{v.classList.toggle('on',v.dataset.view===tab);});
  const renders={dash:renderDash,badi:renderBadi,swim:renderSwim,dry:renderDry,method:renderMethod,log:renderLog,coach:renderCoach};
  if(renders[tab])renders[tab]();
+ localStorage.setItem('hub_tab',tab);
  window.scrollTo(0,0);
 }
 
@@ -2779,6 +2780,8 @@ function toggleCard(card){card.classList.toggle('open');}
 document.addEventListener('DOMContentLoaded',()=>{
  // Tab clicks
  document.querySelectorAll('.tab').forEach(t=>{t.addEventListener('click',()=>switchTab(t.dataset.tab));});
+ // Restore last active tab
+ switchTab(localStorage.getItem('hub_tab')||'dash');
  // Load Chart.js + matrix plugin
  const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js';
  s.onload=()=>{
