@@ -62,8 +62,8 @@ main{padding-top:.5rem}
 #ptr-indicator.spinning svg{animation:ptr-spin .75s linear infinite}
 /* TAB SLIDING INDICATOR */
 .tabs{position:relative}
-#tab-ind{position:absolute;top:50%;border-radius:999px;pointer-events:none;z-index:0;
-  transform:translateY(-50%);transition:transform .22s cubic-bezier(.4,0,.2,1),width .22s cubic-bezier(.4,0,.2,1)}
+#tab-ind{position:absolute;top:0;border-radius:999px;pointer-events:none;z-index:0;
+  transition:transform .22s cubic-bezier(.4,0,.2,1),width .22s cubic-bezier(.4,0,.2,1)}
 #tab-ind[data-tab=dash]{background:var(--ink)}
 #tab-ind[data-tab=badi]{background:var(--badi-tab)}
 #tab-ind[data-tab=swim]{background:var(--swim-tab)}
@@ -2788,7 +2788,8 @@ function posTabInd(tab,animate){
  ind.style.transition=animate?'transform .22s cubic-bezier(.4,0,.2,1),width .22s cubic-bezier(.4,0,.2,1)':'none';
  ind.style.width=tabEl.offsetWidth+'px';
  ind.style.height=tabEl.offsetHeight+'px';
- ind.style.transform=`translateY(-50%) translateX(${tabEl.offsetLeft}px)`;
+ ind.style.top=tabEl.offsetTop+'px';
+ ind.style.transform=`translateX(${tabEl.offsetLeft}px)`;
  const navEl=tabEl.closest('nav');
  if(navEl){
   const target=tabEl.offsetLeft-(navEl.offsetWidth-tabEl.offsetWidth)/2;
@@ -2972,7 +2973,7 @@ function refreshBadiCards(){
           const x=curEl.offsetLeft+(nxtEl.offsetLeft-curEl.offsetLeft)*p;
           const w=curEl.offsetWidth+(nxtEl.offsetWidth-curEl.offsetWidth)*p;
           ti.style.transition='none';
-          ti.style.transform=`translateY(-50%) translateX(${x}px)`;
+          ti.style.transform=`translateX(${x}px)`;
           ti.style.width=w+'px';
           ti.dataset.tab=p>.5?nextTab:swipeCurTab;
         }
