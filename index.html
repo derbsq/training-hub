@@ -2717,16 +2717,26 @@ async function renderCoach(){
   <div id="coach-session-status" style="margin-top:.5rem"></div>
  </div>`;
 
- let report=null;
- try{const r=await fetch(COACH_RAW+'latest.json?t='+Date.now());if(r.ok)report=await r.json();}catch(e){}
-
- // Check for today's session analysis
+ // Fetch: weekly report, today's session, pending recommendations — all in parallel
  const todayStr=new Date().toISOString().slice(0,10);
- let sessionReport=null;
- try{const r=await fetch(COACH_RAW+'session_'+todayStr+'.json?t='+Date.now());if(r.ok)sessionReport=await r.json();}catch(e){}
+ const [reportRes, sessionRes, recRes] = await Promise.allSettled([
+  fetch(COACH_RAW+'latest.json?t='+Date.now()),
+  fetch(COACH_RAW+'session_'+todayStr+'.json?t='+Date.now()),
+  COACH_API_URL?fetch(COACH_API_URL+'/recommendations',{headers:{'Authorization':'Bearer '+COACH_TOKEN}}):Promise.reject(),
+ ]);
+
+ const report = reportRes.status==='fulfilled'&&reportRes.value.ok ? await reportRes.value.json() : null;
+ const sessionReport = sessionRes.status==='fulfilled'&&sessionRes.value.ok ? await sessionRes.value.json() : null;
+ let pendingRecs = [];
+ if(recRes.status==='fulfilled'&&recRes.value.ok){
+  const rd=await recRes.value.json();
+  pendingRecs=rd.pending||[];
+ }
+
+ const recsHtml=buildRecommendationsHtml(pendingRecs);
 
  if(!report){
-  v.innerHTML=sessionBtn+`<div class="empty" style="padding:2rem 0;text-align:center">
+  v.innerHTML=sessionBtn+recsHtml+`<div class="empty" style="padding:2rem 0;text-align:center">
    <div style="font-weight:700;margin-bottom:.3rem">Noch kein Wochenbericht</div>
    <div style="font-family:var(--mono);font-size:.7rem;color:var(--muted)">Wird jeden Montag um 07:00 UTC generiert.</div>
   </div>`;
@@ -2740,7 +2750,7 @@ async function renderCoach(){
   const lr=await fetch('https://api.github.com/repos/derbsq/training-hub/contents/data/coach');
   if(lr.ok){
    const files=await lr.json();
-   const past=files.filter(f=>!f.name.startsWith('session_')&&f.name!=='latest.json'&&f.name.endsWith('.json')&&f.name!==report.week+'.json').sort((a,b)=>b.name.localeCompare(a.name)).slice(0,8);
+   const past=files.filter(f=>!f.name.startsWith('session_')&&!f.name.startsWith('rec')&&f.name!=='latest.json'&&f.name!=='recommendations.json'&&f.name.endsWith('.json')&&f.name!==report.week+'.json').sort((a,b)=>b.name.localeCompare(a.name)).slice(0,8);
    if(past.length)histHtml=`<div style="margin-top:1.2rem;border-top:1px solid var(--brd);padding-top:.75rem">
     <div style="font-family:var(--mono);font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-bottom:.5rem">Frühere Wochen</div>
     <div style="display:flex;flex-wrap:wrap;gap:.35rem">${past.map(f=>`<button onclick="loadCoachWeek('${f.name.replace('.json','')}')" style="font-family:var(--mono);font-size:.65rem;color:var(--muted);border:1px solid var(--brd);border-radius:999px;padding:.15rem .55rem;cursor:pointer;background:none">${f.name.replace('.json','')}</button>`).join('')}</div>
@@ -2748,7 +2758,7 @@ async function renderCoach(){
   }
  }catch(e){}
 
- v.innerHTML=sessionBtn+(sessionReport?buildSessionHtml(sessionReport):'')+buildCoachHtml(report)+histHtml;
+ v.innerHTML=sessionBtn+recsHtml+(sessionReport?buildSessionHtml(sessionReport):'')+buildCoachHtml(report)+histHtml;
 }
 
 async function triggerSessionAnalysis(){
@@ -2778,6 +2788,10 @@ async function triggerSessionAnalysis(){
      const data=await pr.json();
      status.innerHTML=buildSessionHtml(data);
      btn.disabled=false;btn.style.opacity='1';
+     if(COACH_API_URL){try{
+      const rr=await fetch(COACH_API_URL+'/recommendations',{headers:{'Authorization':'Bearer '+COACH_TOKEN}});
+      if(rr.ok){const rd=await rr.json();const ra=document.getElementById('coach-recs-area');if(ra&&rd.pending)ra.innerHTML=buildRecommendationsHtml(rd.pending);}
+     }catch(e){}}
      return;
     }
    }catch(e){}
@@ -2795,35 +2809,91 @@ function buildSessionHtml(data){
  if(!data||!data.analysis)return'';
  const a=data.analysis;
  const fmtDate=s=>{try{return new Date(s).toLocaleDateString('de-CH',{day:'2-digit',month:'long'});}catch{return s;}};
- const interpColor={warmup:'var(--muted)',z1:'#1a7a6a','main-css':'var(--swim-tab)',sprint:'#c0392b',cooldown:'var(--muted)',drill:'#6b3fa0'};
+ const phaseColor={warmup:'var(--muted)',cooldown:'var(--muted)',main:'var(--swim-tab)',drill:'#6b3fa0',unknown:'var(--faint)'};
+ const compColor={'im-plan':'var(--ok)','über-plan':'var(--swim-tab)','unter-plan':'#c0392b','n/a':'var(--muted)'};
  const complianceColor={'erfüllt':'var(--ok)','teilweise':'#c8a000','nicht-erfüllt':'#c0392b','kein-plan':'var(--muted)'};
  let blocksHtml='';
  if(a.blocks&&a.blocks.length){
   blocksHtml=`<div style="margin:.5rem 0;display:grid;gap:.3rem">
    ${a.blocks.map(b=>{
-    const ic=interpColor[b.interpretation]||'var(--muted)';
-    return`<div style="display:grid;grid-template-columns:auto 1fr;gap:.4rem .6rem;background:var(--bg);border:1px solid var(--brd);border-left:3px solid ${ic};border-radius:var(--r2);padding:.45rem .6rem;font-size:.78rem">
-     <span style="font-family:var(--mono);font-size:.6rem;color:var(--faint)">Block ${b.block_nr}</span>
-     <span style="font-family:var(--mono);font-size:.6rem;font-weight:700;color:${ic}">${(b.interpretation||'').toUpperCase()} · ${b.distance_m}m · ${b.avg_pace_sec_per_100m}s/100m · ${b.css_pct}% CSS</span>
-     <span></span>
-     <span style="color:var(--muted);font-size:.76rem">${b.stroke_drift_obs||'–'}</span>
+    const ph=b.phase||b.interpretation||'unknown';
+    const pc=phaseColor[ph]||'var(--muted)';
+    const comp=b.plan_compliance||'n/a';
+    const compC=compColor[comp]||'var(--muted)';
+    const paceInfo=b.avg_pace_sec_per_100m?`${b.avg_pace_sec_per_100m}s/100m · ${b.css_pct}% CSS`:'';
+    return`<div style="background:var(--bg);border:1px solid var(--brd);border-left:3px solid ${pc};border-radius:var(--r2);padding:.45rem .6rem">
+     <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.2rem">
+      <span style="font-family:var(--mono);font-size:.58rem;color:var(--faint)">Block ${b.block_nr}</span>
+      <span style="font-family:var(--mono);font-size:.6rem;font-weight:700;color:${pc}">${ph.toUpperCase()}</span>
+      <span style="font-family:var(--mono);font-size:.6rem;color:var(--ink)">${b.distance_m||''}m</span>
+      ${paceInfo?`<span style="font-family:var(--mono);font-size:.58rem;color:var(--muted)">${paceInfo}</span>`:''}
+      ${comp!=='n/a'?`<span style="font-family:var(--mono);font-size:.55rem;font-weight:700;color:${compC};border:1px solid ${compC};padding:.02rem .3rem;border-radius:999px;margin-left:auto">${comp}</span>`:''}
+     </div>
+     ${b.stroke_drift_obs?`<div style="font-size:.76rem;color:var(--muted)">${b.stroke_drift_obs}</div>`:''}
     </div>`;
    }).join('')}
   </div>`;
  }
+ const activeStats=data.active_stats||{};
+ const activeLine=activeStats.pace_sec_per_100m?
+  `<div style="font-family:var(--mono);font-size:.65rem;color:var(--swim-tab);font-weight:700;margin-bottom:.4rem">Aktiv: ${activeStats.pace_sec_per_100m}s/100m · ${activeStats.css_pct}% CSS · ${activeStats.total_active_m}m in ${Math.round((activeStats.total_active_sec||0)/60)}min</div>`:'';
  return`<div style="background:var(--surf);border:1.5px solid var(--coach-tab);border-radius:var(--r2);margin-bottom:1rem;overflow:hidden">
   <div style="background:var(--coach-tab);padding:.5rem .8rem;display:flex;align-items:center;justify-content:space-between">
    <span style="font-family:var(--mono);font-size:.6rem;font-weight:700;color:#fff;letter-spacing:.08em;text-transform:uppercase">Session · ${fmtDate(data.date)}</span>
-   ${a.plan_vs_actual?`<span style="font-family:var(--mono);font-size:.58rem;font-weight:700;color:#fff;border:1px solid rgba(255,255,255,.5);padding:.05rem .35rem;border-radius:999px">${a.plan_vs_actual.compliance||''}</span>`:''}
+   ${a.plan_vs_actual?`<span style="font-family:var(--mono);font-size:.58rem;font-weight:700;color:#fff;border:1px solid rgba(255,255,255,.5);padding:.05rem .35rem;border-radius:999px;background:${complianceColor[a.plan_vs_actual.compliance]||'transparent'}">${a.plan_vs_actual.compliance||''}</span>`:''}
   </div>
   <div style="padding:.65rem .8rem">
-   <div style="font-size:.9rem;font-weight:700;line-height:1.45;margin-bottom:.5rem">${a.headline||''}</div>
+   <div style="font-size:.9rem;font-weight:700;line-height:1.45;margin-bottom:.4rem">${a.headline||''}</div>
+   ${activeLine}
    ${a.plan_vs_actual?`<div style="font-family:var(--mono);font-size:.7rem;color:var(--muted);margin-bottom:.5rem">${a.plan_vs_actual.text||''}</div>`:''}
    ${blocksHtml}
    ${a.key_observation?`<div style="background:rgba(26,122,106,.08);border-left:3px solid var(--coach-tab);padding:.45rem .6rem;border-radius:0 var(--r2) var(--r2) 0;font-size:.8rem;margin-top:.4rem"><strong>Key:</strong> ${a.key_observation}</div>`:''}
    ${a.coaching_note?`<div style="font-family:var(--mono);font-size:.7rem;color:var(--coach-tab);margin-top:.45rem;font-style:italic">${a.coaching_note}</div>`:''}
   </div>
  </div>`;
+}
+
+const REC_TRIGGER_LABEL={illness:'Krankheit',fatigue:'Erschöpfung',overreach:'Übertraining',underperformance:'Unterleistung',plan_drift:'Plan-Abweichung',manual:'Manuell'};
+const REC_ACTION_LABEL={suspend_training:'Training pausieren',reduce_volume:'Volumen reduzieren',reduce_intensity:'Intensität reduzieren',reschedule:'Verschieben',maintain:'Beibehalten',increase_intensity:'Intensität erhöhen'};
+const REC_TRIGGER_COLOR={illness:'#c0392b',fatigue:'#c8a000',overreach:'#c0392b',underperformance:'#c0392b',plan_drift:'#c8a000',manual:'var(--muted)'};
+
+function buildRecommendationsHtml(recs){
+ if(!recs||!recs.length)return'<div id="coach-recs-area"></div>';
+ return`<div id="coach-recs-area" style="margin-bottom:1.2rem">
+  <div style="font-family:var(--mono);font-size:.58rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem">Offene Empfehlungen</div>
+  ${recs.map(r=>{
+   const tc=REC_TRIGGER_COLOR[r.trigger]||'var(--muted)';
+   const tl=REC_TRIGGER_LABEL[r.trigger]||r.trigger;
+   const al=REC_ACTION_LABEL[r.action]||r.action;
+   const sessions=r.affected_sessions&&r.affected_sessions.length?r.affected_sessions.join(', '):'';
+   return`<div style="background:var(--surf);border:1.5px solid ${tc};border-radius:var(--r2);margin-bottom:.65rem;overflow:hidden">
+    <div style="background:${tc};padding:.4rem .75rem;display:flex;align-items:center;justify-content:space-between">
+     <span style="font-family:var(--mono);font-size:.58rem;font-weight:700;color:#fff;letter-spacing:.08em;text-transform:uppercase">${tl}</span>
+     <span style="font-family:var(--mono);font-size:.58rem;color:rgba(255,255,255,.8)">${r.session_date||''}</span>
+    </div>
+    <div style="padding:.6rem .75rem">
+     <div style="font-weight:700;font-size:.88rem;margin-bottom:.3rem">${al}</div>
+     ${sessions?`<div style="font-family:var(--mono);font-size:.65rem;color:var(--muted);margin-bottom:.3rem">Betrifft: ${sessions}${r.duration_days?' · '+r.duration_days+' Tage':''}</div>`:''}
+     <div style="font-size:.8rem;color:var(--ink);line-height:1.5;margin-bottom:.55rem">${r.reasoning||''}</div>
+     <div style="display:flex;gap:.5rem">
+      <button onclick="actOnRecommendation('${r.id}','confirm')" style="flex:1;font-family:var(--mono);font-size:.7rem;font-weight:700;background:var(--ok);color:#fff;border:none;border-radius:999px;padding:.38rem .6rem;cursor:pointer">Bestätigen</button>
+      <button onclick="actOnRecommendation('${r.id}','reject')" style="flex:1;font-family:var(--mono);font-size:.7rem;font-weight:700;background:none;color:var(--muted);border:1.5px solid var(--brd);border-radius:999px;padding:.38rem .6rem;cursor:pointer">Ablehnen</button>
+     </div>
+    </div>
+   </div>`;
+  }).join('')}
+ </div>`;
+}
+
+async function actOnRecommendation(recId,action){
+ if(!COACH_API_URL)return;
+ try{
+  const r=await fetch(`${COACH_API_URL}/recommendations/${recId}/${action}`,{
+   method:'POST',
+   headers:{'Authorization':'Bearer '+COACH_TOKEN,'Content-Type':'application/json'},
+  });
+  if(r.ok)renderCoach(); // refresh
+ }catch(e){console.log('rec action failed:',e.message);}
 }
 
 async function loadCoachWeek(week){
