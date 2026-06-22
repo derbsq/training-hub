@@ -1,241 +1,70 @@
 {
-  "week": "2026-W24",
-  "generated_at": "2026-06-17T12:59:07+02:00",
+  "week": "2026-W25",
+  "generated_at": "2026-06-22T09:04:25+02:00",
   "css_sec": 93,
   "weeks_data": [
     {
+      "week": "2026-W25",
+      "dates": "2026-06-15 – 2026-06-21",
+      "swim_sessions": 0,
+      "total_distance_m": 0,
+      "hrv_avg": null,
+      "sleep_avg_min": 449,
+      "body_battery_morning_avg": 49
+    },
+    {
       "week": "2026-W24",
       "dates": "2026-06-08 – 2026-06-14",
-      "swim_sessions_count": 4,
+      "swim_sessions": 4,
       "total_distance_m": 11550,
       "hrv_avg": null,
       "sleep_avg_min": 463,
-      "body_battery_morning_avg": 28,
-      "sessions": [
-        {
-          "date": "2026-06-08",
-          "distance_m": 3000,
-          "avg_swolf": null,
-          "avg_strokes_per_length": 19,
-          "pace_sec_per_100m": 124,
-          "css_pct": 75.0,
-          "stroke_drift_first_to_last_25pct": null
-        },
-        {
-          "date": "2026-06-10",
-          "distance_m": 2600,
-          "avg_swolf": null,
-          "avg_strokes_per_length": 18,
-          "pace_sec_per_100m": 168,
-          "css_pct": 55.4,
-          "stroke_drift_first_to_last_25pct": null
-        },
-        {
-          "date": "2026-06-12",
-          "distance_m": 3100,
-          "avg_swolf": null,
-          "avg_strokes_per_length": 20,
-          "pace_sec_per_100m": 144,
-          "css_pct": 64.6,
-          "stroke_drift_first_to_last_25pct": null
-        },
-        {
-          "date": "2026-06-13",
-          "distance_m": 2850,
-          "avg_swolf": null,
-          "avg_strokes_per_length": 20,
-          "pace_sec_per_100m": 136,
-          "css_pct": 68.4,
-          "stroke_drift_first_to_last_25pct": null
-        }
-      ]
+      "body_battery_morning_avg": 28
     },
     {
       "week": "2026-W23",
       "dates": "2026-06-01 – 2026-06-07",
-      "swim_sessions_count": 4,
+      "swim_sessions": 4,
       "total_distance_m": 11200,
       "hrv_avg": null,
       "sleep_avg_min": 456,
-      "body_battery_morning_avg": 29,
-      "sessions": [
-        {
-          "date": "2026-06-01",
-          "distance_m": 2800,
-          "avg_swolf": null,
-          "avg_strokes_per_length": 19,
-          "pace_sec_per_100m": 143,
-          "css_pct": 65.0,
-          "stroke_drift_first_to_last_25pct": null
-        },
-        {
-          "date": "2026-06-03",
-          "distance_m": 2600,
-          "avg_swolf": null,
-          "avg_strokes_per_length": 18,
-          "pace_sec_per_100m": 177,
-          "css_pct": 52.5,
-          "stroke_drift_first_to_last_25pct": null
-        },
-        {
-          "date": "2026-06-05",
-          "distance_m": 2800,
-          "avg_swolf": null,
-          "avg_strokes_per_length": 21,
-          "pace_sec_per_100m": 134,
-          "css_pct": 69.4,
-          "stroke_drift_first_to_last_25pct": null
-        },
-        {
-          "date": "2026-06-06",
-          "distance_m": 3000,
-          "avg_swolf": null,
-          "avg_strokes_per_length": 20,
-          "pace_sec_per_100m": 134,
-          "css_pct": 69.4,
-          "stroke_drift_first_to_last_25pct": null
-        }
-      ]
+      "body_battery_morning_avg": 29
     },
     {
       "week": "2026-W22",
       "dates": "2026-05-25 – 2026-05-31",
-      "swim_sessions_count": 5,
+      "swim_sessions": 5,
       "total_distance_m": 12600,
       "hrv_avg": null,
       "sleep_avg_min": 449,
-      "body_battery_morning_avg": 22,
-      "sessions": [
-        {
-          "date": "2026-05-25",
-          "distance_m": 2800,
-          "avg_swolf": null,
-          "avg_strokes_per_length": 20,
-          "pace_sec_per_100m": 152,
-          "css_pct": 61.2,
-          "stroke_drift_first_to_last_25pct": null
-        },
-        {
-          "date": "2026-05-27",
-          "distance_m": 2700,
-          "avg_swolf": null,
-          "avg_strokes_per_length": 20,
-          "pace_sec_per_100m": 137,
-          "css_pct": 67.9,
-          "stroke_drift_first_to_last_25pct": null
-        },
-        {
-          "date": "2026-05-28",
-          "distance_m": 2800,
-          "avg_swolf": null,
-          "avg_strokes_per_length": 20,
-          "pace_sec_per_100m": 141,
-          "css_pct": 66.0,
-          "stroke_drift_first_to_last_25pct": null
-        },
-        {
-          "date": "2026-05-29",
-          "distance_m": 1700,
-          "avg_swolf": null,
-          "avg_strokes_per_length": 18,
-          "pace_sec_per_100m": 147,
-          "css_pct": 63.3,
-          "stroke_drift_first_to_last_25pct": null
-        },
-        {
-          "date": "2026-05-31",
-          "distance_m": 2600,
-          "avg_swolf": null,
-          "avg_strokes_per_length": 18,
-          "pace_sec_per_100m": 165,
-          "css_pct": 56.4,
-          "stroke_drift_first_to_last_25pct": null
-        }
-      ]
-    },
-    {
-      "week": "2026-W21",
-      "dates": "2026-05-18 – 2026-05-24",
-      "swim_sessions_count": 5,
-      "total_distance_m": 9900,
-      "hrv_avg": null,
-      "sleep_avg_min": 413,
-      "body_battery_morning_avg": 22,
-      "sessions": [
-        {
-          "date": "2026-05-20",
-          "distance_m": 2800,
-          "avg_swolf": null,
-          "avg_strokes_per_length": 19,
-          "pace_sec_per_100m": 167,
-          "css_pct": 55.7,
-          "stroke_drift_first_to_last_25pct": null
-        },
-        {
-          "date": "2026-05-22",
-          "distance_m": 2700,
-          "avg_swolf": null,
-          "avg_strokes_per_length": 20,
-          "pace_sec_per_100m": 129,
-          "css_pct": 72.1,
-          "stroke_drift_first_to_last_25pct": null
-        },
-        {
-          "date": "2026-05-23",
-          "distance_m": 500,
-          "avg_swolf": null,
-          "avg_strokes_per_length": 20,
-          "pace_sec_per_100m": 102,
-          "css_pct": 91.2,
-          "stroke_drift_first_to_last_25pct": null
-        },
-        {
-          "date": "2026-05-23",
-          "distance_m": 2900,
-          "avg_swolf": null,
-          "avg_strokes_per_length": 19,
-          "pace_sec_per_100m": 140,
-          "css_pct": 66.4,
-          "stroke_drift_first_to_last_25pct": null
-        },
-        {
-          "date": "2026-05-24",
-          "distance_m": 1000,
-          "avg_swolf": null,
-          "avg_strokes_per_length": 18,
-          "pace_sec_per_100m": 126,
-          "css_pct": 73.8,
-          "stroke_drift_first_to_last_25pct": null
-        }
-      ]
+      "body_battery_morning_avg": 22
     }
   ],
+  "session_details": [],
   "compliance": {
-    "rating": "gut",
-    "sessions_per_week": [
-      5,
-      5,
-      4,
-      4
-    ],
-    "text": "In W24 und W23 wurden jeweils 4 Einheiten absolviert – genau im Zielbereich. In W22 und W21 wurden sogar 5 Einheiten durchgeführt, wobei in W21 zwei Einheiten am selben Tag (23.05.) stattfanden, darunter eine sehr kurze Session von nur 500 m. Die Gesamtdistanz lag in W24 bei 11.550 m und damit solide im Zielkorridor von 8–14 km pro Woche."
+    "rating": "schwach",
+    "sessions_this_week": 0,
+    "planned_sessions": 4,
+    "text": "In W25 (15.–21. Juni) wurden keine der geplanten 4 Pool-Sessions absolviert – komplette Trainingswoche ausgefallen. Es liegen keine Garmin-Längen-Daten vor, sodass keine einzige Session bewertet werden kann. Dies ist die erste Nullwoche nach drei aufeinanderfolgenden Wochen mit 4–5 Sessions."
   },
   "stroke_efficiency": {
     "rating": "stabil",
-    "swolf_trend": "SWOLF-Daten nicht verfügbar; Schlagzahl pro Länge als Proxy verwendet (Bereich 18–21 über alle 4 Wochen).",
-    "drift_present": false,
-    "text": "Die Schlagzahlen pro Länge bewegen sich konsistent zwischen 18 und 21 über alle vier Wochen, ohne erkennbaren systematischen Anstieg innerhalb einzelner Einheiten. Da keine Drift-Daten (erste vs. letzte 25 %) vorliegen, kann das von Coach Tas gemeldete Problem (20→25 Schläge pro Länge) weder bestätigt noch ausgeschlossen werden. Es wird empfohlen, die Drift-Messung in den nächsten Sessions gezielt zu aktivieren, um diesen bekannten Schwachpunkt zu überwachen."
+    "swolf_trend": "Keine Daten für W25 – Bewertung nicht möglich.",
+    "drift_observations": [
+      "Keine Sessions in W25 – keine Schlagzahl-Daten vorhanden."
+    ],
+    "text": "Da in W25 kein Meterdaten erfasst wurden, kann die bekannte Problematik (Schlagzahldrift 20→25+ unter Ermüdung) weder bestätigt noch widerlegt werden. Der Trend aus W22–W24 bleibt als Referenz bestehen. Eine Bewertung der Effizienz ist erst ab der nächsten Trainingswoche wieder möglich."
   },
   "recovery": {
-    "rating": "untererholt",
-    "hrv_trend": "HRV-Daten für alle 4 Wochen nicht verfügbar – keine Trendaussage möglich.",
-    "text": "Der Body Battery Morgenwert liegt in W24 bei nur 28 und in W23 bei 29, was auf chronisch unzureichende Erholung hinweist; in W21 und W22 lag er sogar bei 22. Der Schlaf verbesserte sich leicht von 413 min/Nacht (W21) auf 463 min/Nacht (W24), bleibt aber mit knapp 7,7 Stunden im unteren Bereich für einen Athleten mit 7 Trainingseinheiten pro Woche. HRV-Daten fehlen vollständig und sollten dringend erfasst werden, um die Erholungslage besser beurteilen zu können."
+    "rating": "ausreichend",
+    "hrv_trend": "HRV-Daten für alle 4 Wochen nicht verfügbar – kein Trendvergleich möglich.",
+    "text": "Der Morning Body Battery-Wert stieg in W25 auf 49, nach kritisch niedrigen Werten von 22–29 in W22–W24 – ein klares Erholungssignal durch die trainingsfreie Woche. Der Schlaf verbesserte sich leicht (449 min/Nacht), liegt aber weiterhin unter optimalem Niveau für einen 39-jährigen Ausdauersportler (Ziel ≥480 min). Die Kombination aus Trainingspause und moderat verbessertem Schlaf hat die akute Erschöpfung der Vorwochen teilweise kompensiert, die systemische Erholung ist jedoch noch nicht vollständig abgeschlossen."
   },
   "pace_vs_css": {
     "rating": "unter-plan",
-    "avg_css_pct_this_week": 65.9,
-    "text": "Der durchschnittliche CSS-Prozentsatz in W24 beträgt ca. 65,9 % (124 s, 168 s, 144 s, 136 s → gewichteter Schnitt), was deutlich unterhalb der Trainingsintensitätszonen liegt. Die Einheit vom 10.06. mit 168 s/100 m und nur 55,4 % CSS ist auffällig langsam und deutet auf eine reine Erholungs- oder Technikeinheit hin. Keine einzige Einheit in W24 erreichte auch nur annähernd die Threshold-Zone (85 % CSS = 93 s/100 m); selbst Z1-Easy-Pace (115 s/100 m) wurde nur in der schnellsten Session (08.06.) leicht überschritten."
+    "session_breakdown": [],
+    "text": "In W25 wurden keine Pool-Sessions durchgeführt, daher existieren keine Block-Level-Pace-Daten zum Vergleich mit dem CSS-Wert (1:33/100m). Eine Pace-Bewertung ist nicht möglich. Die Trainingswoche gilt vollständig als ausgefallen."
   },
-  "summary": "Béško erfüllt die Frequenzvorgabe zuverlässig, trainiert aber seit 4 Wochen konstant zu niedrig intensiv (Ø ~65 % CSS) bei gleichzeitig chronisch niedrigem Body Battery, was auf einen Erholungsrückstand hindeutet, der gezielt adressiert werden muss.",
-  "focus_next_week": "Baue in mindestens einer Einheit einen strukturierten CSS-Block ein (z. B. 6 × 100 m @ Zielpace 93–96 s mit 20 s Pause), um die Intensität planmäßig anzuheben – aber nur wenn der Body Battery Morgenwert an diesem Tag über 35 liegt."
+  "summary": "W25 war eine unfreiwillige Nullwoche ohne eine einzige Pool-Session, die jedoch den nach W22–W24 dringend nötigen Erholungsimpuls geliefert hat (Body Battery +20–27 Punkte).",
+  "focus_next_week": "Wiedereinstieg mit reduziertem Volumen (2–3 Sessions, max. 8000m gesamt) und striktem Fokus auf kontrollierte Schlagzahl ≤21/Länge in allen Blöcken – Qualität vor Quantität nach der Pause."
 }
