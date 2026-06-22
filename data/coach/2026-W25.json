@@ -1,0 +1,70 @@
+{
+  "week": "2026-W25",
+  "generated_at": "2026-06-22T09:04:25+02:00",
+  "css_sec": 93,
+  "weeks_data": [
+    {
+      "week": "2026-W25",
+      "dates": "2026-06-15 – 2026-06-21",
+      "swim_sessions": 0,
+      "total_distance_m": 0,
+      "hrv_avg": null,
+      "sleep_avg_min": 449,
+      "body_battery_morning_avg": 49
+    },
+    {
+      "week": "2026-W24",
+      "dates": "2026-06-08 – 2026-06-14",
+      "swim_sessions": 4,
+      "total_distance_m": 11550,
+      "hrv_avg": null,
+      "sleep_avg_min": 463,
+      "body_battery_morning_avg": 28
+    },
+    {
+      "week": "2026-W23",
+      "dates": "2026-06-01 – 2026-06-07",
+      "swim_sessions": 4,
+      "total_distance_m": 11200,
+      "hrv_avg": null,
+      "sleep_avg_min": 456,
+      "body_battery_morning_avg": 29
+    },
+    {
+      "week": "2026-W22",
+      "dates": "2026-05-25 – 2026-05-31",
+      "swim_sessions": 5,
+      "total_distance_m": 12600,
+      "hrv_avg": null,
+      "sleep_avg_min": 449,
+      "body_battery_morning_avg": 22
+    }
+  ],
+  "session_details": [],
+  "compliance": {
+    "rating": "schwach",
+    "sessions_this_week": 0,
+    "planned_sessions": 4,
+    "text": "In W25 (15.–21. Juni) wurden keine der geplanten 4 Pool-Sessions absolviert – komplette Trainingswoche ausgefallen. Es liegen keine Garmin-Längen-Daten vor, sodass keine einzige Session bewertet werden kann. Dies ist die erste Nullwoche nach drei aufeinanderfolgenden Wochen mit 4–5 Sessions."
+  },
+  "stroke_efficiency": {
+    "rating": "stabil",
+    "swolf_trend": "Keine Daten für W25 – Bewertung nicht möglich.",
+    "drift_observations": [
+      "Keine Sessions in W25 – keine Schlagzahl-Daten vorhanden."
+    ],
+    "text": "Da in W25 kein Meterdaten erfasst wurden, kann die bekannte Problematik (Schlagzahldrift 20→25+ unter Ermüdung) weder bestätigt noch widerlegt werden. Der Trend aus W22–W24 bleibt als Referenz bestehen. Eine Bewertung der Effizienz ist erst ab der nächsten Trainingswoche wieder möglich."
+  },
+  "recovery": {
+    "rating": "ausreichend",
+    "hrv_trend": "HRV-Daten für alle 4 Wochen nicht verfügbar – kein Trendvergleich möglich.",
+    "text": "Der Morning Body Battery-Wert stieg in W25 auf 49, nach kritisch niedrigen Werten von 22–29 in W22–W24 – ein klares Erholungssignal durch die trainingsfreie Woche. Der Schlaf verbesserte sich leicht (449 min/Nacht), liegt aber weiterhin unter optimalem Niveau für einen 39-jährigen Ausdauersportler (Ziel ≥480 min). Die Kombination aus Trainingspause und moderat verbessertem Schlaf hat die akute Erschöpfung der Vorwochen teilweise kompensiert, die systemische Erholung ist jedoch noch nicht vollständig abgeschlossen."
+  },
+  "pace_vs_css": {
+    "rating": "unter-plan",
+    "session_breakdown": [],
+    "text": "In W25 wurden keine Pool-Sessions durchgeführt, daher existieren keine Block-Level-Pace-Daten zum Vergleich mit dem CSS-Wert (1:33/100m). Eine Pace-Bewertung ist nicht möglich. Die Trainingswoche gilt vollständig als ausgefallen."
+  },
+  "summary": "W25 war eine unfreiwillige Nullwoche ohne eine einzige Pool-Session, die jedoch den nach W22–W24 dringend nötigen Erholungsimpuls geliefert hat (Body Battery +20–27 Punkte).",
+  "focus_next_week": "Wiedereinstieg mit reduziertem Volumen (2–3 Sessions, max. 8000m gesamt) und striktem Fokus auf kontrollierte Schlagzahl ≤21/Länge in allen Blöcken – Qualität vor Quantität nach der Pause."
+}
