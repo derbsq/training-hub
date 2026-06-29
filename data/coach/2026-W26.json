@@ -1,0 +1,70 @@
+{
+  "week": "2026-W26",
+  "generated_at": "2026-06-29T09:04:00+02:00",
+  "css_sec": 93,
+  "weeks_data": [
+    {
+      "week": "2026-W26",
+      "dates": "2026-06-22 – 2026-06-28",
+      "swim_sessions": 0,
+      "total_distance_m": 0,
+      "hrv_avg": null,
+      "sleep_avg_min": null,
+      "body_battery_morning_avg": null
+    },
+    {
+      "week": "2026-W25",
+      "dates": "2026-06-15 – 2026-06-21",
+      "swim_sessions": 0,
+      "total_distance_m": 0,
+      "hrv_avg": null,
+      "sleep_avg_min": 449,
+      "body_battery_morning_avg": 49
+    },
+    {
+      "week": "2026-W24",
+      "dates": "2026-06-08 – 2026-06-14",
+      "swim_sessions": 4,
+      "total_distance_m": 11550,
+      "hrv_avg": null,
+      "sleep_avg_min": 463,
+      "body_battery_morning_avg": 28
+    },
+    {
+      "week": "2026-W23",
+      "dates": "2026-06-01 – 2026-06-07",
+      "swim_sessions": 4,
+      "total_distance_m": 11200,
+      "hrv_avg": null,
+      "sleep_avg_min": 456,
+      "body_battery_morning_avg": 29
+    }
+  ],
+  "session_details": [],
+  "compliance": {
+    "rating": "schwach",
+    "sessions_this_week": 0,
+    "planned_sessions": 4,
+    "text": "In der Woche 2026-W26 (22.–28. Juni) wurden keine der geplanten 4 Schwimmeinheiten absolviert. Es liegen keinerlei Session-Daten vor. Nach bereits zwei Wochen ohne Schwimmtraining (W25 und W26) stellt dies eine kritische Unterbrechung des Trainingsrhythmus dar."
+  },
+  "stroke_efficiency": {
+    "rating": "stabil",
+    "swolf_trend": "Keine Daten für W26 — Bewertung nicht möglich.",
+    "drift_observations": [
+      "Keine Sessions in W26 — keine Schlagzahl- oder SWOLF-Daten vorhanden."
+    ],
+    "text": "Da in W26 keine Einheiten stattgefunden haben, können keine Aussagen zur Schlagtechnik oder Ermüdungsdrift gemacht werden. Das bekannte Problem der Schlagzahldrift (20→25+ pro Länge unter Belastung) bleibt ein offener Beobachtungspunkt für die Rückkehr ins Wasser. Referenzwerte aus W23/W24 bleiben die aktuellste Grundlage."
+  },
+  "recovery": {
+    "rating": "untererholt",
+    "hrv_trend": "HRV-Daten für W26 nicht verfügbar; Body Battery und Schlaf ebenfalls nicht erfasst.",
+    "text": "Für W26 liegen keine HRV-, Schlaf- oder Body-Battery-Daten vor. In den letzten verfügbaren Wochen (W23/W24) lag die Body Battery mit Werten von 28–29 auf einem niedrigen Niveau, der Schlaf war mit 456–463 Minuten knapp unter empfehlenswerten 8 Stunden. Die zweiwöchige Trainingspause könnte sowohl Folge als auch Chance zur Erholung von diesem Erschöpfungstrend sein — dies muss beim Wiedereinstieg bewertet werden."
+  },
+  "pace_vs_css": {
+    "rating": "unter-plan",
+    "session_breakdown": [],
+    "text": "In W26 wurden keine Einheiten durchgeführt, daher ist ein Pace-vs-CSS-Vergleich nicht möglich. Alle geplanten Trainingsintensitäten (Z1, Steady, Threshold) blieben ungefahren. Beim Wiedereinstieg sollte die Blocklevel-Pace systematisch gegen CSS (93 s/100m) geprüft werden, nicht anhand des Session-Durchschnitts."
+  },
+  "summary": "Zweite Woche in Folge ohne Schwimmtraining — nach 4 soliden Einheiten in W23 und W24 droht ein signifikanter Formverlust, der beim Wiedereinstieg gezielt adressiert werden muss.",
+  "focus_next_week": "Sanfter Wiedereinstieg mit 2–3 technisch kontrollierten Einheiten: Schlagzahl konsequent unter 22 pro Länge halten und bei Drift sofort Pause einlegen, bevor Intensität erhöht wird."
+}
