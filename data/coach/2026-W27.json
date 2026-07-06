@@ -1,0 +1,68 @@
+{
+  "week": "2026-W27",
+  "generated_at": "2026-07-06T09:02:09+02:00",
+  "css_sec": 93,
+  "weeks_data": [
+    {
+      "week": "2026-W27",
+      "dates": "2026-06-29 – 2026-07-05",
+      "swim_sessions": 0,
+      "total_distance_m": 0,
+      "hrv_avg": null,
+      "sleep_avg_min": null,
+      "body_battery_morning_avg": null
+    },
+    {
+      "week": "2026-W26",
+      "dates": "2026-06-22 – 2026-06-28",
+      "swim_sessions": 0,
+      "total_distance_m": 0,
+      "hrv_avg": null,
+      "sleep_avg_min": null,
+      "body_battery_morning_avg": null
+    },
+    {
+      "week": "2026-W25",
+      "dates": "2026-06-15 – 2026-06-21",
+      "swim_sessions": 0,
+      "total_distance_m": 0,
+      "hrv_avg": null,
+      "sleep_avg_min": 449,
+      "body_battery_morning_avg": 49
+    },
+    {
+      "week": "2026-W24",
+      "dates": "2026-06-08 – 2026-06-14",
+      "swim_sessions": 4,
+      "total_distance_m": 11550,
+      "hrv_avg": null,
+      "sleep_avg_min": 463,
+      "body_battery_morning_avg": 28
+    }
+  ],
+  "session_details": [],
+  "compliance": {
+    "rating": "schwach",
+    "sessions_this_week": 0,
+    "planned_sessions": 4,
+    "text": "In der Woche 2026-W27 (29. Juni – 5. Juli) wurden keine Schwimmeinheiten absolviert – 0 von geplanten 4 Sessions. Dies ist die dritte Woche in Folge ohne jegliches Schwimmtraining (W25 und W26 ebenfalls 0 Sessions). Die letzte aktive Schwimmwoche war W24 mit 11.550 m über 4 Einheiten."
+  },
+  "stroke_efficiency": {
+    "rating": "verschlechtert",
+    "swolf_trend": "Keine Daten für W27 – Trendaussage nicht möglich; nach 3-wöchiger Trainingspause ist Effizienzverlust wahrscheinlich.",
+    "drift_observations": [],
+    "text": "Für W27 liegen keine Längendaten vor, daher können keine bahn-genauen Beobachtungen gemacht werden. Angesichts der bekannten Problematik (Schlagzahldrift 20→25+ unter Ermüdung) und der dreimonatigen Trainingspause ist davon auszugehen, dass die Schlagtechnik beim Wiedereinstieg besonderer Aufmerksamkeit bedarf. Beim ersten Rückkehr-Training sollte die Schlagzahl von Bahn 1 an aktiv überwacht werden."
+  },
+  "recovery": {
+    "rating": "erholt",
+    "hrv_trend": "Keine HRV-Daten für W27; Schlaf- und Body-Battery-Werte ebenfalls nicht verfügbar.",
+    "text": "Für W27 liegen keine HRV-, Schlaf- oder Body-Battery-Daten vor. In W25 war der Schlaf mit durchschnittlich 449 Minuten (ca. 7:29 h) bereits grenzwertig, und in W24 war die Body Battery mit 28 kritisch niedrig. Nach drei Wochen ohne Schwimmbelastung dürfte die körperliche Erholung grundsätzlich fortgeschritten sein, auch wenn keine Messdaten dies bestätigen."
+  },
+  "pace_vs_css": {
+    "rating": "unter-plan",
+    "session_breakdown": [],
+    "text": "In W27 wurden keine Sessions durchgeführt, sodass kein Pace-Vergleich mit dem CSS (1:33/100 m) möglich ist. Die vollständige Trainingspause über drei Wochen bedeutet, dass beim Wiedereinstieg mit deutlich reduzierten Pace-Leistungen gegenüber dem CSS zu rechnen ist. Block-Level-Paces können erst wieder ab der nächsten absolvierten Einheit ausgewertet werden."
+  },
+  "summary": "Béško hat drei Wochen in Folge (W25–W27) kein Schwimmtraining absolviert – der Wiedereinstieg muss strukturiert und mit reduziertem Volumen geplant werden.",
+  "focus_next_week": "Beim ersten Rückkehr-Training: Volumen auf maximal 2.500 m begrenzen, Schlagzahl pro Bahn aktiv zählen und konsequent unter 22 Züge/50 m halten – Qualität vor Pace."
+}
