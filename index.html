@@ -2374,7 +2374,7 @@ const BADI_WS_URL = 'wss://badi-public.crowdmonitor.ch:9591/api';
 const BADI_CSV_URL = 'https://raw.githubusercontent.com/derbsq/Badi-Tracker/main/data/auslastung.csv';
 const BADI_BASE = 'https://raw.githubusercontent.com/derbsq/Badi-Tracker/main/data/';
 const BADI_TARGETS = [
-  {key:'city',     uid:'SSD-4',   label:'Hallenbad City',     short:'City',   match:['city'],            indoor:true,  lanes:true,  temp:'28°C',           src:'https://www.hallenbad-city.ch'},
+  {key:'city',     uid:'SSD-4',   label:'Hallenbad City',     short:'City',   match:['city'],            indoor:true,  lanes:true,  temp:'28°C',           src:'https://www.hallenbad-city.ch', closedPeriods:[['2026-07-04','2026-08-07']]},
   {key:'letzigraben',uid:'LETZI-1',label:'Freibad Letzigraben',short:'Letzi', match:['letzigraben'],     indoor:false, lanes:false, temp:'saisonal',       src:'https://www.zueriwiki.ch/wiki/Freibad_Letzigraben'},
   {key:'utoquai',  uid:'SSD-10',  label:'Seebad Utoquai',     short:'Uto',    match:['utoquai'],         indoor:false, lanes:false, temp:'Seewasser',      src:'https://www.seebad-utoquai.ch'},
   {key:'letten',   uid:'flb6939', label:'Ob. Letten',         short:'Letten', match:['letten','flb6939'],indoor:false, lanes:false, temp:'Limmat',         src:'https://www.oberletten.ch'},
@@ -2500,6 +2500,7 @@ function badiRenderLiveCards(){
     const tempHtml=liveTemp&&t.src
       ?`<a href="${t.src}" target="_blank" rel="noopener" style="font-family:var(--mono);font-size:.58rem;color:var(--faint);text-decoration:none;margin-top:4px;display:block">🌡 ${liveTemp}</a>`
       :`<div style="font-family:var(--mono);font-size:.58rem;color:var(--faint);margin-top:4px">🌡 ${tempVal}</div>`;
+    if(isBadiClosed(t.key))return`<div class="badi-cell" style="opacity:.65"><div class="badi-cell-status-bar" style="width:0%;background:var(--faint)"></div><div class="badi-cell-name">${t.short||t.label}</div><div style="font-size:1.2rem;font-weight:600;color:var(--muted);line-height:1.4">🚧</div><div style="font-family:var(--mono);font-size:.58rem;color:var(--muted)">Revision</div></div>`;
     if(!e)return`<div class="badi-cell"><div class="badi-cell-status-bar" style="width:0%;background:var(--faint)"></div><div class="badi-cell-name">${t.short||t.label}</div><div style="font-size:2rem;font-weight:600;color:var(--muted);line-height:1.1">—</div>${tempHtml}</div>`;
     const fill=parseInt(e.currentfill)||0;
     const max=parseInt(e.maxspace)||100;
@@ -2523,6 +2524,7 @@ function badiRenderDashCards(){
   const c=document.getElementById('dash-badi-cards');
   if(!c)return;
   c.innerHTML=BADI_TARGETS.map(t=>{
+    if(isBadiClosed(t.key))return`<div class="badi-cell" style="opacity:.65"><div class="badi-cell-status-bar" style="width:0%;background:var(--faint)"></div><div class="badi-cell-name" style="font-size:.7rem">${t.short||t.label}</div><div class="badi-pct" style="color:var(--muted);font-size:1rem">🚧</div><div class="badi-status bst-x">Revision</div></div>`;
     const e=BADI_STATE.live[t.key];
     const ratio=e?(parseInt(e.currentfill)||0)/(parseInt(e.maxspace)||100):null;
     const pct=ratio!==null?Math.round(ratio*100):null;
@@ -2569,8 +2571,34 @@ function badiFilteredData(){
   return data;
 }
 
+// ─── Closed-period helper ─────────────────────────────────────
+function isBadiClosed(key){
+  const t=BADI_TARGETS.find(t=>t.key===key);
+  if(!t||!t.closedPeriods)return false;
+  const today=new Date().toLocaleDateString('sv');
+  return t.closedPeriods.some(([from,to])=>today>=from&&today<=to);
+}
+function badiClosedBanner(key){
+  const t=BADI_TARGETS.find(t=>t.key===key);
+  if(!t||!t.closedPeriods)return '';
+  const today=new Date().toLocaleDateString('sv');
+  const p=t.closedPeriods.find(([from,to])=>today>=from&&today<=to);
+  if(!p)return '';
+  const fmt=s=>s.slice(8)+'.'+s.slice(5,7)+'.'+s.slice(0,4);
+  return`<div style="text-align:center;padding:.9rem;font-family:var(--mono);font-size:.7rem;color:var(--muted);border:1.5px dashed var(--brd);border-radius:var(--r2);margin:.5rem 0">`+
+    `<div style="font-size:1.1rem;margin-bottom:.25rem">🚧</div>`+
+    `<strong>${t.label}</strong><br>Revision: ${fmt(p[0])} – ${fmt(p[1])}`+
+    `</div>`;
+}
+
 // ─── Main view router ─────────────────────────────────────────
 function badiRenderCurrentView(){
+  // Inject revision banner above chart area if pool is currently closed
+  const bannerEl=document.getElementById('badi-closed-banner');
+  if(bannerEl)bannerEl.innerHTML=isBadiClosed(BADI_STATE.selBad)?badiClosedBanner(BADI_STATE.selBad):'';
+  if(isBadiClosed(BADI_STATE.selBad)){
+    // Still render (historical data from before revision is valid), but banner is shown
+  }
   switch(BADI_STATE.selView){
     case 'heatmap': badiRenderHeatmap(); break;
     case 'tagesverlauf': badiRenderTagesverlauf(); break;
@@ -2853,6 +2881,7 @@ function renderBadi(){
    ${monthOpts.map(([mv,ml])=>`<option value="${mv}"${selM===mv?' selected':''}>${ml}</option>`).join('')}
   </select>
  </div>
+ <div id="badi-closed-banner"></div>
  <div><canvas id="badi-chart-canvas" style="max-height:240px"></canvas></div>
  <div id="badi-chart-info" style="font-family:var(--mono);font-size:.56rem;color:var(--faint);margin-top:.4rem;text-align:center"></div>
  <div id="badi-hist-status" style="font-family:var(--mono);font-size:.58rem;color:var(--faint);margin-top:.2rem;text-align:center">Lade…</div>
